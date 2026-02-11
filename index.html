@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Social Tour Map</title>
+  <title>Sumela-Zigana Mountain-Hamsikoy Tour</title>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -69,7 +69,7 @@
     .controls{
       display:flex; gap:8px; flex-wrap:wrap; align-items:center;
     }
-    select, button{
+    button{
       font-family:var(--font1);
       border-radius:12px;
       border:1px solid rgba(255,255,255,.14);
@@ -77,8 +77,6 @@
       color: var(--text);
       padding:10px 12px;
       outline:none;
-    }
-    button{
       cursor:pointer;
       font-weight:700;
     }
@@ -119,21 +117,16 @@
       height:440px;
     }
 
-    .tourMeta{
-      padding:10px 12px;
+    .tourDesc{
+      padding:10px 14px;
       border-radius: var(--r2);
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
-    }
-    .tourMeta .k{
-      font-size:12px;
-      color:rgba(255,255,255,.72);
       font-family:var(--font2);
-    }
-    .tourMeta .v{
-      margin-top:2px;
-      font-weight:800;
-      font-size:14px;
+      color:rgba(255,255,255,.82);
+      font-size:13px;
+      line-height:1.45;
+      overflow:auto;
     }
 
     .timeline{
@@ -159,11 +152,6 @@
     .tlItem.active{
       background: rgba(255,47,47,.12);
       border-color: rgba(255,47,47,.28);
-    }
-    .time{
-      min-width:62px;
-      font-weight:800;
-      color:#fff;
     }
     .tlText{
       display:flex; flex-direction:column; gap:3px;
@@ -361,7 +349,7 @@
       .timeline{max-height:320px}
       .topbar{flex-direction:column; align-items:stretch}
       .controls{width:100%}
-      select, button{flex:1}
+      button{flex:1}
     }
   </style>
 </head>
@@ -370,12 +358,11 @@
   <div class="wrap">
     <div class="topbar">
       <div class="title">
-        <h3>Social Tours • Interactive Route</h3>
-        <small>Animated route + photo pins + timeline sync (Wix Embed HTML compatible)</small>
+        <h3>Sumela-Zigana Mountain-Hamsikoy Tour</h3>
+        <small>November 7, 2026</small>
       </div>
 
       <div class="controls">
-        <select id="tourSelect" aria-label="Select tour"></select>
         <button id="playBtn" class="primary">Play Route</button>
         <button id="fitBtn" class="ghost">Fit</button>
       </div>
@@ -387,15 +374,12 @@
       </div>
 
       <div class="card side">
-        <div class="tourMeta">
-          <div class="k">Selected Tour</div>
-          <div id="tourName" class="v">—</div>
-          <div class="k" style="margin-top:6px;">Date</div>
-          <div id="tourDate" class="v">—</div>
+        <div class="tourDesc">
+          As part of the social program, a Conference Tour will be organized with a full-day excursion to the most iconic natural and historical sites of the Eastern Black Sea region. The tour will depart from Osman Turan Kongre Merkezi at 09:30. After an approximately one-hour drive, participants will reach the closest accessible point to Sumela Monastery, from where local shuttle minibuses will be used to access the site, followed by a short walk to the monastery. Following the visit to Sumela Monastery, the tour will continue along the Zigana Mountain route, located at an altitude of approximately 2032 m, offering panoramic views and fresh mountain air. A short stop will be made for sightseeing and photography. The tour will then proceed to Hamsikoy, where participants will enjoy a break and taste the region's famous Hamsikoy Sutlac (rice pudding). At the end of the program, the tour will return to Trabzon.
         </div>
 
         <div class="hintRow">
-          <span class="chip"><span class="dot"></span> Click timeline → zoom & popup</span>
+          <span class="chip"><span class="dot"></span> Click stop → zoom & popup</span>
           <span class="chip"><span class="dot"></span> Click pin → photo details</span>
         </div>
 
@@ -409,122 +393,56 @@
   <script src="https://unpkg.com/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.min.js"></script>
 
   <script>
-    // ====== TOUR DATA (edit coords + images) ======
-    const TOURS = {
-      sumelaZiganaHamsikoy: {
-        label: "Sumela–Zigana–Hamsiköy Tour",
-        date: "Nov 7, 2026",
-        stops: [
-          {
-            time:"09:30",
-            name:"Koru Hotel (Departure)",
-            lat: 40.9970, lng: 39.7760,
-            images:[
-              "https://images.unsplash.com/photo-1526779259212-756e79e2f6b6?auto=format&fit=crop&w=1200&q=70"
-            ],
-            desc:"Meeting point & departure."
-          },
-          {
-            time:"10:45",
-            name:"Sümela Monastery",
-            lat: 40.6900, lng: 39.6590,
-            images:[
-              "https://static.wixstatic.com/media/97437f_e089c8c6cc57415ebde94a99d65f55b6~mv2.jpg",
-              "https://static.wixstatic.com/media/97437f_e6b147bace2f4d99b22f661e2d92bf65~mv2.jpg"
-            ],
-            desc:"Shuttle access + short walk. Historic cliff monastery."
-          },
-          {
-            time:"14:00",
-            name:"Zigana Pass (Scenic Stop)",
-            lat: 40.6440, lng: 39.4010,
-            images:[
-              "https://static.wixstatic.com/media/ab02c7_6b0e348e212b4f2aa8d2f255fb478138~mv2.jpg",
-              "https://static.wixstatic.com/media/97437f_ba82b3862e664b848def9a55f6597505~mv2.jpg",
-              "https://static.wixstatic.com/media/ab02c7_47db7d98e4ff44dcbeb6dc1b5164628b~mv2.jpg"
-            ],
-            desc:"Panoramic mountain views, fresh air & photography."
-          },
-          {
-            time:"15:30",
-            name:"Hamsiköy (Sütlaç Break)",
-            lat: 40.6400, lng: 39.3420,
-            images:[
-              "https://static.wixstatic.com/media/ab02c7_feb2a216f9d445ff97d0ca971deb9e3c~mv2.jpg",
-              "https://static.wixstatic.com/media/97437f_cc44cc90a0214f21ab4a6f3e52206671~mv2.jpg"
-            ],
-            desc:"Taste the famous Hamsiköy sütlaç (rice pudding)."
-          },
-          {
-            time:"18:00",
-            name:"Return to Trabzon",
-            lat: 41.0030, lng: 39.7300,
-            images:[
-              "https://images.unsplash.com/photo-1526779259212-756e79e2f6b6?auto=format&fit=crop&w=1200&q=70"
-            ],
-            desc:"Arrival back in the city."
-          }
-        ]
-      },
-
-      trabzonCity: {
-        label: "Trabzon City Tour",
-        date: "TBA",
-        stops: [
-          {
-            time:"10:00",
-            name:"Start (City Center)",
-            lat: 41.0015, lng: 39.7178,
-            images:[
-              "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1200&q=70"
-            ],
-            desc:"Meeting point."
-          },
-          {
-            time:"10:30",
-            name:"Atatürk Pavilion (example)",
-            lat: 41.0050, lng: 39.6930,
-            images:[
-              "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=70"
-            ],
-            desc:"Optional visit (replace with your real stop)."
-          },
-          {
-            time:"12:00",
-            name:"Boztepe Viewpoint (example)",
-            lat: 41.0120, lng: 39.7110,
-            images:[
-              "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=70"
-            ],
-            desc:"City panorama (replace)."
-          }
-        ]
-      },
-
-      optionalTour: {
-        label: "Optional Tour",
-        date: "TBA",
-        stops: [
-          {
-            time:"09:30",
-            name:"Start",
-            lat: 41.0015, lng: 39.7178,
-            images:[
-              "https://images.unsplash.com/photo-1526779259212-756e79e2f6b6?auto=format&fit=crop&w=1200&q=70"
-            ],
-            desc:"Replace with your optional tour plan."
-          },
-          {
-            time:"11:00",
-            name:"Stop 1",
-            lat: 41.0200, lng: 39.6500,
-            images:[
-              "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=70"
-            ],
-            desc:"Replace."
-          }
-        ]
-      }
+    // ====== TOUR DATA ======
+    const TOUR = {
+      label: "Sumela-Zigana Mountain-Hamsikoy Tour",
+      date: "November 7, 2026",
+      stops: [
+        {
+          name:"Osman Turan Kongre Merkezi (Departure)",
+          lat: 41.0027, lng: 39.7168,
+          images:[
+            "https://images.unsplash.com/photo-1526779259212-756e79e2f6b6?auto=format&fit=crop&w=1200&q=70"
+          ],
+          desc:"Meeting point & departure."
+        },
+        {
+          name:"Sumela Monastery",
+          lat: 40.6900, lng: 39.6590,
+          images:[
+            "https://static.wixstatic.com/media/97437f_e089c8c6cc57415ebde94a99d65f55b6~mv2.jpg",
+            "https://static.wixstatic.com/media/97437f_e6b147bace2f4d99b22f661e2d92bf65~mv2.jpg"
+          ],
+          desc:"Shuttle access + short walk. Historic cliff monastery."
+        },
+        {
+          name:"Zigana Mountain (Scenic Stop)",
+          lat: 40.6440, lng: 39.4010,
+          images:[
+            "https://static.wixstatic.com/media/ab02c7_6b0e348e212b4f2aa8d2f255fb478138~mv2.jpg",
+            "https://static.wixstatic.com/media/97437f_ba82b3862e664b848def9a55f6597505~mv2.jpg",
+            "https://static.wixstatic.com/media/ab02c7_47db7d98e4ff44dcbeb6dc1b5164628b~mv2.jpg"
+          ],
+          desc:"Panoramic mountain views, fresh air & photography."
+        },
+        {
+          name:"Hamsikoy (Sutlac Break)",
+          lat: 40.6400, lng: 39.3420,
+          images:[
+            "https://static.wixstatic.com/media/ab02c7_feb2a216f9d445ff97d0ca971deb9e3c~mv2.jpg",
+            "https://static.wixstatic.com/media/97437f_cc44cc90a0214f21ab4a6f3e52206671~mv2.jpg"
+          ],
+          desc:"Taste the famous Hamsikoy Sutlac (rice pudding)."
+        },
+        {
+          name:"Return to Trabzon",
+          lat: 41.0030, lng: 39.7300,
+          images:[
+            "https://images.unsplash.com/photo-1526779259212-756e79e2f6b6?auto=format&fit=crop&w=1200&q=70"
+          ],
+          desc:"Arrival back in the city."
+        }
+      ]
     };
 
     // ====== MAP SETUP ======
@@ -544,23 +462,10 @@
     let moverPausedAtStop = false;
     let moverIdx = 0;
     let currentCoords = [];
-    let currentTourKey = null;
-    let stopRouteIndices = [];
 
-    const tourSelect = document.getElementById('tourSelect');
     const playBtn = document.getElementById('playBtn');
     const fitBtn  = document.getElementById('fitBtn');
     const timelineEl = document.getElementById('timeline');
-    const tourNameEl = document.getElementById('tourName');
-    const tourDateEl = document.getElementById('tourDate');
-
-    // Populate select
-    Object.entries(TOURS).forEach(([key, t]) => {
-      const opt = document.createElement('option');
-      opt.value = key;
-      opt.textContent = t.label;
-      tourSelect.appendChild(opt);
-    });
 
     function popupHTML(stop){
       const imgs = stop.images || [];
@@ -591,7 +496,6 @@
           <h4>${stop.name}</h4>
           <p>${stop.desc || ""}</p>
           <div class="meta">
-            <span class="badge">&#128339; ${stop.time}</span>
             <span class="badge">&#128205; ${stop.lat.toFixed(4)}, ${stop.lng.toFixed(4)}</span>
           </div>
         </div>
@@ -659,7 +563,6 @@
         const item = document.createElement('div');
         item.className = 'tlItem';
         item.innerHTML = `
-          <div class="time">${s.time}</div>
           <div class="tlText">
             <div class="name">${i+1}. ${s.name}</div>
             <div class="desc">${s.desc || ""}</div>
@@ -675,8 +578,7 @@
     }
 
     function focusStop(i, openPopup){
-      const t = TOURS[currentTourKey];
-      const stop = t.stops[i];
+      const stop = TOUR.stops[i];
       map.flyTo([stop.lat, stop.lng], Math.max(map.getZoom(), 11), { duration: 0.8 });
       const markers = Object.values(markersLayer._layers);
       if(openPopup && markers[i]) markers[i].openPopup();
@@ -692,7 +594,6 @@
       if(antLayer){ map.removeLayer(antLayer); antLayer=null; }
       stopMover();
       currentCoords = [];
-      stopRouteIndices = [];
     }
 
     function stopMover(){
@@ -746,7 +647,7 @@
       return minIdx;
     }
 
-    // Build a Map of route-index → stop-index for pause points
+    // Build a Map of route-index -> stop-index for pause points
     function buildPauseMap(tour, latlngs){
       const pauseMap = new Map();
       // Skip first (departure) and last (return) stops
@@ -759,10 +660,7 @@
     }
 
     function startMover(latlngs, resumeFrom){
-      const tour = TOURS[currentTourKey];
-      if(!tour) return;
-
-      const pauseMap = buildPauseMap(tour, latlngs);
+      const pauseMap = buildPauseMap(TOUR, latlngs);
 
       if(!resumeFrom && resumeFrom !== 0){
         // Fresh start
@@ -815,38 +713,30 @@
       moverAnim = requestAnimationFrame(step);
     }
 
-    async function loadTour(key){
-      currentTourKey = key;
-      const tour = TOURS[key];
-
-      tourNameEl.textContent = tour.label;
-      tourDateEl.textContent = tour.date || "—";
-
+    async function loadTour(){
       markersLayer.clearLayers();
-      tour.stops.forEach((s, idx) => {
+      TOUR.stops.forEach((s, idx) => {
         const mk = L.marker([s.lat, s.lng], { icon: makePhotoIcon(s, idx) })
           .bindPopup(popupHTML(s), { maxWidth:280, closeButton:true });
         mk.on('click', () => setActiveTimeline(idx));
         markersLayer.addLayer(mk);
       });
 
-      buildTimeline(tour);
+      buildTimeline(TOUR);
       clearRoute();
-      fitToTour(tour);
+      fitToTour(TOUR);
 
       try{
-        const route = await fetchRouteOSRM(tour.stops);
+        const route = await fetchRouteOSRM(TOUR.stops);
         currentCoords = downsample(route, 500);
       }catch(e){
-        currentCoords = tour.stops.map(s => [s.lat, s.lng]);
+        currentCoords = TOUR.stops.map(s => [s.lat, s.lng]);
       }
 
       drawAnimatedRoute(currentCoords);
     }
 
     // UI events
-    tourSelect.addEventListener('change', (e)=> loadTour(e.target.value));
-
     playBtn.addEventListener('click', ()=>{
       if(!currentCoords || currentCoords.length < 2) return;
 
@@ -867,16 +757,11 @@
     });
 
     fitBtn.addEventListener('click', ()=>{
-      const tour = TOURS[currentTourKey];
-      if(tour) fitToTour(tour);
+      fitToTour(TOUR);
     });
 
-    // Init default
-    (function init(){
-      const firstKey = Object.keys(TOURS)[0];
-      tourSelect.value = firstKey;
-      loadTour(firstKey);
-    })();
+    // Init
+    loadTour();
   </script>
 </body>
 </html>
