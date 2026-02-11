@@ -731,6 +731,11 @@
       }
 
       drawAnimatedRoute(currentCoords);
+
+      // Auto-play on load
+      if(currentCoords.length >= 2){
+        startMover(currentCoords);
+      }
     }
 
     // UI events
