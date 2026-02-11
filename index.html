@@ -748,10 +748,12 @@
 
       drawAnimatedRoute(currentCoords);
 
-      // Auto-play on load
-      if(currentCoords.length >= 2){
-        startMover(currentCoords);
-      }
+      // Auto-play after a short delay so map fully renders
+      setTimeout(() => {
+        if(currentCoords.length >= 2 && !moverPlaying){
+          startMover(currentCoords);
+        }
+      }, 800);
     }
 
     // UI events
