@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1a1a2e;
+      --muted: #64748b;
+      --accent: #dc2626;
+      --accent-dark: #991b1b;
+      --card-bg: #ffffff;
+      --card-border: rgba(0,0,0,.06);
+      --card-shadow: 0 1px 3px rgba(0,0,0,.06), 0 8px 24px rgba(0,0,0,.08);
+      --card-shadow-hover: 0 4px 12px rgba(0,0,0,.08), 0 20px 48px rgba(0,0,0,.14);
+      --radius: 16px;
+      --gap: 20px;
+      --card-w: 340px;
+      --img-h: 200px;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Section Header ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 0 20px;
+    }
+
+    .section-header .icon-bar {
+      width: 5px;
+      height: 36px;
+      border-radius: 3px;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .section-header h2 {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-transform: uppercase;
+    }
+
+    .section-header .line {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
+      border-radius: 1px;
+      opacity: .35;
+    }
+
+    /* ── Rail ── */
+    .rail {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      padding: 4px 0 16px;
+    }
+
+    /* Fade edges */
+    .rail::before,
+    .rail::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 60px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .rail::before { left: 0; background: linear-gradient(90deg, rgba(255,255,255,.95), transparent); }
+    .rail::after  { right: 0; background: linear-gradient(270deg, rgba(255,255,255,.95), transparent); }
+
+    /* ── Track ── */
+    .track {
+      display: flex;
+      gap: var(--gap);
+      width: max-content;
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* ── Card ── */
+    .card {
+      width: var(--card-w);
+      flex: 0 0 auto;
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .25s cubic-bezier(.4,0,.2,1),
+                  box-shadow .25s cubic-bezier(.4,0,.2,1);
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.01);
+      box-shadow: var(--card-shadow-hover);
+    }
+
+    /* Image container */
+    .card-img {
+      position: relative;
+      height: var(--img-h);
+      overflow: hidden;
+      background: #f1f5f9;
+    }
+
+    .card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .4s cubic-bezier(.4,0,.2,1);
+    }
+
+    .card:hover .card-img img {
+      transform: scale(1.06);
+    }
+
+    /* Date badge on image */
+    .card-img .date-badge {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,.65);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: #fff;
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 8px;
+      letter-spacing: .02em;
+    }
+
+    /* Content */
+    .card-body {
+      padding: 16px 18px 18px;
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--ink);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color .2s;
+    }
+
+    .card:hover .card-title {
+      color: var(--accent);
+    }
+
+    .card-excerpt {
+      margin-top: 8px;
+      font-size: 13.5px;
+      line-height: 1.5;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: .01em;
+    }
+
+    .card-footer svg {
+      width: 16px;
+      height: 16px;
+      transition: transform .2s;
+    }
+
+    .card:hover .card-footer svg {
+      transform: translateX(3px);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      :root {
+        --card-w: 80vw;
+        --img-h: 170px;
+      }
+      .section-header h2 { font-size: 22px; }
+      .section-header .icon-bar { height: 28px; }
+      .card-title { font-size: 15px; }
+      .rail::before, .rail::after { width: 30px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="section-header">
+    <div class="icon-bar"></div>
+    <h2>Bizden Haberler</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="rail" id="rail">
+    <div class="track" id="track"></div>
+  </div>
+
+  <script>
+    const rail  = document.getElementById("rail");
+    const track = document.getElementById("track");
+
+    let items   = [];
+    let speed   = 70;
+    let x       = 0;
+    let running = true;
+    let lastT   = 0;
+    let halfW   = 0;
+    let rafId   = 0;
+
+    function esc(s) {
+      const d = document.createElement("div");
+      d.textContent = s || "";
+      return d.innerHTML;
+    }
+
+    function cardHTML(it) {
+      return `
+        <div class="card" data-url="${esc(it.url)}">
+          <div class="card-img">
+            <img src="${esc(it.img)}" alt="${esc(it.title)}" loading="lazy">
+            ${it.date ? `<span class="date-badge">${esc(it.date)}</span>` : ""}
+          </div>
+          <div class="card-body">
+            <div class="card-title">${esc(it.title)}</div>
+            ${it.excerpt ? `<p class="card-excerpt">${esc(it.excerpt)}</p>` : ""}
+            <div class="card-footer">
+              Devamını Oku
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindClicks() {
+      track.querySelectorAll(".card").forEach(el => {
+        el.addEventListener("click", () => {
+          const url = el.getAttribute("data-url");
+          if (url) parent.postMessage({ type: "NAVIGATE", url }, "*");
+        });
+      });
+    }
+
+    function render() {
+      if (!items.length) { track.innerHTML = ""; return; }
+
+      const html = items.map(cardHTML).join("");
+      track.innerHTML = html + html; // seamless loop
+      bindClicks();
+
+      requestAnimationFrame(() => {
+        halfW = track.scrollWidth / 2;
+        x = 0;
+        lastT = performance.now();
+        running = true;
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(tick);
+      });
+    }
+
+    function tick(t) {
+      if (!running) {
+        lastT = t;
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+      const dt = Math.min((t - lastT) / 1000, 0.1); // cap delta for tab-switch
+      lastT = t;
+
+      x -= speed * dt;
+      if (Math.abs(x) >= halfW) x += halfW;
+
+      track.style.transform = `translate3d(${x}px,0,0)`;
+      rafId = requestAnimationFrame(tick);
+    }
+
+    // Pause on hover / touch
+    rail.addEventListener("mouseenter", () => running = false);
+    rail.addEventListener("mouseleave", () => running = true);
+    rail.addEventListener("touchstart",  () => running = false, { passive: true });
+    rail.addEventListener("touchend",    () => running = true,  { passive: true });
+
+    // Receive data from Velo
+    window.onmessage = (e) => {
+      const msg = e.data || {};
+      if (msg.type === "INIT_NEWS") {
+        items = Array.isArray(msg.items) ? msg.items : [];
+        speed = Number(msg.speedPxPerSec) || 70;
+        render();
+      }
+    };
+  </script>
+</body>
+</html>
