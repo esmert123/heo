@@ -11,10 +11,35 @@
 // ============================================================
 
 import wixData from 'wix-data';
+import wixLocation from 'wix-location';
 
-$w.onReady(async function () {
+let sliderData = null;
+
+$w.onReady(function () {
+
+    // 1) Önce iframe'den "ready" mesajı gelince veri gönder
+    $w("#htmlSlider").onMessage((event) => {
+        const msg = event.data;
+
+        // iframe hazır olduğunda veri iste
+        if (msg && msg.type === "iframeReady") {
+            if (sliderData) {
+                sendDataToSlider();
+            }
+        }
+
+        // CTA buton tıklaması
+        if (msg && msg.type === "ctaClick" && msg.url) {
+            wixLocation.to(msg.url);
+        }
+    });
+
+    // 2) CMS'den verileri çek
+    fetchCmsData();
+});
+
+async function fetchCmsData() {
     try {
-        // Her iki koleksiyondan verileri paralel olarak çek
         const [heroResult, areasResult] = await Promise.all([
             wixData.query("Import1")
                 .eq("isActive", true)
@@ -27,7 +52,7 @@ $w.onReady(async function () {
         ]);
 
         const heroSlides = heroResult.items.map(item => ({
-            productKey: item.productKey,
+            productKey: item.productKey || "",
             title: item.title || "",
             promo: item.promo || "",
             promo2: item.promo2 || "",
@@ -41,31 +66,35 @@ $w.onReady(async function () {
         }));
 
         const applicationAreas = areasResult.items.map(item => ({
-            productKey: item.productKey,
+            productKey: item.productKey || "",
             title: item.title || "",
             iconUrl: item.iconUrl || "",
-            sortOrder: item.sortOrder
+            sortOrder: item.sortOrder || 0
         }));
 
-        // HTML Component'e verileri gönder
-        $w("#htmlSlider").postMessage({
+        sliderData = {
             type: "sliderData",
             heroSlides: heroSlides,
             applicationAreas: applicationAreas
-        });
+        };
+
+        // Hemen göndermeyi dene (iframe zaten hazırsa)
+        sendDataToSlider();
+
+        console.log("CMS verileri başarıyla çekildi:", heroSlides.length, "slayt,", applicationAreas.length, "alan");
 
     } catch (err) {
         console.error("CMS veri çekme hatası:", err);
-    }
-});
-
-// HTML Component'ten gelen mesajları dinle (CTA tıklamaları vb.)
-$w("#htmlSlider").onMessage((event) => {
-    const data = event.data;
-    if (data.type === "ctaClick" && data.url) {
-        // Wix sayfasına yönlendirme
-        import('wix-location').then(wixLocation => {
-            wixLocation.to(data.url);
+        // Hata durumunda iframe'e bildir
+        $w("#htmlSlider").postMessage({
+            type: "cmsError",
+            message: err.message || "Veri çekilemedi"
         });
     }
-});
+}
+
+function sendDataToSlider() {
+    if (sliderData) {
+        $w("#htmlSlider").postMessage(sliderData);
+    }
+}
