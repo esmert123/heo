@@ -467,19 +467,17 @@ html, body {
 /* ---- DEBUG PANEL ---- */
 .debug {
     position: absolute;
-    top: 8px; left: 8px;
-    z-index: 9999;
-    background: rgba(0,0,0,0.92);
+    top: 8px; right: 8px;
+    z-index: 999;
+    background: rgba(0,0,0,0.85);
     color: #0f0;
     font-family: monospace;
-    font-size: 11px;
-    padding: 10px 14px;
+    font-size: 10px;
+    padding: 6px 10px;
     border-radius: 6px;
     display: none;
-    max-width: 500px;
-    white-space: pre-wrap;
+    max-width: 280px;
     word-break: break-all;
-    line-height: 1.5;
 }
 
 /* ---- RESPONSIVE ---- */
@@ -624,24 +622,6 @@ html, body {
             dataReceived = true;
             heroSlides = d.heroSlides || [];
             appAreas = d.applicationAreas || [];
-
-            // DEBUG: Gelen veriyi ekrana bas - field isimlerini görelim
-            var debugInfo = 'SLIDES: ' + heroSlides.length + ' | AREAS: ' + appAreas.length;
-            if (heroSlides.length > 0) {
-                debugInfo += '\n\nHERO[0] keys: ' + Object.keys(heroSlides[0]).join(', ');
-                debugInfo += '\nHERO[0] productKey: "' + heroSlides[0].productKey + '"';
-                debugInfo += '\nHERO[0] title: "' + heroSlides[0].title + '"';
-            }
-            if (appAreas.length > 0) {
-                debugInfo += '\n\nAREA[0] keys: ' + Object.keys(appAreas[0]).join(', ');
-                debugInfo += '\nAREA[0] productKey: "' + appAreas[0].productKey + '"';
-                debugInfo += '\nAREA[0] title: "' + appAreas[0].title + '"';
-                debugInfo += '\nAREA[0] full: ' + JSON.stringify(appAreas[0]);
-            }
-            $dbg.style.display = 'block';
-            $dbg.textContent = debugInfo;
-            dbg(debugInfo);
-
             buildAll();
         }
 
