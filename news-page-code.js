@@ -1,10 +1,20 @@
-// ─── Wix Velo: Haberler Sayfası Kodu ───
-// Bu kodu Wix Editor'da ilgili sayfanın kod paneline yapıştır.
+// ============================================================
+// HEO - Hero Slider + Haberler Slider
+// Wix Velo Sayfa Kodu (Page Code) — BİRLEŞTİRİLMİŞ
+// ============================================================
+// KURULUM:
+// 1. "htmlSlider" ID'li HtmlComponent → Hero slider HTML
+// 2. "newsSliderHtml" ID'li HtmlComponent → Haber slider HTML
+// 3. Bu kodu sayfanın Velo kod paneline yapıştır (TEK DOSYA).
+// ============================================================
 
 import wixData from 'wix-data';
 import wixLocation from 'wix-location';
 
-// ✅ Türkçe tarih formatlama fonksiyonu
+// ──────────────────────────────────────
+// Yardımcı Fonksiyonlar
+// ──────────────────────────────────────
+
 function fmtDateTR(dateVal) {
   const months = [
     "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
@@ -15,30 +25,85 @@ function fmtDateTR(dateVal) {
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// ✅ Wix image URL'sini görüntülenebilir URL'ye çevir
 function getImageUrl(img) {
   if (!img) return "";
-  // Zaten normal bir URL ise dokunma
   if (typeof img === "string" && img.startsWith("http")) return img;
-  // wix:image://v1/... formatını dönüştür
   if (typeof img === "string" && img.startsWith("wix:image://")) {
     const parts = img.replace("wix:image://v1/", "").split("/");
-    const fileId = parts[0];
-    return `https://static.wixstatic.com/media/${fileId}`;
+    return `https://static.wixstatic.com/media/${parts[0]}`;
   }
-  // Obje formatı (src alanı olan)
-  if (typeof img === "object" && img.src) {
-    return getImageUrl(img.src);
-  }
+  if (typeof img === "object" && img.src) return getImageUrl(img.src);
   return "";
 }
 
-$w.onReady(async () => {
+// ──────────────────────────────────────
+// Hero Slider değişkenleri
+// ──────────────────────────────────────
+let sliderData = null;
 
-  const COLLECTION = "Import3";
+function sendDataToSlider() {
+  if (sliderData) {
+    $w("#htmlSlider").postMessage(sliderData);
+  }
+}
 
+async function fetchHeroData() {
   try {
-    const res = await wixData.query(COLLECTION)
+    const [heroResult, areasResult] = await Promise.all([
+      wixData.query("Import1")
+        .eq("isActive", true)
+        .ascending("sortOrder")
+        .find(),
+      wixData.query("Import2")
+        .eq("isActive", true)
+        .ascending("sortOrder")
+        .find()
+    ]);
+
+    const heroSlides = heroResult.items.map(item => ({
+      productKey: item.productKey || "",
+      title: item.title || "",
+      promo: item.promo || "",
+      promo2: item.promo2 || "",
+      description: item.description || "",
+      heroImageUrl: item.heroImageUrl || "",
+      features: item.features || "",
+      primaryCtaText: item.primaryCtaText || "",
+      primaryCtaLink: item.primaryCtaLink || "",
+      secondaryCtaText: item.secondaryCtaText || "",
+      secondaryCtaLink: item.secondaryCtaLink || ""
+    }));
+
+    const applicationAreas = areasResult.items.map(item => ({
+      productKey: item.productKey || "",
+      title: item.title1 || "",
+      iconUrl: item.iconUrl || "",
+      sortOrder: item.sortOrder || 0
+    }));
+
+    sliderData = {
+      type: "sliderData",
+      heroSlides,
+      applicationAreas
+    };
+
+    sendDataToSlider();
+    console.log("Hero CMS verileri:", heroSlides.length, "slayt,", applicationAreas.length, "alan");
+  } catch (err) {
+    console.error("Hero CMS hatası:", err);
+    $w("#htmlSlider").postMessage({
+      type: "cmsError",
+      message: err.message || "Veri çekilemedi"
+    });
+  }
+}
+
+// ──────────────────────────────────────
+// Haberler Slider
+// ──────────────────────────────────────
+async function fetchNewsData() {
+  try {
+    const res = await wixData.query("Import3")
       .descending("date")
       .limit(12)
       .find();
@@ -56,23 +121,44 @@ $w.onReady(async () => {
       return;
     }
 
-    // Slider HTML embed'e veriyi gönder
     $w("#newsSliderHtml").postMessage({
       type: "INIT_NEWS",
       items,
       speedPxPerSec: 70
     });
 
-    // Kart tıklanınca yönlendir
-    $w("#newsSliderHtml").onMessage((event) => {
-      const d = event.data || {};
-      if (d.type === "NAVIGATE" && d.url) {
-        wixLocation.to(d.url);
-      }
-    });
-
+    console.log("Haber verileri gönderildi:", items.length, "haber");
   } catch (err) {
     console.error("Haberler yüklenirken hata:", err);
   }
+}
+
+// ──────────────────────────────────────
+// TEK $w.onReady — her şey burada başlar
+// ──────────────────────────────────────
+$w.onReady(function () {
+
+  // ── Hero Slider mesaj dinleyici ──
+  $w("#htmlSlider").onMessage((event) => {
+    const msg = event.data;
+    if (msg && msg.type === "iframeReady") {
+      if (sliderData) sendDataToSlider();
+    }
+    if (msg && msg.type === "ctaClick" && msg.url) {
+      wixLocation.to(msg.url);
+    }
+  });
+
+  // ── Haberler Slider mesaj dinleyici ──
+  $w("#newsSliderHtml").onMessage((event) => {
+    const d = event.data || {};
+    if (d.type === "NAVIGATE" && d.url) {
+      wixLocation.to(d.url);
+    }
+  });
+
+  // ── Verileri paralel çek ──
+  fetchHeroData();
+  fetchNewsData();
 
 });
