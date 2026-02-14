@@ -65,6 +65,16 @@ async function fetchCmsData() {
             secondaryCtaLink: item.secondaryCtaLink || ""
         }));
 
+        // DEBUG: İlk area item'ının tüm field'larını logla
+        if (areasResult.items.length > 0) {
+            console.log("=== RAW AREA ITEM [0] ===", JSON.stringify(areasResult.items[0]));
+            console.log("=== AREA KEYS ===", Object.keys(areasResult.items[0]));
+        }
+        if (heroResult.items.length > 0) {
+            console.log("=== RAW HERO ITEM [0] ===", JSON.stringify(heroResult.items[0]));
+            console.log("=== HERO KEYS ===", Object.keys(heroResult.items[0]));
+        }
+
         const applicationAreas = areasResult.items.map(item => ({
             productKey: item.productKey || "",
             title: item.title || "",
