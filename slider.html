@@ -576,22 +576,24 @@ html, body {
     // ============ DEMO DATA ============
     var DEMO_SLIDES = [
         {
+            productKey: "tribolog",
             title: "UTS TRIBOLOG",
             promo: "YENİ ÜRÜN",
             promo2: "UNIVERSAL TEST SİSTEMLERİ",
-            description: "Triboloji test cihazı, sürtünme ve aşınma testleri için modüler ve esnek bir platform sunar. Geniş sıcaklık aralığında hassas ölçüm yapabilme kapasitesine sahiptir.",
+            description: "Triboloji test cihazı, sürtünme ve aşınma testleri için modüler ve esnek bir platform sunar.",
             heroImageUrl: "",
-            features: "Modüler Test Platformu,Esnek Tasarım,Hassas Ölçüm,Geniş Sıcaklık Aralığı,Gerçek Zamanlı Veri",
+            features: "Modüler Test Platformu,Esnek Tasarım,Hassas Ölçüm,Geniş Sıcaklık Aralığı",
             primaryCtaText: "Ürünü İncele",
             primaryCtaLink: "/urunler/uts-tribolog",
             secondaryCtaText: "Teklif Al",
             secondaryCtaLink: "/iletisim"
         },
         {
+            productKey: "hardness",
             title: "UTS HARDNESS",
             promo: "POPÜLER",
             promo2: "SERTLIK TEST CİHAZLARI",
-            description: "Yüksek hassasiyetli sertlik ölçüm sistemleri. Rockwell, Brinell ve Vickers yöntemlerini tek bir platformda birleştirir.",
+            description: "Yüksek hassasiyetli sertlik ölçüm sistemleri. Rockwell, Brinell ve Vickers yöntemlerini tek platformda birleştirir.",
             heroImageUrl: "",
             features: "Çoklu Test Yöntemi,Otomatik Ölçüm,Dijital Raporlama,Kolay Kalibrasyon",
             primaryCtaText: "Ürünü İncele",
@@ -602,12 +604,12 @@ html, body {
     ];
 
     var DEMO_AREAS = [
-        { title: "Otomotiv", iconUrl: "" },
-        { title: "Havacılık", iconUrl: "" },
-        { title: "Enerji", iconUrl: "" },
-        { title: "Savunma", iconUrl: "" },
-        { title: "Akademik", iconUrl: "" },
-        { title: "Medikal", iconUrl: "" }
+        { productKey: "tribolog", title: "Otomotiv", iconUrl: "" },
+        { productKey: "tribolog", title: "Havacılık", iconUrl: "" },
+        { productKey: "tribolog", title: "Enerji", iconUrl: "" },
+        { productKey: "hardness", title: "Savunma", iconUrl: "" },
+        { productKey: "hardness", title: "Akademik", iconUrl: "" },
+        { productKey: "hardness", title: "Medikal", iconUrl: "" }
     ];
 
     // ============ MESSAGE LISTENER ============
@@ -617,10 +619,12 @@ html, body {
 
         // Velo'dan gelen veri
         if (d.type === 'sliderData') {
-            dbg('Velo verisi alindi: ' + (d.heroSlides ? d.heroSlides.length : 0) + ' slayt');
             dataReceived = true;
             heroSlides = d.heroSlides || [];
             appAreas = d.applicationAreas || [];
+            // Debug: gelen veriyi logla
+            dbg('Slides: ' + heroSlides.length + ', Areas: ' + appAreas.length);
+            if (appAreas.length > 0) dbg('Area[0] keys: ' + Object.keys(appAreas[0]).join(', ') + ' | title="' + appAreas[0].title + '"');
             buildAll();
         }
 
@@ -658,7 +662,6 @@ html, body {
     function buildAll() {
         if (heroSlides.length === 0) return;
         renderSlides();
-        renderAreas();
         renderDots();
         updateCounter();
         activate(0);
@@ -711,15 +714,24 @@ html, body {
         }
     }
 
-    // ============ RENDER AREAS ============
-    function renderAreas() {
+    // ============ RENDER AREAS (productKey'e göre filtreli) ============
+    function renderAreas(productKey) {
         if (appAreas.length === 0) {
             $appAreas.style.display = 'none';
             return;
         }
+
+        // Aktif slide'ın productKey'ine göre filtrele
+        var filtered = productKey
+            ? appAreas.filter(function(a) { return a.productKey === productKey; })
+            : appAreas;
+
+        // Eşleşen yoksa tüm alanları göster
+        if (filtered.length === 0) filtered = appAreas;
+
         $appAreas.style.display = '';
         var html = '';
-        appAreas.forEach(function(a) {
+        filtered.forEach(function(a) {
             var icon = a.iconUrl
                 ? '<img src="' + escA(a.iconUrl) + '" alt="' + escA(a.title) + '">'
                 : icoDefault;
@@ -760,6 +772,10 @@ html, body {
 
         cur = idx;
         updateCounter();
+
+        // Uygulama alanlarını aktif slide'ın productKey'ine göre güncelle
+        var activeKey = heroSlides[idx] ? heroSlides[idx].productKey : '';
+        renderAreas(activeKey);
     }
 
     function goTo(idx) {
