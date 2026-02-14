@@ -723,8 +723,11 @@ html, body {
             ? appAreas.filter(function(a) { return a.productKey === productKey; })
             : appAreas;
 
-        // Eşleşen yoksa tüm alanları göster
-        if (filtered.length === 0) filtered = appAreas;
+        // Eşleşen yoksa uygulama alanları bölümünü gizle
+        if (filtered.length === 0) {
+            $appAreas.style.display = 'none';
+            return;
+        }
 
         $appAreas.style.display = '';
         var html = '';
