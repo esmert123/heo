@@ -1,0 +1,296 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spinnaker&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0f1e3a;
+    --muted:#52627c;
+    --blue:#1A2B6D;
+    --blue2:#12204F;
+    --bg:#f4f6ff;
+    --panel:#ffffff;
+    --stroke:rgba(15,30,58,.10);
+    --shadow:0 24px 70px rgba(10,24,60,.10);
+    --sTitle: clamp(32px, 3.6vw, 54px);
+    --sH3:    clamp(26px, 2.6vw, 36px);
+    --sBody:  17px;
+    --pill: 999px;
+  }
+  .uts-services{
+    background: var(--bg);
+    padding: clamp(26px, 3.2vw, 54px);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+  /* subtle background glow */
+  .uts-services::before{
+    content:"";
+    position:absolute; inset:-120px;
+    background:
+      radial-gradient(600px 280px at 18% 22%, rgba(26,43,109,.10), transparent 65%),
+      radial-gradient(520px 240px at 82% 18%, rgba(26,43,109,.08), transparent 70%),
+      radial-gradient(640px 320px at 60% 92%, rgba(26,43,109,.06), transparent 70%);
+    pointer-events:none;
+  }
+  .uts-shell{ max-width: 1220px; margin: 0 auto; position:relative; z-index:1; }
+  .uts-title{
+    font-family: "Spinnaker", Arial, sans-serif;
+    font-weight: 400;
+    letter-spacing: .2px;
+    font-size: var(--sTitle);
+    text-align: left;
+    color: #8F1D3D;
+    margin: 0 0 26px 0;
+  }
+  .uts-grid{
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 20px;
+    align-items: stretch;
+  }
+  @media (max-width: 992px){
+    .uts-grid{ grid-template-columns: 1fr; }
+  }
+  /* Tabs panel */
+  .uts-tabs{
+    background: rgba(255,255,255,.74);
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow);
+    padding: 18px;
+    backdrop-filter: blur(10px);
+  }
+  .uts-tabbtn{
+    width: 100%;
+    display:flex;
+    align-items:center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid rgba(15,30,58,.08);
+    background: rgba(246,247,255,.96);
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+    margin-bottom: 12px;
+    border-radius: var(--pill);
+    position: relative;
+    overflow: hidden;
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+    box-shadow: 0 12px 30px rgba(10,24,60,.07);
+  }
+  .uts-tabbtn:last-child{ margin-bottom: 0; }
+  .uts-tabbtn:hover{
+    transform: translateY(-1px);
+    border-color: rgba(26,43,109,.22);
+  }
+  .uts-tabbtn .icoWrap{
+    width: 54px; height: 54px;
+    border-radius: var(--pill);
+    display:grid;
+    place-items:center;
+    background: rgba(26,43,109,.10);
+    border: 1px solid rgba(26,43,109,.18);
+    flex: 0 0 auto;
+    transition: .16s ease;
+  }
+  .uts-tabbtn img{
+    width: 32px; height: 32px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 0 rgba(0,0,0,.06));
+  }
+  .uts-tabbtn .t{
+    font-family: "Spinnaker", Arial, sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.15;
+  }
+  /* Active tab glow */
+  .uts-tabbtn.is-active{
+    background: linear-gradient(90deg, var(--blue), var(--blue2));
+    color: #fff;
+    border-color: rgba(26,43,109,.35);
+    box-shadow:
+      0 22px 60px rgba(26,43,109,.22),
+      0 0 0 1px rgba(255,255,255,.10) inset;
+  }
+  .uts-tabbtn.is-active::after{
+    content:"";
+    position:absolute; inset:-2px;
+    background: radial-gradient(220px 70px at 30% 50%, rgba(255,255,255,.14), transparent 70%);
+    pointer-events:none;
+  }
+  .uts-tabbtn.is-active .icoWrap{
+    background: rgba(255,255,255,.18);
+    border-color: rgba(255,255,255,.22);
+  }
+  .uts-tabbtn.is-active img{
+    filter: brightness(0) invert(1) drop-shadow(0 1px 0 rgba(0,0,0,.10));
+  }
+  /* Right content */
+  .uts-content{
+    background: rgba(255,255,255,.74);
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow);
+    padding: 22px;
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 22px;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+  @media (max-width: 992px){
+    .uts-content{ grid-template-columns: 1fr; }
+  }
+  /* subtle texture/noise */
+  .uts-content::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(0deg, rgba(0,0,0,.03), rgba(0,0,0,.03)),
+      radial-gradient(1px 1px at 10% 20%, rgba(0,0,0,.06) 0, transparent 2px),
+      radial-gradient(1px 1px at 70% 40%, rgba(0,0,0,.05) 0, transparent 2px),
+      radial-gradient(1px 1px at 40% 80%, rgba(0,0,0,.05) 0, transparent 2px);
+    opacity: .12;
+    pointer-events:none;
+    mix-blend-mode: multiply;
+  }
+  .uts-media{
+    background: #eef1ff;
+    border: 1px solid rgba(15,30,58,.08);
+    overflow: hidden;
+    position: relative;
+  }
+  .uts-media img{
+    width: 100%;
+    height: 100%;
+    display:block;
+    object-fit: cover;
+    min-height: 330px;
+    transform: translateZ(0);
+  }
+  @media (max-width: 992px){
+    .uts-media img{ min-height: 240px; }
+  }
+  /* Enter animation */
+  .uts-anim{ position: relative; z-index: 1; animation: none; }
+  .uts-anim.is-enter{ animation: utsEnter .32s ease both; }
+  @keyframes utsEnter{
+    from{ opacity: 0; transform: translateY(6px); }
+    to  { opacity: 1; transform: translateY(0); }
+  }
+  .uts-right{ position: relative; z-index:1; }
+  .uts-right h3{
+    font-family: "Spinnaker", Arial, sans-serif;
+    font-weight: 400;
+    margin: 0 0 12px 0;
+    font-size: var(--sH3);
+  }
+  .uts-right p{
+    margin: 0;
+    color: var(--muted);
+    font-size: var(--sBody);
+    line-height: 1.62;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .uts-tabbtn{ transition: none; }
+    .uts-anim.is-enter{ animation: none; }
+  }
+</style>
+<section class="uts-services">
+  <div class="uts-shell">
+    <h2 class="uts-title">Hizmetlerimiz</h2>
+    <div class="uts-grid">
+      <!-- LEFT TABS -->
+      <div class="uts-tabs" id="utsTabs">
+        <button class="uts-tabbtn is-active" data-key="tribolab" type="button">
+          <span class="icoWrap">
+            <img alt="TriboLab ikon" src="https://static.wixstatic.com/media/ab02c7_521a123d952640cbb5b3f29b77f5b056~mv2.png">
+          </span>
+          <span class="t">TriboLab</span>
+        </button>
+        <button class="uts-tabbtn" data-key="consult" type="button">
+          <span class="icoWrap">
+            <img alt="Danışmanlık ikon" src="https://static.wixstatic.com/media/ab02c7_5a99fcf123a34244bbdfd2a04f127f60~mv2.png">
+          </span>
+          <span class="t">Danışmanlık ve Mentörlük</span>
+        </button>
+        <button class="uts-tabbtn" data-key="training" type="button">
+          <span class="icoWrap">
+            <img alt="Eğitim ikon" src="https://static.wixstatic.com/media/ab02c7_39ebddf3afaa4ca7b7eebdc422e179d7~mv2.png">
+          </span>
+          <span class="t">Mesleki Eğitim</span>
+        </button>
+        <button class="uts-tabbtn" data-key="proposal" type="button">
+          <span class="icoWrap">
+            <img alt="Proje yazım ikon" src="https://static.wixstatic.com/media/ab02c7_82315e3c2cf54e16b2e93143673587c9~mv2.png">
+          </span>
+          <span class="t">Ar-Ge Proje Yazım Desteği</span>
+        </button>
+      </div>
+      <!-- RIGHT CONTENT -->
+      <div class="uts-content">
+        <div class="uts-media uts-anim" id="utsAnimMedia">
+          <img id="utsHeroImg" alt="Hizmet görseli" src="https://static.wixstatic.com/media/ab02c7_d552acfe5f68456e89e8e5ed9a6e7440~mv2.png">
+        </div>
+        <div class="uts-right uts-anim" id="utsAnimText">
+          <h3 id="utsTitle">TriboLab</h3>
+          <p id="utsDesc">
+            UTS, genel ve özel tribolojik testler ile balata/sürtünme malzemesi testleri için gelişmiş alt yapı ve uzman kadrosuyla standart ve özel test, danışmanlık ve Ar-Ge hizmetleri sunmaktadır.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  const data = {
+    tribolab: {
+      title: "TriboLab",
+      desc: "UTS, genel ve özel tribolojik testler ile balata/sürtünme malzemesi testleri için gelişmiş alt yapı ve uzman kadrosuyla standart ve özel test, danışmanlık ve Ar-Ge hizmetleri sunmaktadır.",
+      img: "https://static.wixstatic.com/media/ab02c7_d552acfe5f68456e89e8e5ed9a6e7440~mv2.png"
+    },
+    consult: {
+      title: "Danışmanlık ve Mentörlük",
+      desc: "UTS, sürtünme, aşınma, yağlama ile makine-imalat alanlarında sunduğu danışmanlık hizmetleriyle firmalara; ürün geliştirme, kalite kontrol ve Ar-Ge birimi kurma süreçlerinde destek sağlamaktadır.",
+      img: "https://static.wixstatic.com/media/ab02c7_987a71ca9e194bc3af052f1dff10282d~mv2.png"
+    },
+    training: {
+      title: "Mesleki Eğitim",
+      desc: "UTS, makine, imalat teknolojileri ve malzeme mühendisliği alanlarında; teknik çizim, tasarım ve proje geliştirme konularına odaklanan mesleki eğitimler ve seminerler düzenlemektedir.",
+      img: "https://static.wixstatic.com/media/ab02c7_7182c7f15851462c851d7dc2ca185678~mv2.png"
+    },
+    proposal: {
+      title: "Ar-Ge Proje Yazım Desteği",
+      desc: "UTS, firmaların ulusal ve uluslararası fon programlarına başvurularında, proje geliştirme, yazım ve süreç takibi konularında kapsamlı destek sunmaktadır.",
+      img: "https://static.wixstatic.com/media/ab02c7_6119723b632f4415a9304d071a643934~mv2.png"
+    }
+  };
+  const tabs = document.getElementById("utsTabs");
+  const hero = document.getElementById("utsHeroImg");
+  const title = document.getElementById("utsTitle");
+  const desc = document.getElementById("utsDesc");
+  const animMedia = document.getElementById("utsAnimMedia");
+  const animText  = document.getElementById("utsAnimText");
+  function playEnter(){
+    animMedia.classList.remove("is-enter");
+    animText.classList.remove("is-enter");
+    void animMedia.offsetWidth;
+    animMedia.classList.add("is-enter");
+    animText.classList.add("is-enter");
+  }
+  tabs.addEventListener("click", (e) => {
+    const btn = e.target.closest(".uts-tabbtn");
+    if (!btn) return;
+    tabs.querySelectorAll(".uts-tabbtn").forEach(b => b.classList.remove("is-active"));
+    btn.classList.add("is-active");
+    const d = data[btn.dataset.key];
+    title.textContent = d.title;
+    desc.textContent = d.desc;
+    hero.src = d.img;
+    playEnter();
+  });
+</script>
