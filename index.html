@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --bg: #f4f7fb;
+    --card: #ffffff;
+    --card-rgb: 255,255,255;
+    --stroke: rgba(10,60,140,.12);
+    --shadow: 0 18px 45px rgba(0,0,0,.10);
+    --logoH: clamp(34px, 4.2vw, 54px);
+    --tileW: clamp(120px, 14vw, 200px);
+    --gap: clamp(14px, 2.6vw, 42px);
+    --speed: 44s;
+  }
+  html,body{margin:0;padding:0;background:transparent;font-family:Arial, sans-serif;}
+
+  .refs-wrap{
+    width:100%;
+    background: var(--bg);
+    padding: 16px 14px;
+    box-sizing: border-box;
+  }
+
+  .marquee{
+    width:min(1280px, 100%);
+    margin: 0 auto;
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--stroke);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    padding: 12px 10px;
+  }
+
+  /* Hover'da çıkan sade başlık */
+  .hover-title{
+    position:absolute;
+    left: 14px;
+    top: 10px;
+    z-index: 5;
+    pointer-events:none;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    color: rgba(12,32,64,.92);
+    background: rgba(255,255,255,.78);
+    border: 1px solid rgba(11,94,215,.18);
+    border-radius: 999px;
+    padding: 6px 10px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .18s ease, transform .18s ease;
+    backdrop-filter: blur(8px);
+  }
+  .marquee:hover .hover-title{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Kenarlarda yumuşak fade - kart arka planına uyumlu */
+  .marquee:before,
+  .marquee:after{
+    content:"";
+    position:absolute; top:0; bottom:0;
+    width: 60px;
+    pointer-events:none;
+    z-index: 4;
+  }
+  .marquee:before{
+    left:0;
+    background: linear-gradient(90deg, rgba(var(--card-rgb),1), rgba(var(--card-rgb),0));
+  }
+  .marquee:after{
+    right:0;
+    background: linear-gradient(270deg, rgba(var(--card-rgb),1), rgba(var(--card-rgb),0));
+  }
+
+  .track{
+    display:flex;
+    align-items:center;
+    gap: var(--gap);
+    width: max-content;
+    will-change: transform;
+    animation: scroll var(--speed) linear infinite;
+    transform: translate3d(0,0,0);
+  }
+
+  /* Hover'da akış dursun */
+  .marquee:hover .track{ animation-play-state: paused; }
+
+  .item{
+    width: var(--tileW);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 8px 6px;
+    border-radius: 14px;
+    flex-shrink: 0;
+  }
+
+  .item img{
+    max-height: var(--logoH);
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform .18s ease;
+  }
+
+  .item:hover img{
+    transform: translateY(-1px);
+  }
+
+  @keyframes scroll{
+    from{ transform: translate3d(0,0,0); }
+    to{ transform: translate3d(-50%,0,0); }
+  }
+
+  @media (max-width:520px){
+    .refs-wrap{ padding: 12px 10px; }
+    .marquee{ border-radius: 16px; padding: 10px 8px; }
+    .marquee:before,.marquee:after{ width: 44px; }
+    .hover-title{ left: 10px; top: 8px; font-size: 12px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .track{ animation: none; }
+    .marquee:before,.marquee:after{ display:none; }
+  }
+</style>
+</head>
+<body>
+<section class="refs-wrap">
+  <div class="marquee" aria-label="Referanslar logo slider">
+    <div class="hover-title">Referanslarımız</div>
+    <div class="track" id="track">
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_6761097ab76d41ba96cb25cdca30f660~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_b5724ef1a40f4a28835c75544af05691~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_cf52cc1c71004ecc8dc9ffe3476e56d4~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_08abaa6cceed46f5a880d221f6d5456f~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_37128625a9034ba3a2c299a8da2c2745~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_3eaaf0a14a184a1e8de4135441a1200d~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_b0e3d411499840669750ecb36bcab746~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_27d6814ca211444e8d3e54c6340b84a2~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_e281f59bb18a49d3a8d94099795d5fa9~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_7d7cf082a4fb4894aaf5c819860e5d9f~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_8c025cc096944810965bf287d4479850~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_dfe768de518349cc8753780ec7544692~mv2.jpg" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_ed1a1249157248c08fe314d81dc54bee~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_b93c30690cc147a78a379dd67668e12a~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_e5288eeb4f5342978e8e4fa11134b237~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_cea954a944a84c55acee3d9fd4b0eb52~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_9d757306b2ba4d5a86c6fde46af4e6ce~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_eb8ab13248d74c1ba20e5f1eaf0bd881~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_ed268b32dfa94769ad9942b0bc780ae3~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_ad14d0614ecf41d8b2a6e6c507e365f9~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_110c4e6f8ec246ebb2dba43473507979~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_05876bb8be9541acb436ea784a1de55f~mv2.png" alt="ref"></div>
+      <div class="item"><img loading="lazy" src="https://static.wixstatic.com/media/ab02c7_3786ff7d5e1c44ccb90f0096e43361cd~mv2.png" alt="ref"></div>
+    </div>
+  </div>
+</section>
+<script>
+  (function(){
+    const track = document.getElementById("track");
+    // Sonsuz akış için iki kez çoğalt
+    track.innerHTML += track.innerHTML;
+    // Çok kısa içerikte boşluk kalmasın diye gerekirse 3. kez çoğalt
+    requestAnimationFrame(() => {
+      const marquee = track.closest(".marquee");
+      if (marquee && track.scrollWidth < marquee.clientWidth * 2) {
+        track.innerHTML += track.innerHTML;
+      }
+    });
+  })();
+</script>
+</body>
+</html>
