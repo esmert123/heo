@@ -1,0 +1,351 @@
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spinnaker&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0f1e3a;
+    --muted:#52627c;
+    --blue:#1A2B6D;
+    --blue2:#12204F;
+    --accent:#8F1D3D;
+    --bg:#f4f6ff;
+    --stroke:rgba(15,30,58,.10);
+    --shadow:0 24px 70px rgba(10,24,60,.10);
+    --sTitle: clamp(32px, 3.6vw, 54px);
+    --sH3:    clamp(26px, 2.6vw, 36px);
+    --sBody:  17px;
+    --pill: 999px;
+  }
+
+  .uts-about{
+    padding: clamp(26px, 3.2vw, 54px);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* subtle background glow */
+  .uts-about::before{
+    content:"";
+    position:absolute; inset:-120px;
+    background:
+      radial-gradient(600px 280px at 18% 22%, rgba(26,43,109,.10), transparent 65%),
+      radial-gradient(520px 240px at 82% 18%, rgba(26,43,109,.08), transparent 70%),
+      radial-gradient(640px 320px at 60% 92%, rgba(26,43,109,.06), transparent 70%);
+    pointer-events:none;
+  }
+
+  .uts-about-shell{
+    max-width: 1220px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Section Header ── */
+  .uts-about-header{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 0 26px;
+  }
+
+  .uts-about-bar{
+    width: 5px;
+    height: 36px;
+    border-radius: 3px;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .uts-about-title{
+    font-family: "Spinnaker", Arial, sans-serif;
+    font-weight: 400;
+    letter-spacing: .2px;
+    font-size: var(--sTitle);
+    color: var(--accent);
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .uts-about-line{
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: .35;
+    border-radius: 2px;
+  }
+
+  /* ── Main Panel (frosted glass) ── */
+  .uts-about-panel{
+    background: rgba(255,255,255,.74);
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 22px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* subtle texture */
+  .uts-about-panel::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(0deg, rgba(0,0,0,.03), rgba(0,0,0,.03)),
+      radial-gradient(1px 1px at 10% 20%, rgba(0,0,0,.06) 0, transparent 2px),
+      radial-gradient(1px 1px at 70% 40%, rgba(0,0,0,.05) 0, transparent 2px),
+      radial-gradient(1px 1px at 40% 80%, rgba(0,0,0,.05) 0, transparent 2px);
+    opacity: .12;
+    pointer-events:none;
+    mix-blend-mode: multiply;
+  }
+
+  .uts-about-grid{
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 28px;
+    align-items: start;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Image ── */
+  .uts-about-media{
+    background: #eef1ff;
+    border: 1px solid rgba(15,30,58,.08);
+    overflow: hidden;
+  }
+
+  .uts-about-media img{
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    min-height: 320px;
+    transform: translateZ(0);
+  }
+
+  /* ── Text ── */
+  .uts-about-text{
+    position: relative;
+    z-index: 1;
+  }
+
+  .uts-about-lead{
+    font-size: 19px;
+    line-height: 1.62;
+    color: var(--ink);
+    font-weight: 400;
+    margin: 0 0 18px 0;
+  }
+
+  .uts-about-text p{
+    font-size: var(--sBody);
+    line-height: 1.62;
+    color: var(--muted);
+    margin: 0 0 14px 0;
+  }
+
+  .uts-about-text p:last-child{
+    margin-bottom: 0;
+  }
+
+  /* ── Mission & Vision Cards ── */
+  .uts-about-cards{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .uts-about-card{
+    background: rgba(255,255,255,.74);
+    border: 1px solid var(--stroke);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 28px 26px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .uts-about-card::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(0deg, rgba(0,0,0,.03), rgba(0,0,0,.03)),
+      radial-gradient(1px 1px at 10% 20%, rgba(0,0,0,.06) 0, transparent 2px),
+      radial-gradient(1px 1px at 70% 40%, rgba(0,0,0,.05) 0, transparent 2px);
+    opacity: .10;
+    pointer-events:none;
+    mix-blend-mode: multiply;
+  }
+
+  .uts-about-card-icon{
+    width: 56px;
+    height: 56px;
+    border-radius: var(--pill);
+    background: linear-gradient(135deg, var(--blue), var(--blue2));
+    display: grid;
+    place-items: center;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(26,43,109,.18);
+    position: relative;
+    z-index: 1;
+  }
+
+  .uts-about-card-icon svg{
+    width: 28px;
+    height: 28px;
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .uts-about-card h3{
+    font-family: "Spinnaker", Arial, sans-serif;
+    font-weight: 400;
+    font-size: var(--sH3);
+    color: var(--ink);
+    margin: 0 0 12px 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .uts-about-card p{
+    color: var(--muted);
+    font-size: var(--sBody);
+    line-height: 1.62;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Animations ── */
+  .uts-about-anim{
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .5s ease, transform .5s ease;
+  }
+
+  .uts-about-anim.is-visible{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .uts-about-anim{
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 992px){
+    .uts-about-grid{
+      grid-template-columns: 1fr;
+    }
+    .uts-about-media img{
+      min-height: 220px;
+    }
+    .uts-about-cards{
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<section class="uts-about">
+  <div class="uts-about-shell">
+
+    <!-- Section Header -->
+    <div class="uts-about-header">
+      <div class="uts-about-bar"></div>
+      <h2 class="uts-about-title">Hakkımızda</h2>
+      <div class="uts-about-line"></div>
+    </div>
+
+    <!-- Main About Panel -->
+    <div class="uts-about-panel uts-about-anim">
+      <div class="uts-about-grid">
+
+        <!-- Left: Company Image -->
+        <div class="uts-about-media">
+          <img src="https://static.wixstatic.com/media/ab02c7_735385d1359a480b8030499e18de4083~mv2.png"
+               alt="UTS Mühendislik" loading="lazy">
+        </div>
+
+        <!-- Right: About Text -->
+        <div class="uts-about-text">
+          <p class="uts-about-lead">
+            UTS Mühendislik firması 2011 yılında Trabzon Teknoloji Geliştirme Bölgesi'nde kurulmuş genç bir akademik AR-GE firmasıdır. Firma ilk olarak, Bilim, Sanayi ve Teknoloji Bakanlığı'na sunulan bir "Teknogirişim Projesi" kapsamında kurularak faaliyetine başlamıştır. Ardından, yine TÜBİTAK ve bakanlıktan aldığı diğer projelerle büyüme sürecini başlatmıştır.
+          </p>
+          <p>
+            Firmanın birincil faaliyet alanı triboloji, tribolojik test sistemleri ve tribolojik testlerdir. Genel anlamda ise firma bilimsel ve teknolojik alanlarda kullanılan deney ve test sistemlerinin tasarımı, geliştirilmesi ve üretimi alanlarında faaliyetler yürütmektedir. Bu kapsamda firmamızın temel amacı, bilimsel birikimi teknolojik ürüne dönüştürerek özellikle triboloji alanında Ar-Ge tabanlı deney ve test sistemleri geliştirmek ve bu alanlardaki problemlere akademik/teknolojik çözümler üretmektir. Bu nedenle firma bünyesinde özellikle kendi alanında uzman akademik nitelikli araştırmacılar ve yetenekli mühendisler bulunmaktadır.
+          </p>
+          <p>
+            Firmamız ayrıca üniversitelerle sıkı iş birliğini de önemsemekte ve birlikte önemli projeler yürütmektedir. Firmamızın birincil hedefi ise akademik bir bakış açısıyla kendi tasarlayıp imal ettiği deney ve test sistemlerini global pazara sunmaktır. Firma ayrıca diğer firmalara hem proje hazırlama hem de teknik eğitimlerin düzenlenmesi konularında da destek ve hizmet vermektedir. Uzun bir geçmişe sahip olmamasına karşın, firma Türkiye'de ilk defa triboloji alanında önemli sayılabilecek test ve ölçüm sistemleri geliştirmiş ve piyasaya sunmuştur. Bu kapsamda geliştirdiği çok fonksiyonlu tribometre (UTS TRIBOLOG) halihazırda global pazarda bir marka değerine kavuşmuştur. Ayrıca, özellikle otomobil ve demir yolu araçlarına yönelik geliştirilen balata test sistemleri de ticarileştirilerek global pazara sunulmuştur. Firmanın Ar-Ge tabanlı ürün geliştirme süreci devam etmekte olup, bu alanda dünyadaki bilinirliği her geçen gün artmaktadır.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mission & Vision Cards -->
+    <div class="uts-about-cards">
+
+      <!-- Mission Card -->
+      <div class="uts-about-card uts-about-anim">
+        <div class="uts-about-card-icon">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6"/>
+            <circle cx="12" cy="12" r="2"/>
+          </svg>
+        </div>
+        <h3>Misyonumuz</h3>
+        <p>
+          Bilimsel ve teknolojik bilgi birikimini etkin kullanarak güvenilir, ölçüm hassasiyeti yüksek ve markalaşmış deney ve test sistemleri ortaya çıkarmak ve bunları dünyadaki ilgili çevrelere sunmaktadır. Bu doğrultuda özellikle tribolojik test ve ölçüm sistemleri ve test hizmetleri konusunda ulusal ve global ölçekte tanınır olmak ve güvenilir bir marka değeri oluşturmaktadır.
+        </p>
+      </div>
+
+      <!-- Vision Card -->
+      <div class="uts-about-card uts-about-anim">
+        <div class="uts-about-card-icon">
+          <svg viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </div>
+        <h3>Vizyonumuz</h3>
+        <p>
+          Bilimsel birikimi teknolojik ürün ve hizmete dönüştürerek bütün dünyada aranan, güvenilen ve markalaşmış bir firma olmaktır.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const aboutObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        aboutObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.uts-about-anim').forEach((el, i) => {
+    el.style.transitionDelay = `${i * 0.12}s`;
+    aboutObserver.observe(el);
+  });
+</script>
