@@ -52,7 +52,6 @@
     letter-spacing: .3px;
     line-height: 1;
     color: var(--red);
-    text-transform: uppercase;
   }
 
   .ts-head-line {
@@ -318,7 +317,7 @@
     box-shadow: 0 0 16px rgba(0,200,255,.10);
   }
 
-  /* ─── Bio (collapsible) ─── */
+  /* ─── Bio ─── */
   .spk-bio {
     margin-top: 12px;
     color: rgba(255,255,255,.85);
@@ -327,42 +326,6 @@
   }
   .spk-bio p { margin: 0 0 10px; }
   .spk-bio p:last-child { margin-bottom: 0; }
-
-  .spk-bio-content {
-    overflow: hidden;
-    transition: max-height .4s cubic-bezier(.22,1,.36,1);
-  }
-
-  .spk-bio-content.collapsed {
-    max-height: 4.86em; /* ~3 lines */
-    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
-    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
-  }
-
-  .spk-bio-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 6px;
-    padding: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font);
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: .3px;
-    color: rgba(255,255,255,.50);
-    transition: color .2s ease;
-  }
-  .spk-bio-toggle:hover { color: rgba(255,255,255,.80); }
-  .spk-bio-toggle i {
-    font-size: 11px;
-    transition: transform .25s ease;
-  }
-  .spk-bio-toggle.expanded i {
-    transform: rotate(180deg);
-  }
 
   /* ─── Card Hover ─── */
   .spk:hover {
@@ -397,7 +360,6 @@
     .spk-namewrap { text-align: center; }
     .spk-aff { justify-content: center; }
     .spk-bio { text-align: center; }
-    .spk-bio-toggle { margin: 6px auto 0; }
   }
 
   @media (max-width: 400px) {
@@ -446,14 +408,9 @@
             </div>
 
             <div class="spk-bio">
-              <div class="spk-bio-content collapsed">
                 <p>Ali Erdemir is a Distinguished Professor and Halliburton Chair in the Mechanical Engineering Department at Texas A&amp;M University, College Station. In recognition of his research achievements, he has been elected to the U.S. National Academy of Engineering and several international academies, including The Science Academy of Turkey. He is also an elected Fellow of the National Academy of Inventors.</p>
                 <p>He served as President of the International Tribology Council (2017&ndash;2022) and STLE (2016&ndash;2017), and is an Honorary Member of ASME and STLE. He is a Fellow of multiple professional societies and has received numerous awards for his contributions to tribology and materials engineering.</p>
                 <p>Dr. Erdemir holds 37 U.S. patents, has authored/co-authored more than 350 publications, and has delivered over 250 invited, keynote, and plenary lectures. His current research bridges fundamental science and engineering innovation, with a focus on developing new materials, coatings, and lubricants for industrial applications in manufacturing, transportation, and energy conversion systems.</p>
-              </div>
-              <button class="spk-bio-toggle" aria-label="Toggle full biography">
-                Read more <i class="bi bi-chevron-down"></i>
-              </button>
             </div>
           </div>
 
@@ -486,13 +443,8 @@
             </div>
 
             <div class="spk-bio">
-              <div class="spk-bio-content collapsed">
                 <p>Prof. H&uuml;seyin &Ccedil;imeno&#287;lu is a Professor in the Department of Metallurgical and Materials Engineering at Istanbul Technical University, T&uuml;rkiye. He is a well-recognized researcher in tribology and surface engineering, with expertise spanning wear, friction, surface modification, and the performance of advanced metallic materials. His academic work has contributed to a deeper understanding of deformation and wear mechanisms, as well as the design of engineered surfaces and coatings to improve durability and reliability in demanding service conditions.</p>
                 <p>According to Scopus-based institutional records, he has produced over 190 research outputs. Prof. &Ccedil;imeno&#287;lu has published widely in leading journals, presented his work at major conferences, and taken active roles in research projects and graduate education. Through his scientific output and academic leadership, he continues to support the tribology and materials engineering community and the development of high-performance surface technologies.</p>
-              </div>
-              <button class="spk-bio-toggle" aria-label="Toggle full biography">
-                Read more <i class="bi bi-chevron-down"></i>
-              </button>
             </div>
           </div>
 
@@ -525,13 +477,8 @@
             </div>
 
             <div class="spk-bio">
-              <div class="spk-bio-content collapsed">
                 <p>Fatih Toptan is an Associate Professor in the Department of Materials Science and Engineering at &Idot;zmir Institute of Technology. He graduated from the Metallurgical and Materials Engineering Department at Yildiz Technical University (YTU) in 2002 and earned his MSc and PhD degrees in Materials Science from YTU in 2006 and 2011, respectively. From 2010 to 2020, he worked at the University of Minho (Portugal) as a researcher and Assistant Professor.</p>
                 <p>His research focuses on the development of functionalized metallic materials for diverse applications, with a particular emphasis on load-bearing biomedical implants and the investigation of their degradation mechanisms, particularly under tribocorrosion conditions. His recent work concentrates on the design of stimuli-responsive multifunctional surfaces for biomedical implants. He also serves as the coordinator of the European Branch of the Institute of Biomaterials, Tribocorrosion, and Nanomedicine (IBTN/Euro).</p>
-              </div>
-              <button class="spk-bio-toggle" aria-label="Toggle full biography">
-                Read more <i class="bi bi-chevron-down"></i>
-              </button>
             </div>
           </div>
 
@@ -560,24 +507,5 @@
     cards.forEach(function(c) { c.classList.add('is-visible'); });
   }
 
-  /* ── Bio Expand / Collapse ── */
-  document.querySelectorAll('.spk-bio-toggle').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var content = this.previousElementSibling;
-      var isCollapsed = content.classList.contains('collapsed');
-
-      if (isCollapsed) {
-        content.style.maxHeight = content.scrollHeight + 'px';
-        content.classList.remove('collapsed');
-        this.innerHTML = 'Read less <i class="bi bi-chevron-up"></i>';
-        this.classList.add('expanded');
-      } else {
-        content.style.maxHeight = '';
-        content.classList.add('collapsed');
-        this.innerHTML = 'Read more <i class="bi bi-chevron-down"></i>';
-        this.classList.remove('expanded');
-      }
-    });
-  });
 })();
 </script>
