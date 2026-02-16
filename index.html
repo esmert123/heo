@@ -3,84 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sponsorluk - HEO</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <title>Sponsorship - TRiboSurf'26</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', system-ui, sans-serif;
-      background: #1a1a2e;
-      color: #ffffff;
+      background: transparent;
+      color: #2d2d2d;
       min-height: 100vh;
     }
 
-    /* ── Hero - frame yok, sadece yazi ── */
+    /* ── Hero Section ── */
     .hero {
+      position: relative;
+      width: 100%;
+      max-height: 480px;
+      overflow: hidden;
+    }
+    .hero img {
+      width: 100%;
+      height: 480px;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.15) 0%,
+        rgba(0,0,0,0.55) 100%
+      );
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      padding: 70px 20px 40px;
+      padding: 20px;
     }
-    .hero h1 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
-      font-weight: 700;
-      color: #e63946;
-      margin-bottom: 14px;
-    }
-    .hero p {
+    .hero-overlay h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
       color: #ffffff;
-      font-size: clamp(0.95rem, 2.5vw, 1.1rem);
-      max-width: 560px;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .hero-overlay h1 span {
+      color: #e63946;
+    }
+    .hero-overlay .hero-subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      font-weight: 400;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+    }
+
+    /* ── About / Intro Section ── */
+    .intro {
+      max-width: 820px;
       margin: 0 auto;
-      line-height: 1.7;
-      opacity: 0.85;
+      padding: 50px 24px 20px;
+      text-align: center;
+    }
+    .intro h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 16px;
+    }
+    .intro p {
+      color: #555;
+      font-size: 1rem;
+      line-height: 1.8;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* ── Sponsors / Partners Logos ── */
+    .sponsors-bar {
+      max-width: 820px;
+      margin: 0 auto;
+      padding: 30px 24px 40px;
+      text-align: center;
+    }
+    .sponsors-bar h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #999;
+      margin-bottom: 24px;
+    }
+    .sponsors-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+    .sponsors-logos a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.25s, transform 0.25s;
+      opacity: 0.75;
+    }
+    .sponsors-logos a:hover {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+    .sponsors-logos img {
+      height: 64px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      max-width: 820px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid rgba(0,0,0,0.08);
     }
 
     /* ── Cards Section ── */
     .cards-section {
-      padding: 40px 20px 80px;
-      max-width: 950px;
+      padding: 40px 24px 60px;
+      max-width: 900px;
       margin: 0 auto;
     }
-    .section-title {
+    .section-header {
       text-align: center;
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #e63946;
-      margin-bottom: 6px;
+      margin-bottom: 36px;
     }
-    .section-desc {
-      text-align: center;
-      color: #ffffff;
-      opacity: 0.7;
-      font-size: 0.9rem;
-      margin-bottom: 40px;
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      color: #777;
+      font-size: 0.92rem;
     }
     .cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 28px;
     }
 
-    /* ── Card - sadece bunlarda frame var ── */
+    /* ── Card ── */
     .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(230,57,70,0.25);
+      background: #ffffff;
+      border: 1px solid rgba(0,0,0,0.08);
       border-radius: 12px;
       overflow: hidden;
-      transition: border-color .3s, transform .3s, box-shadow .3s;
+      transition: box-shadow 0.3s, transform 0.3s;
     }
     .card:hover {
-      border-color: rgba(230,57,70,0.6);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(230,57,70,0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.1);
     }
 
-    /* PDF onizleme alani */
+    /* PDF preview area */
     .card-pdf {
       position: relative;
       width: 100%;
-      height: 400px;
-      background: #f5f5f5;
+      height: 380px;
+      background: #f8f8f8;
       cursor: pointer;
       overflow: hidden;
     }
@@ -91,23 +184,25 @@
       pointer-events: none;
     }
     .card-pdf .hover-overlay {
-      position: absolute; inset: 0;
-      background: rgba(26,26,46,0);
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background .3s;
+      transition: background 0.3s;
     }
     .card:hover .hover-overlay {
-      background: rgba(26,26,46,0.5);
+      background: rgba(26,26,46,0.4);
     }
     .hover-overlay .play-icon {
       opacity: 0;
       transform: scale(0.8);
-      transition: opacity .3s, transform .3s;
-      background: rgba(230,57,70,0.9);
+      transition: opacity 0.3s, transform 0.3s;
+      background: rgba(230,57,70,0.92);
       border-radius: 50%;
-      width: 60px; height: 60px;
+      width: 56px;
+      height: 56px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -116,12 +211,13 @@
       opacity: 1;
       transform: scale(1);
     }
-    .play-icon svg { width: 26px; height: 26px; stroke: #fff; fill: none; }
+    .play-icon svg { width: 24px; height: 24px; stroke: #fff; fill: none; }
 
     .lang-badge {
       position: absolute;
-      top: 10px; right: 10px;
-      background: rgba(230,57,70,0.9);
+      top: 10px;
+      right: 10px;
+      background: #e63946;
       color: #fff;
       font-size: 11px;
       font-weight: 700;
@@ -131,16 +227,16 @@
     }
 
     /* Card body */
-    .card-body { padding: 18px 20px 20px; }
+    .card-body { padding: 18px 22px 22px; }
     .card-body h3 {
       font-size: 1rem;
       font-weight: 600;
-      color: #ffffff;
+      color: #1a1a2e;
       margin-bottom: 4px;
     }
     .card-body p {
-      color: rgba(255,255,255,0.6);
-      font-size: 0.82rem;
+      color: #888;
+      font-size: 0.84rem;
       margin-bottom: 16px;
       line-height: 1.5;
     }
@@ -154,11 +250,11 @@
       gap: 7px;
       padding: 10px 14px;
       border-radius: 8px;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 600;
       cursor: pointer;
       border: none;
-      transition: all .2s;
+      transition: all 0.25s;
       text-decoration: none;
       font-family: inherit;
     }
@@ -166,24 +262,30 @@
 
     .btn-preview {
       background: transparent;
-      color: #ffffff;
-      border: 1.5px solid rgba(255,255,255,0.25);
+      color: #555;
+      border: 1.5px solid rgba(0,0,0,0.15);
     }
     .btn-preview:hover {
       border-color: #e63946;
       color: #e63946;
+      background: rgba(230,57,70,0.04);
     }
     .btn-download {
       background: #e63946;
       color: #fff;
     }
-    .btn-download:hover { background: #c1121f; }
+    .btn-download:hover {
+      background: #c1121f;
+      box-shadow: 0 4px 14px rgba(230,57,70,0.3);
+    }
 
     /* ── Modal ── */
     .modal-backdrop {
       display: none;
-      position: fixed; inset: 0; z-index: 1000;
-      background: rgba(0,0,0,0.8);
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.75);
       backdrop-filter: blur(6px);
       align-items: center;
       justify-content: center;
@@ -191,15 +293,15 @@
     .modal-backdrop.open { display: flex; }
 
     .modal {
-      background: #1a1a2e;
-      border: 1px solid rgba(230,57,70,0.3);
-      border-radius: 12px;
+      background: #ffffff;
+      border-radius: 14px;
       width: 95vw;
       max-width: 950px;
       height: 90vh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.3);
     }
     @media (max-width: 640px) {
       .modal { width: 100vw; height: 100vh; border-radius: 0; max-width: none; }
@@ -210,19 +312,24 @@
       align-items: center;
       justify-content: space-between;
       padding: 14px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(0,0,0,0.08);
       flex-shrink: 0;
     }
     .modal-header h2 {
       font-size: 0.95rem;
       font-weight: 600;
-      color: #e63946;
+      color: #1a1a2e;
     }
     .modal-close {
-      background: none; border: none; color: rgba(255,255,255,0.6); cursor: pointer;
-      padding: 6px; border-radius: 8px; transition: all .2s;
+      background: none;
+      border: none;
+      color: #999;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 8px;
+      transition: all 0.2s;
     }
-    .modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .modal-close:hover { background: rgba(0,0,0,0.06); color: #333; }
     .modal-close svg { width: 20px; height: 20px; stroke: currentColor; fill: none; }
 
     .modal-body { flex: 1; overflow: hidden; }
@@ -238,7 +345,7 @@
       align-items: center;
       justify-content: flex-end;
       padding: 12px 20px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      border-top: 1px solid rgba(0,0,0,0.08);
       flex-shrink: 0;
     }
     .modal-footer .btn { flex: none; }
@@ -246,31 +353,75 @@
     /* ── Footer ── */
     footer {
       text-align: center;
-      padding: 24px 20px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.35);
+      padding: 28px 20px;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      color: #aaa;
       font-size: 0.78rem;
+    }
+    footer a {
+      color: #e63946;
+      text-decoration: none;
+    }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 480px) {
+      .hero img { height: 280px; }
+      .sponsors-logos img { height: 48px; }
+      .sponsors-logos { gap: 24px; }
+      .cards-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Hero - frame yok -->
+  <!-- Hero Banner -->
   <section class="hero">
-    <h1>Sponsorluk</h1>
-    <p>Etkinligimize sponsor olarak destek verebilirsiniz. Asagidaki belgeleri inceleyerek sponsorluk paketlerimiz hakkinda detayli bilgi alabilirsiniz.</p>
+    <img src="https://static.wixstatic.com/media/97437f_e089c8c6cc57415ebde94a99d65f55b6~mv2.jpg" alt="TRiboSurf'26 Conference" />
+    <div class="hero-overlay">
+      <h1>TRiboSurf<span>'26</span></h1>
+      <p class="hero-subtitle">International Conference on Tribology &amp; Surface Science</p>
+    </div>
   </section>
 
-  <!-- Cards -->
+  <!-- About / Intro -->
+  <section class="intro">
+    <h2>Sponsorship / Sponsorluk</h2>
+    <p>
+      TRiboSurf'26 is an international scientific conference focused on tribology and surface science, covering lubrication, wear, friction, coatings, and surface engineering. Our sponsorship packages are designed to strengthen your brand presence and enable direct engagement with researchers, industry professionals, and decision-makers throughout the event.
+    </p>
+  </section>
+
+  <!-- Sponsors / Partners -->
+  <section class="sponsors-bar">
+    <h3>Partners &amp; Supporters</h3>
+    <div class="sponsors-logos">
+      <a href="https://www.ktu.edu.tr/tr" target="_blank" rel="noopener" title="Karadeniz Teknik Universitesi">
+        <img src="https://static.wixstatic.com/media/97437f_94d73d76e53c470ca9a0eb298ff3c09f~mv2.png" alt="KTU Logo" />
+      </a>
+      <a href="https://tisasarms.com" target="_blank" rel="noopener" title="TISAS">
+        <img src="https://static.wixstatic.com/media/97437f_1965df9e4b9d4245a87a994e505d7db3~mv2.png" alt="TISAS Logo" />
+      </a>
+      <a href="https://www.uts-design.com/index.php" target="_blank" rel="noopener" title="UTS Design">
+        <img src="https://static.wixstatic.com/media/97437f_b1c24a9009104500a3b09e659765406b~mv2.jpg" alt="UTS Design Logo" />
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Sponsorship Documents -->
   <section class="cards-section">
-    <h2 class="section-title">Sponsorluk Belgeleri</h2>
-    <p class="section-desc">Belgeleri onizleyebilir veya dogrudan indirebilirsiniz.</p>
+    <div class="section-header">
+      <h2>Sponsorluk Belgeleri / Sponsorship Documents</h2>
+      <p>Belgeleri onizleyebilir veya indirebilirsiniz. &mdash; Preview or download the documents below.</p>
+    </div>
 
     <div class="cards-grid">
 
-      <!-- Turkce -->
+      <!-- Turkish -->
       <div class="card">
-        <div class="card-pdf" onclick="openModal('Sponsorluk Bilgilendirme Formu', 'https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_44264d89dd7d42b3878832267e3bfdea.pdf')">
+        <div class="card-pdf" onclick="openModal('Sponsorluk Bilgilendirme Formu', TR_PDF)">
           <iframe src="https://docs.google.com/viewer?url=https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_44264d89dd7d42b3878832267e3bfdea.pdf&embedded=true" loading="lazy"></iframe>
           <div class="hover-overlay">
             <div class="play-icon">
@@ -283,7 +434,7 @@
           <h3>Sponsorluk Bilgilendirme Formu</h3>
           <p>Turkce sponsorluk basvuru formu ve detayli bilgiler.</p>
           <div class="card-buttons">
-            <button class="btn btn-preview" onclick="openModal('Sponsorluk Bilgilendirme Formu', 'https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_44264d89dd7d42b3878832267e3bfdea.pdf')">
+            <button class="btn btn-preview" onclick="openModal('Sponsorluk Bilgilendirme Formu', TR_PDF)">
               <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
               Onizle
             </button>
@@ -297,7 +448,7 @@
 
       <!-- English -->
       <div class="card">
-        <div class="card-pdf" onclick="openModal('Sponsorship Information Form', 'https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_33315a59efcd43e8b493392e948709cc.pdf')">
+        <div class="card-pdf" onclick="openModal('Sponsorship Information Form', EN_PDF)">
           <iframe src="https://docs.google.com/viewer?url=https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_33315a59efcd43e8b493392e948709cc.pdf&embedded=true" loading="lazy"></iframe>
           <div class="hover-overlay">
             <div class="play-icon">
@@ -310,13 +461,13 @@
           <h3>Sponsorship Information Form</h3>
           <p>English sponsorship application form and detailed information.</p>
           <div class="card-buttons">
-            <button class="btn btn-preview" onclick="openModal('Sponsorship Information Form', 'https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_33315a59efcd43e8b493392e948709cc.pdf')">
+            <button class="btn btn-preview" onclick="openModal('Sponsorship Information Form', EN_PDF)">
               <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              Onizle
+              Preview
             </button>
             <a class="btn btn-download" href="https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_33315a59efcd43e8b493392e948709cc.pdf" target="_blank">
               <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Indir
+              Download
             </a>
           </div>
         </div>
@@ -340,13 +491,15 @@
       <div class="modal-footer">
         <a id="modalDownload" class="btn btn-download" href="#" target="_blank">
           <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Indir
+          Download / Indir
         </a>
       </div>
     </div>
   </div>
 
-  <footer>&copy; 2026 HEO. Tum haklari saklidir.</footer>
+  <footer>
+    &copy; 2026 TRiboSurf'26 &mdash; International Conference on Tribology &amp; Surface Science
+  </footer>
 
   <script>
     var TR_PDF = 'https://ab02c78b-36a7-4cce-8b03-5f3cd38bce82.usrfiles.com/ugd/ab02c7_44264d89dd7d42b3878832267e3bfdea.pdf';
