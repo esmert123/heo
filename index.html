@@ -90,15 +90,14 @@
 
     /* ── Card ── */
     .card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      border: none;
       border-radius: 12px;
       overflow: hidden;
-      transition: box-shadow 0.3s, transform 0.3s;
+      transition: transform 0.3s;
     }
     .card:hover {
       transform: translateY(-3px);
-      box-shadow: 0 12px 36px rgba(0,0,0,0.2);
     }
 
     /* PDF preview area */
@@ -199,16 +198,19 @@
       border: 1.5px solid rgba(255,255,255,0.2);
     }
     .btn-preview:hover {
-      border-color: #e63946;
-      color: #e63946;
+      border-color: #3b82f6;
+      color: #3b82f6;
+      box-shadow: 0 0 16px rgba(59,130,246,0.4);
     }
     .btn-download {
-      background: #e63946;
-      color: #fff;
+      background: transparent;
+      color: rgba(255,255,255,0.7);
+      border: 1.5px solid rgba(255,255,255,0.2);
     }
     .btn-download:hover {
-      background: #c1121f;
-      box-shadow: 0 4px 14px rgba(230,57,70,0.35);
+      border-color: #e63946;
+      color: #e63946;
+      box-shadow: 0 0 16px rgba(230,57,70,0.4);
     }
 
     /* ── Sponsors / Partners Logos ── */
@@ -320,7 +322,15 @@
       flex-shrink: 0;
     }
     .modal-footer .btn { flex: none; }
-    .modal-footer .btn-download { color: #fff; }
+    .modal-footer .btn-download {
+      background: #e63946;
+      color: #fff;
+      border: none;
+    }
+    .modal-footer .btn-download:hover {
+      background: #c1121f;
+      box-shadow: 0 4px 14px rgba(230,57,70,0.35);
+    }
 
     /* ── Footer ── */
     footer {
