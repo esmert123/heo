@@ -1,0 +1,583 @@
+<!-- TRiboSurf • Speakers (Enhanced) • Mobile-first • ALL ARIAL • Glass + Reveal + Expand -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+  :root {
+    --text: rgba(255,255,255,.96);
+    --muted: rgba(255,255,255,.72);
+    --stroke: rgba(255,255,255,.10);
+
+    --glassA: rgba(255,255,255,.06);
+    --glassB: rgba(255,255,255,.02);
+
+    --red: #ff2f2f;
+    --red-dim: rgba(255,47,47,.55);
+    --teal: #00c8ff;
+    --teal-dim: rgba(0,200,255,.45);
+
+    --r1: 22px;
+    --font: Arial, Helvetica, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { width: 100%; }
+  body { margin: 0; overflow-x: hidden; background: transparent; }
+
+  .ts-speakers {
+    width: 100%;
+    overflow-x: hidden;
+    color: var(--text);
+    font-family: var(--font);
+  }
+  .ts-speakers * { font-family: var(--font) !important; }
+
+  .ts-wrap {
+    width: min(1140px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 32px 0 44px;
+  }
+
+  /* ─── Section Header ─── */
+  .ts-head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .ts-title {
+    margin: 0;
+    font-size: clamp(24px, 2.6vw, 36px);
+    font-weight: 900;
+    letter-spacing: .3px;
+    line-height: 1;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  .ts-head-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--stroke), transparent);
+  }
+
+  .ts-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    color: var(--muted);
+    border: 1px solid var(--stroke);
+    background: var(--glassA);
+    white-space: nowrap;
+  }
+
+  /* ─── List ─── */
+  .ts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ─── Card ─── */
+  .spk {
+    position: relative;
+    border-radius: var(--r1);
+    border: 1px solid var(--stroke);
+    background: linear-gradient(160deg, var(--glassA), var(--glassB));
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    overflow: hidden;
+
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity .55s cubic-bezier(.22,1,.36,1),
+      transform .55s cubic-bezier(.22,1,.36,1),
+      box-shadow .28s ease,
+      border-color .28s ease;
+    will-change: transform, opacity;
+  }
+
+  .spk.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Top accent bar */
+  .spk::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent,
+      var(--accent, var(--red-dim)),
+      transparent
+    );
+    opacity: .3;
+    transition: opacity .28s ease;
+  }
+
+  /* Keynote gets red accent, Invited gets teal */
+  .spk[data-role="keynote"] { --accent: var(--red-dim); }
+  .spk[data-role="invited"] { --accent: var(--teal-dim); }
+
+  /* Hover glow border */
+  .spk::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: var(--r1);
+    padding: 1px;
+    background: conic-gradient(
+      from var(--angle, 0deg),
+      transparent 60%,
+      var(--accent, var(--red-dim)) 80%,
+      transparent 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity .35s ease;
+    pointer-events: none;
+  }
+
+  .spk:hover::after {
+    opacity: 1;
+    animation: borderSpin 3.5s linear infinite;
+  }
+
+  @keyframes borderSpin {
+    to { --angle: 360deg; }
+  }
+
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  .spk-inner {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    grid-template-areas: "avatar body";
+    gap: 26px;
+    padding: 22px;
+    align-items: start;
+  }
+
+  /* Alternating layout */
+  .ts-list .spk:nth-child(even) .spk-inner {
+    grid-template-columns: 1fr 180px;
+    grid-template-areas: "body avatar";
+  }
+
+  /* Stagger reveal delay per card */
+  .ts-list .spk:nth-child(1) { transition-delay: 0s; }
+  .ts-list .spk:nth-child(2) { transition-delay: .1s; }
+  .ts-list .spk:nth-child(3) { transition-delay: .2s; }
+  .ts-list .spk:nth-child(4) { transition-delay: .3s; }
+  .ts-list .spk:nth-child(5) { transition-delay: .4s; }
+  .ts-list .spk:nth-child(6) { transition-delay: .5s; }
+
+  /* ─── Avatar ─── */
+  .spk-avatar {
+    grid-area: avatar;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .avatar-ring {
+    position: relative;
+    width: 154px;
+    aspect-ratio: 1;
+    border-radius: 999px;
+    padding: 5px;
+    background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    border: 1px solid rgba(255,255,255,.14);
+    transition: border-color .28s ease, box-shadow .28s ease, transform .28s ease;
+  }
+
+  /* Subtle ring glow on hover */
+  .spk:hover .avatar-ring {
+    transform: scale(1.04);
+    border-color: rgba(255,255,255,.22);
+    box-shadow: 0 0 22px rgba(255,255,255,.06), 0 0 16px var(--accent, rgba(255,47,47,.12));
+  }
+
+  .avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    background: rgba(0,0,0,.30);
+    border: 1px solid rgba(255,255,255,.12);
+    overflow: hidden;
+  }
+
+  .avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transform: translateZ(0);
+    transition: transform .35s ease;
+  }
+
+  .spk:hover .avatar img {
+    transform: scale(1.06);
+  }
+
+  /* ─── Body ─── */
+  .spk-body {
+    grid-area: body;
+    min-width: 0;
+  }
+
+  .spk-top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .spk-namewrap { min-width: 0; }
+
+  .spk-name {
+    margin: 0;
+    font-size: clamp(18px, 2.2vw, 25px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: .15px;
+  }
+
+  .spk-aff {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+  }
+  .spk-aff span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+  }
+  .spk-aff i { font-size: 13px; opacity: .7; }
+
+  /* ─── Role Badge ─── */
+  .spk-role {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 13px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 900;
+    letter-spacing: .6px;
+    white-space: nowrap;
+    transition: border-color .28s ease, box-shadow .28s ease, background .28s ease;
+  }
+
+  /* Keynote badge */
+  .spk-role.role-keynote {
+    color: #ff8a8a;
+    border: 1px solid rgba(255,47,47,.28);
+    background: rgba(255,47,47,.08);
+  }
+  .spk:hover .spk-role.role-keynote {
+    border-color: rgba(255,47,47,.45);
+    background: rgba(255,47,47,.13);
+    box-shadow: 0 0 16px rgba(255,47,47,.12);
+  }
+
+  /* Invited badge */
+  .spk-role.role-invited {
+    color: #7edcff;
+    border: 1px solid rgba(0,200,255,.22);
+    background: rgba(0,200,255,.06);
+  }
+  .spk:hover .spk-role.role-invited {
+    border-color: rgba(0,200,255,.40);
+    background: rgba(0,200,255,.10);
+    box-shadow: 0 0 16px rgba(0,200,255,.10);
+  }
+
+  /* ─── Bio (collapsible) ─── */
+  .spk-bio {
+    margin-top: 12px;
+    color: rgba(255,255,255,.85);
+    font-size: 13.5px;
+    line-height: 1.62;
+  }
+  .spk-bio p { margin: 0 0 10px; }
+  .spk-bio p:last-child { margin-bottom: 0; }
+
+  .spk-bio-content {
+    overflow: hidden;
+    transition: max-height .4s cubic-bezier(.22,1,.36,1);
+  }
+
+  .spk-bio-content.collapsed {
+    max-height: 4.86em; /* ~3 lines */
+    -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+
+  .spk-bio-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    color: rgba(255,255,255,.50);
+    transition: color .2s ease;
+  }
+  .spk-bio-toggle:hover { color: rgba(255,255,255,.80); }
+  .spk-bio-toggle i {
+    font-size: 11px;
+    transition: transform .25s ease;
+  }
+  .spk-bio-toggle.expanded i {
+    transform: rotate(180deg);
+  }
+
+  /* ─── Card Hover ─── */
+  .spk:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255,255,255,.16);
+    box-shadow:
+      0 24px 64px rgba(0,0,0,.40),
+      0 0 0 1px rgba(255,255,255,.04) inset;
+  }
+  .spk:hover::before { opacity: .75; }
+
+  /* ─── Responsive ─── */
+  @media (max-width: 720px) {
+    .ts-wrap { padding: 24px 0 36px; }
+
+    .spk-inner {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "avatar"
+        "body";
+      gap: 16px;
+      padding: 18px;
+    }
+    .ts-list .spk:nth-child(even) .spk-inner {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "avatar"
+        "body";
+    }
+    .avatar-ring { width: 128px; margin: 0 auto; }
+    .spk-top { justify-content: center; text-align: center; }
+    .spk-namewrap { text-align: center; }
+    .spk-aff { justify-content: center; }
+    .spk-bio { text-align: center; }
+    .spk-bio-toggle { margin: 6px auto 0; }
+  }
+
+  @media (max-width: 400px) {
+    .avatar-ring { width: 110px; }
+    .spk-inner { padding: 14px; gap: 12px; }
+  }
+</style>
+
+<section class="ts-speakers">
+  <div class="ts-wrap">
+
+    <!-- Header -->
+    <div class="ts-head">
+      <h2 class="ts-title">Speakers</h2>
+      <span class="ts-head-line"></span>
+      <span class="ts-count">
+        <i class="bi bi-people-fill"></i> 3 SPEAKERS
+      </span>
+    </div>
+
+    <div class="ts-list">
+
+      <!-- 1 - Ali Erdemir -->
+      <article class="spk" data-role="keynote">
+        <div class="spk-inner">
+
+          <div class="spk-avatar">
+            <div class="avatar-ring">
+              <div class="avatar">
+                <img src="https://static.wixstatic.com/media/ab02c7_7cf86fbee2c546de92be8e7ab4bdc2bb~mv2.jpg" alt="Prof. Ali Erdemir" loading="lazy" decoding="async">
+              </div>
+            </div>
+          </div>
+
+          <div class="spk-body">
+            <div class="spk-top">
+              <div class="spk-namewrap">
+                <h3 class="spk-name">Prof. Ali Erdemir</h3>
+                <div class="spk-aff">
+                  <span><i class="bi bi-mortarboard-fill"></i>Texas A&amp;M University</span>
+                </div>
+              </div>
+              <div class="spk-role role-keynote">
+                <i class="bi bi-mic-fill"></i> KEYNOTE SPEAKER
+              </div>
+            </div>
+
+            <div class="spk-bio">
+              <div class="spk-bio-content collapsed">
+                <p>Ali Erdemir is a Distinguished Professor and Halliburton Chair in the Mechanical Engineering Department at Texas A&amp;M University, College Station. In recognition of his research achievements, he has been elected to the U.S. National Academy of Engineering and several international academies, including The Science Academy of Turkey. He is also an elected Fellow of the National Academy of Inventors.</p>
+                <p>He served as President of the International Tribology Council (2017&ndash;2022) and STLE (2016&ndash;2017), and is an Honorary Member of ASME and STLE. He is a Fellow of multiple professional societies and has received numerous awards for his contributions to tribology and materials engineering.</p>
+                <p>Dr. Erdemir holds 37 U.S. patents, has authored/co-authored more than 350 publications, and has delivered over 250 invited, keynote, and plenary lectures. His current research bridges fundamental science and engineering innovation, with a focus on developing new materials, coatings, and lubricants for industrial applications in manufacturing, transportation, and energy conversion systems.</p>
+              </div>
+              <button class="spk-bio-toggle" aria-label="Toggle full biography">
+                Read more <i class="bi bi-chevron-down"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+      <!-- 2 - Huseyin Cimenovlu -->
+      <article class="spk" data-role="invited">
+        <div class="spk-inner">
+
+          <div class="spk-avatar">
+            <div class="avatar-ring">
+              <div class="avatar">
+                <img src="https://static.wixstatic.com/media/ab02c7_0c464069570042a6926e6eff9112872a~mv2.jpg" alt="Prof. Huseyin Cimenovlu" loading="lazy" decoding="async">
+              </div>
+            </div>
+          </div>
+
+          <div class="spk-body">
+            <div class="spk-top">
+              <div class="spk-namewrap">
+                <h3 class="spk-name">Prof. H&uuml;seyin &Ccedil;imeno&#287;lu</h3>
+                <div class="spk-aff">
+                  <span><i class="bi bi-mortarboard-fill"></i>Istanbul Technical University</span>
+                </div>
+              </div>
+              <div class="spk-role role-invited">
+                <i class="bi bi-person-badge-fill"></i> INVITED SPEAKER
+              </div>
+            </div>
+
+            <div class="spk-bio">
+              <div class="spk-bio-content collapsed">
+                <p>Prof. H&uuml;seyin &Ccedil;imeno&#287;lu is a Professor in the Department of Metallurgical and Materials Engineering at Istanbul Technical University, T&uuml;rkiye. He is a well-recognized researcher in tribology and surface engineering, with expertise spanning wear, friction, surface modification, and the performance of advanced metallic materials. His academic work has contributed to a deeper understanding of deformation and wear mechanisms, as well as the design of engineered surfaces and coatings to improve durability and reliability in demanding service conditions.</p>
+                <p>According to Scopus-based institutional records, he has produced over 190 research outputs. Prof. &Ccedil;imeno&#287;lu has published widely in leading journals, presented his work at major conferences, and taken active roles in research projects and graduate education. Through his scientific output and academic leadership, he continues to support the tribology and materials engineering community and the development of high-performance surface technologies.</p>
+              </div>
+              <button class="spk-bio-toggle" aria-label="Toggle full biography">
+                Read more <i class="bi bi-chevron-down"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+      <!-- 3 - Fatih Toptan -->
+      <article class="spk" data-role="invited">
+        <div class="spk-inner">
+
+          <div class="spk-avatar">
+            <div class="avatar-ring">
+              <div class="avatar">
+                <img src="https://static.wixstatic.com/media/ab02c7_59b139a5ca37443d9d509176d5df9762~mv2.jpg" alt="Assoc. Prof. Fatih Toptan" loading="lazy" decoding="async">
+              </div>
+            </div>
+          </div>
+
+          <div class="spk-body">
+            <div class="spk-top">
+              <div class="spk-namewrap">
+                <h3 class="spk-name">Assoc. Prof. Fatih Toptan</h3>
+                <div class="spk-aff">
+                  <span><i class="bi bi-mortarboard-fill"></i>&Idot;zmir Institute of Technology</span>
+                </div>
+              </div>
+              <div class="spk-role role-invited">
+                <i class="bi bi-person-badge-fill"></i> INVITED SPEAKER
+              </div>
+            </div>
+
+            <div class="spk-bio">
+              <div class="spk-bio-content collapsed">
+                <p>Fatih Toptan is an Associate Professor in the Department of Materials Science and Engineering at &Idot;zmir Institute of Technology. He graduated from the Metallurgical and Materials Engineering Department at Yildiz Technical University (YTU) in 2002 and earned his MSc and PhD degrees in Materials Science from YTU in 2006 and 2011, respectively. From 2010 to 2020, he worked at the University of Minho (Portugal) as a researcher and Assistant Professor.</p>
+                <p>His research focuses on the development of functionalized metallic materials for diverse applications, with a particular emphasis on load-bearing biomedical implants and the investigation of their degradation mechanisms, particularly under tribocorrosion conditions. His recent work concentrates on the design of stimuli-responsive multifunctional surfaces for biomedical implants. He also serves as the coordinator of the European Branch of the Institute of Biomaterials, Tribocorrosion, and Nanomedicine (IBTN/Euro).</p>
+              </div>
+              <button class="spk-bio-toggle" aria-label="Toggle full biography">
+                Read more <i class="bi bi-chevron-down"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  /* ── Scroll Reveal (IntersectionObserver) ── */
+  const cards = document.querySelectorAll('.spk');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    cards.forEach(function(c) { io.observe(c); });
+  } else {
+    cards.forEach(function(c) { c.classList.add('is-visible'); });
+  }
+
+  /* ── Bio Expand / Collapse ── */
+  document.querySelectorAll('.spk-bio-toggle').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var content = this.previousElementSibling;
+      var isCollapsed = content.classList.contains('collapsed');
+
+      if (isCollapsed) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.classList.remove('collapsed');
+        this.innerHTML = 'Read less <i class="bi bi-chevron-up"></i>';
+        this.classList.add('expanded');
+      } else {
+        content.style.maxHeight = '';
+        content.classList.add('collapsed');
+        this.innerHTML = 'Read more <i class="bi bi-chevron-down"></i>';
+        this.classList.remove('expanded');
+      }
+    });
+  });
+})();
+</script>
