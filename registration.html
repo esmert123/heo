@@ -22,9 +22,15 @@
 
   *{box-sizing:border-box}
 
-  /* ✅ FIX: height:100% yerine min-height:100% kullanıldı.
-     height:100% içerik viewport'u aştığında scrollbar'a sebep oluyordu. */
-  html,body{min-height:100%}
+  /* Scrollbar tamamen gizlendi */
+  html{
+    overflow-y:scroll;
+    scrollbar-width:none;           /* Firefox */
+    -ms-overflow-style:none;        /* IE / Edge */
+  }
+  html::-webkit-scrollbar{
+    display:none;                   /* Chrome / Safari / Opera */
+  }
 
   body{
     margin:0;
