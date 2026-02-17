@@ -1,0 +1,545 @@
+<!-- TRiboSurf'26 • Registration Info Sections (NO TABLE) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+  :root{
+    /* Daha net beyaz metin */
+    --text: #ffffff;
+    --muted: rgba(255,255,255,.94);
+    --muted2: rgba(255,255,255,.90);
+
+    --stroke: rgba(255,255,255,.20);
+    --glassA: rgba(255,255,255,.10);
+    --glassB: rgba(255,255,255,.06);
+    --shadow: 0 18px 55px rgba(0,0,0,.32);
+    --r1: 20px;
+    --r2: 16px;
+    --accent: #ff2f2f;
+
+    /* ✅ Arial */
+    --font: Arial, Helvetica, sans-serif;
+  }
+
+  *{box-sizing:border-box}
+
+  /* ✅ FIX: height:100% yerine min-height:100% kullanıldı.
+     height:100% içerik viewport'u aştığında scrollbar'a sebep oluyordu. */
+  html,body{min-height:100%}
+
+  body{
+    margin:0;
+    font-family:var(--font);
+    color:var(--text);
+    background:transparent;
+    text-rendering:optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .regWrap{width:min(1100px, 94vw);margin: 22px auto 10px auto;}
+
+  .glass{
+    background: linear-gradient(180deg, var(--glassA), var(--glassB));
+    border: 1px solid var(--stroke);
+    border-radius: var(--r1);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .padLg{padding: 22px 22px;}
+
+  /* ===== Notice ===== */
+  .topNote{display:flex;gap:12px;align-items:flex-start;}
+  .topNote i{font-size:20px;line-height:1;margin-top:2px;opacity:.95;}
+  .topNote p{margin:0;font-size:15.75px;color:var(--muted);line-height:1.65;}
+  .topNote strong{color:var(--text);font-weight:900}
+
+  /* ===== Summary strip ===== */
+  .summaryRow{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px;}
+  @media (min-width: 640px){.summaryRow{grid-template-columns:repeat(2,1fr);}}
+  @media (min-width: 980px){.summaryRow{grid-template-columns:repeat(4,1fr);}}
+
+  .sumCard{
+    padding:14px 14px;border-radius:var(--r2);
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.14);
+    display:flex;gap:10px;align-items:flex-start;min-height:66px;
+  }
+  .sumCard i{font-size:18px;opacity:.95;margin-top:2px;}
+  .sumCard .t{font-weight:900;color:var(--text);font-size:13.75px;line-height:1.25;}
+  .sumCard .d{margin-top:2px;color:var(--muted);font-size:13.75px;line-height:1.35;}
+  .sumCard a{
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: rgba(255,255,255,.55);
+    text-underline-offset: 3px;
+    font-weight: 900;
+  }
+
+  /* ===== Main grid ===== */
+  .grid2{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px;}
+  @media (min-width: 920px){.grid2{grid-template-columns:1.05fr .95fr;}}
+
+  .secTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px 0;}
+  .secTitle h3{margin:0;font-size:20px;letter-spacing:.2px;color:var(--text);font-weight:900;}
+  .underline{
+    height:2px;flex:1;background:linear-gradient(90deg, rgba(255,47,47,.95), rgba(255,47,47,0));
+    border-radius:999px;max-width:140px;opacity:.95;
+  }
+
+  .bullets{list-style:none;padding:0;margin:10px 0 0 0;display:grid;gap:10px;}
+  .bullets li{display:flex;gap:10px;align-items:flex-start;color:var(--muted);font-size:15.75px;line-height:1.65;}
+  .bullets i{color:var(--text);opacity:.95;margin-top:2px;font-size:16px;}
+
+  .smallNote{margin-top:12px;color:var(--muted2);font-size:14.25px;line-height:1.65;}
+
+  /* ===== Email row (click to copy) ===== */
+  .emailRow{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    margin-top:6px;padding:10px 12px;border-radius:14px;
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.14);
+  }
+  .copyMail{
+    color: var(--text);
+    text-decoration: underline;
+    text-decoration-color: rgba(255,255,255,.55);
+    text-underline-offset: 3px;
+    font-weight: 900;
+    cursor:pointer;
+  }
+  .copyHint{
+    color: rgba(255,255,255,.86);
+    font-size: 12.75px;
+    margin-left: 2px;
+    white-space: nowrap;
+  }
+  .copyToast{
+    margin-left:auto;
+    color: var(--text);
+    font-size: 12.75px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.07);
+    opacity: 0;
+    transform: translateY(2px);
+    transition: opacity .18s ease, transform .18s ease;
+    white-space: nowrap;
+  }
+  .copyToast.show{opacity:1;transform:translateY(0);}
+
+  /* ===== Refund timeline ===== */
+  .timeline{
+    position: relative;
+    margin-top: 14px;
+    padding-left: 0;
+    --tlX: 10px;
+    --tlLine: 2px;
+    --tlDot: 12px;
+  }
+  .timeline:before{
+    content:"";
+    position:absolute;
+    left: calc(var(--tlX) - (var(--tlLine) / 2));
+    top: 8px;
+    bottom: 10px;
+    width: var(--tlLine);
+    border-radius: 999px;
+    background: rgba(255,255,255,.32);
+    transition: box-shadow .22s ease, background .22s ease;
+  }
+  .timeline:hover:before{
+    background: linear-gradient(180deg, rgba(255,90,90,.95), rgba(255,90,90,.35));
+    box-shadow: 0 0 12px rgba(255,47,47,.50);
+  }
+
+  .tItem{
+    position: relative;
+    padding: 2px 0 2px 30px;
+    margin: 0 0 14px 0;
+    border-radius: 10px;
+    transition: box-shadow .2s ease, background .2s ease;
+  }
+  .tItem:before{
+    content:"";
+    position:absolute;
+    left: calc(var(--tlX) - (var(--tlDot) / 2));
+    top: 8px;
+    width: var(--tlDot);
+    height: var(--tlDot);
+    border-radius: 50%;
+    background: rgba(0,0,0,.20);
+    border: 2px solid rgba(255,255,255,.70);
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .tItem:hover{
+    background: rgba(255,255,255,.04);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.10);
+  }
+  .tItem:hover:before{
+    transform: scale(1.08);
+    box-shadow: 0 0 0 4px rgba(255,47,47,.20), 0 0 12px rgba(255,47,47,.48);
+    background: rgba(255,98,98,.95);
+    border-color: rgba(255,140,140,.95);
+  }
+  .tItem:hover .tWhen,
+  .tItem:hover .tDesc{
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255,82,82,.45);
+  }
+  .tWhen{
+    font-weight: 900;
+    color: var(--text);
+    font-size: 14.75px;
+    line-height: 1.25;
+    transition: color .2s ease, text-shadow .2s ease;
+  }
+  .tDesc{
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 14.75px;
+    line-height: 1.6;
+    transition: color .2s ease, text-shadow .2s ease;
+  }
+
+  /* ===== Hotel ===== */
+  .hotelHead{margin-top:18px;}
+  .hotelText{
+    margin:10px 0 0 0;
+    color:var(--muted);
+    font-size:15.75px;
+    line-height:1.75;
+  }
+  .hotelText strong{color:var(--text);font-weight:900;}
+
+  .prices{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px;}
+  @media (min-width: 700px){.prices{grid-template-columns:repeat(5,1fr);}}
+
+  .priceCard{
+    border-radius:var(--r2);
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.14);
+    padding: 14px 14px;
+    min-height: 118px;
+    display:flex;flex-direction:column;justify-content:space-between;gap:8px;
+  }
+  .pcTop{display:flex;gap:10px;align-items:flex-start;}
+
+  .bedIcons{
+    position: relative;
+    width: 26px; height: 26px;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+  }
+  .bedSvg{
+    width: 22px; height: 22px;
+    display:block;
+    color: var(--text);
+    opacity: .98;
+  }
+  .bedN{
+    position:absolute;
+    right:-7px;
+    bottom:-7px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+    line-height: 1;
+  }
+
+  .pcTop .ico{
+    font-size: 22px;
+    opacity:.98;
+    margin-top: 1px;
+    color: var(--text);
+  }
+  .priceCard .name{font-weight:900;color:var(--text);font-size:13.75px;line-height:1.25;}
+  .priceCard .sub{color:var(--muted2);font-size:12.75px;margin-top:2px;}
+  .priceCard .val{
+    color: var(--text);
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing:.2px;
+    margin-left: 32px;
+  }
+
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.14);
+    color: var(--muted);
+    font-size: 13.75px;
+    white-space: nowrap;
+  }
+  .chip i{color:var(--text);opacity:.95;}
+</style>
+
+<section class="regWrap">
+
+  <!-- Presenting Author Notice -->
+  <div class="glass padLg">
+    <div class="topNote">
+      <i class="bi bi-megaphone"></i>
+      <p>Each registered presenting author may present up to <strong>two papers</strong> (oral or poster).</p>
+    </div>
+
+    <!-- Summary strip -->
+    <div class="summaryRow">
+      <div class="sumCard">
+        <i class="bi bi-file-earmark-text"></i>
+        <div>
+          <div class="t">Presenting author</div>
+          <div class="d">Up to <strong>2 papers</strong></div>
+        </div>
+      </div>
+
+      <div class="sumCard">
+        <i class="bi bi-currency-exchange"></i>
+        <div>
+          <div class="t">USD → EUR</div>
+          <div class="d">Fixed <strong>1 USD = 0.85 EUR</strong></div>
+        </div>
+      </div>
+
+      <div class="sumCard">
+        <i class="bi bi-geo-alt"></i>
+        <div>
+          <div class="t">Tours included</div>
+          <div class="d">Sumela & Trabzon City</div>
+        </div>
+      </div>
+
+      <div class="sumCard">
+        <i class="bi bi-envelope"></i>
+        <div>
+          <div class="t">Contact</div>
+          <div class="d"><a href="mailto:tribosurf@ktu.edu.tr">tribosurf@ktu.edu.tr</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid2">
+
+    <!-- What's Included -->
+    <div class="glass padLg">
+      <div class="secTitle">
+        <h3>What's Included</h3>
+        <span class="underline"></span>
+      </div>
+
+      <ul class="bullets">
+        <li><i class="bi bi-check2"></i><span>Conference materials</span></li>
+        <li><i class="bi bi-check2"></i><span>Access to oral and poster sessions</span></li>
+        <li><i class="bi bi-check2"></i><span>The welcome reception and Conference Dinner</span></li>
+        <li><i class="bi bi-check2"></i><span>Mid-morning and afternoon refreshments each day</span></li>
+        <li><i class="bi bi-check2"></i><span>For participants who wish to pay in USD, the conference will apply a fixed conversion rate of <strong>1 USD to 0.85 Euro</strong></span></li>
+        <li><i class="bi bi-check2"></i><span>The registration fees include the <strong>Sumela</strong> and <strong>Trabzon City Tours</strong></span></li>
+      </ul>
+    </div>
+
+    <!-- Refund Policy -->
+    <div class="glass padLg">
+      <div class="secTitle">
+        <h3>Registration Cancellation & Refund Policy</h3>
+        <span class="underline"></span>
+      </div>
+
+      <div class="emailRow">
+        <i class="bi bi-envelope" style="opacity:.95"></i>
+        <span style="color:var(--muted)">Send cancellation requests to:</span>
+
+        <!-- mail üstüne tıklayınca copy -->
+        <span class="copyMail" id="copyEmail" data-copy="tribosurf@ktu.edu.tr">tribosurf@ktu.edu.tr</span>
+        <span class="copyHint">click to copy</span>
+
+        <span class="copyToast" id="copyToast">Copied!</span>
+      </div>
+
+      <!-- timeline düzeni -->
+      <div class="timeline">
+        <div class="tItem">
+          <div class="tWhen">Jul 30 &nbsp;–&nbsp; Sep 30</div>
+          <div class="tDesc">Full refund is possible (bank transfer fees excluded).</div>
+        </div>
+
+        <div class="tItem">
+          <div class="tWhen">Oct 1 &nbsp;–&nbsp; Oct 15</div>
+          <div class="tDesc">Up to 50% of the registration fee can be refunded.</div>
+        </div>
+
+        <div class="tItem end">
+          <div class="tWhen">After Oct 16, 2026</div>
+          <div class="tDesc">No refund is possible.</div>
+        </div>
+      </div>
+
+      <div class="smallNote">
+        All refunds will be processed within <strong style="color:var(--text);font-weight:900;">30 days</strong> after the conference end date.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Accommodation Options (Partner Hotel Rates) -->
+  <div class="glass padLg hotelHead">
+    <div class="secTitle">
+      <h3>Accommodation Options</h3>
+      <span class="underline"></span>
+    </div>
+
+    <p class="hotelText">
+      <strong>Trabzon offers many accommodation options; our official partner hotel with discounted conference rates is Koru Hotel.</strong><br>
+      <strong>Koru Hotel</strong> is a four-star property operating under the brand of Karadeniz Technical University and located within the main KTU campus.
+      Designed with spacious and modern aesthetics, the hotel comprises a total of 110 rooms, including 10 suites, 5 family suites, 24 double (French) rooms,
+      59 standard twin rooms, 11 triple rooms, and 1 accessible room, catering to a wide range of accommodation needs.
+      Special discounted room prices have been arranged exclusively for TRiboSurf'26 participants.
+      To benefit from these conference-specific prices, participants are required to contact the hotel directly via e-mail or phone.
+    </p>
+
+    <div class="prices">
+      <div class="priceCard">
+        <div class="pcTop">
+          <span class="bedIcons" aria-hidden="true">
+            <svg class="bedSvg" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="10" width="18" height="7" rx="1.6"></rect>
+              <rect x="4" y="9" width="6.5" height="3.2" rx="1.2"></rect>
+              <rect x="3" y="17" width="2" height="4" rx="1"></rect>
+              <rect x="19" y="17" width="2" height="4" rx="1"></rect>
+            </svg>
+          </span>
+          <div>
+            <div class="name">Single room</div>
+            <div class="sub">per night</div>
+          </div>
+        </div>
+        <div class="val">$50</div>
+      </div>
+
+      <div class="priceCard">
+        <div class="pcTop">
+          <span class="bedIcons" aria-hidden="true">
+            <svg class="bedSvg" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="10" width="18" height="7" rx="1.6"></rect>
+              <rect x="4" y="9" width="6.5" height="3.2" rx="1.2"></rect>
+              <rect x="3" y="17" width="2" height="4" rx="1"></rect>
+              <rect x="19" y="17" width="2" height="4" rx="1"></rect>
+            </svg>
+            <span class="bedN">2</span>
+          </span>
+          <div>
+            <div class="name">Double room</div>
+            <div class="sub">per night</div>
+          </div>
+        </div>
+        <div class="val">$60</div>
+      </div>
+
+      <div class="priceCard">
+        <div class="pcTop">
+          <span class="bedIcons" aria-hidden="true">
+            <svg class="bedSvg" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="10" width="18" height="7" rx="1.6"></rect>
+              <rect x="4" y="9" width="6.5" height="3.2" rx="1.2"></rect>
+              <rect x="3" y="17" width="2" height="4" rx="1"></rect>
+              <rect x="19" y="17" width="2" height="4" rx="1"></rect>
+            </svg>
+            <span class="bedN">3</span>
+          </span>
+          <div>
+            <div class="name">Triple room</div>
+            <div class="sub">per night</div>
+          </div>
+        </div>
+        <div class="val">$70</div>
+      </div>
+
+      <div class="priceCard">
+        <div class="pcTop">
+          <i class="bi bi-house-door ico"></i>
+          <div>
+            <div class="name">Suite room (two person)</div>
+            <div class="sub">per night</div>
+          </div>
+        </div>
+        <div class="val">$70</div>
+      </div>
+
+      <div class="priceCard">
+        <div class="pcTop">
+          <i class="bi bi-people ico"></i>
+          <div>
+            <div class="name">Family suite (two person)</div>
+            <div class="sub">per night</div>
+          </div>
+        </div>
+        <div class="val">$80</div>
+      </div>
+    </div>
+
+    <div class="chips">
+      <span class="chip"><i class="bi bi-plus-circle"></i> +10 USD / extra person (Suite & Family Suite)</span>
+      <span class="chip"><i class="bi bi-cup-hot"></i> Breakfast included</span>
+    </div>
+  </div>
+
+</section>
+
+<script>
+  (function(){
+    const el = document.getElementById("copyEmail");
+    const toast = document.getElementById("copyToast");
+
+    function showToast(){
+      toast.classList.add("show");
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(()=> toast.classList.remove("show"), 1200);
+    }
+
+    async function copyToClipboard(text){
+      try{
+        if(navigator.clipboard && window.isSecureContext){
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      }catch(e){}
+
+      try{
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly","");
+        ta.style.position = "fixed";
+        ta.style.top = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      }catch(e){ return false; }
+    }
+
+    if(el){
+      el.addEventListener("click", async (ev)=>{
+        ev.preventDefault();
+        const text = el.getAttribute("data-copy") || el.textContent.trim();
+        const ok = await copyToClipboard(text);
+        if(ok) showToast();
+      });
+    }
+  })();
+</script>
