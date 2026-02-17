@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Optional Social Tours</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    :root{
+      --navy:#071a4a;
+      --navy2:#061338;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.78);
+      --red:#ff2f2f;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --r1:18px;
+      --r2:14px;
+      --font1:"Work Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      --font2:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;background:transparent}
+    body{font-family:var(--font1); color:var(--text);}
+    .wrap{
+      width:100%;
+      min-height:520px;
+      padding:14px;
+      background: radial-gradient(1100px 420px at 20% 0%, rgba(255,47,47,.18), transparent 55%),
+                  radial-gradient(900px 420px at 80% 0%, rgba(104,145,255,.16), transparent 50%),
+                  linear-gradient(180deg, var(--navy) 0%, var(--navy2) 100%);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--r1);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .redBanner{
+      background: linear-gradient(90deg, rgba(255,47,47,.55), rgba(200,30,30,.45));
+      color:#fff;
+      font-weight:700;
+      font-size:14px;
+      text-align:center;
+      padding:9px 14px;
+      letter-spacing:.3px;
+      margin:10px 10px 0;
+      border-radius:12px;
+      border:1px solid rgba(255,47,47,.25);
+      backdrop-filter:blur(8px);
+    }
+    .topbar{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px 10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .title{display:flex; flex-direction:column; gap:4px;}
+    .title h3{margin:0; font-size:18px; letter-spacing:.2px; font-weight:800;}
+    .title small{font-family:var(--font2); color:var(--muted);}
+    button{
+      font-family:var(--font1);
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding:10px 12px;
+      outline:none;
+      cursor:pointer;
+      font-weight:700;
+    }
+    button:active{transform:translateY(1px)}
+    .grid{display:grid; grid-template-columns: 1.45fr .95fr; gap:12px; padding:12px 10px 10px;}
+    .card{background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05)); border:1px solid rgba(255,255,255,.12); border-radius: var(--r1); overflow:hidden;}
+    #map{width:100%; height:440px; border-radius: var(--r1);}
+    .side{display:flex; flex-direction:column; gap:10px; padding:10px; height:440px;}
+    .tourDesc{padding:10px 12px 14px; font-family:var(--font2); color:#ffffff; font-size:14px; line-height:1.55;}
+    .timeline{flex:1; overflow:auto; border-radius: var(--r2); border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); padding:8px;}
+    .tlItem{display:flex; gap:10px; align-items:flex-start; padding:10px; border-radius:14px; border:1px solid transparent; cursor:pointer; transition:.15s ease;}
+    .tlItem:hover{background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.10);}
+    .tlItem.active{background: rgba(255,47,47,.12); border-color: rgba(255,47,47,.28);}
+    .tlText{display:flex; flex-direction:column; gap:3px;}
+    .tlText .name{font-weight:800}
+    .tlText .desc{font-family:var(--font2); color:var(--muted); font-size:13px; line-height:1.25;}
+    .hintRow{display:flex; gap:8px; flex-wrap:wrap; padding:10px 12px; border-radius: var(--r2); border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); font-family:var(--font2); color:rgba(255,255,255,.86); font-size:13px;}
+    .chip{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06); white-space:nowrap;}
+    .dot{width:8px;height:8px;border-radius:50%; background: var(--red); box-shadow:0 0 0 4px rgba(255,47,47,.20);}
+    .photoPin{
+      width:42px;
+      height:42px;
+      border-radius:16px;
+      border:2px solid rgba(255,255,255,.85);
+      box-shadow:0 12px 26px rgba(0,0,0,.35);
+      background-size:cover;
+      background-position:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .photoPin:after{
+      content: attr(data-n);
+      position:absolute;
+      right:-6px;
+      top:-6px;
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      background: var(--red);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:12px;
+      border:2px solid rgba(255,255,255,.9);
+    }
+    .leaflet-popup-content-wrapper{border-radius:16px !important; background: rgba(8,14,40,.92) !important; color:#fff !important; border:1px solid rgba(255,255,255,.14); box-shadow:0 18px 55px rgba(0,0,0,.5);}
+    .leaflet-popup-tip{background: rgba(8,14,40,.92) !important;}
+    .pop{width:240px; font-family:var(--font1);}
+    .carousel{position:relative; width:100%; overflow:hidden; border-radius:12px; border:1px solid rgba(255,255,255,.12);}
+    .carousel .carousel-img{width:100%; height:130px; object-fit:cover; display:none; border:none; margin:0; cursor:pointer;}
+    .carousel .carousel-img.active{display:block;}
+    .carousel-btn{position:absolute; top:50%; transform:translateY(-50%); width:28px; height:28px; border-radius:50%; border:1px solid rgba(255,255,255,.3); background:rgba(0,0,0,.55); color:#fff; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; z-index:10; line-height:1; transition:.15s ease;}
+    .carousel-btn:hover{background:rgba(0,0,0,.8); border-color:rgba(255,255,255,.5);}
+    .carousel-btn.prev{left:6px;}
+    .carousel-btn.next{right:6px;}
+    .carousel-dots{position:absolute; bottom:6px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:10;}
+    .cdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer; transition:.15s ease;}
+    .cdot.active{background:#fff; box-shadow:0 0 4px rgba(255,255,255,.5);}
+    .pop h4{margin:10px 0 4px; font-size:14px; font-weight:900;}
+    .pop p{margin:0; font-family:var(--font2); color:rgba(255,255,255,.80); font-size:13px; line-height:1.25;}
+    .pop .meta{margin-top:8px; display:flex; gap:8px; flex-wrap:wrap; font-family:var(--font2); color:rgba(255,255,255,.82); font-size:12px;}
+    .pop .badge{padding:5px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.14); background: rgba(255,255,255,.06);}
+
+    /* ====== LIGHTBOX ====== */
+    .lightbox-overlay{
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      background:rgba(0,0,0,.88);
+      backdrop-filter:blur(12px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      visibility:hidden;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .lightbox-overlay.open{
+      opacity:1;
+      visibility:visible;
+    }
+    .lightbox-container{
+      position:relative;
+      width:90vw;
+      max-width:900px;
+      height:80vh;
+      max-height:680px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+    }
+    .lightbox-img-wrap{
+      flex:1;
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .lightbox-img{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
+      border-radius:12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      user-select:none;
+      -webkit-user-drag:none;
+      transition: opacity .2s ease;
+    }
+    .lightbox-close{
+      position:absolute;
+      top:-12px;
+      right:-12px;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.7);
+      color:#fff;
+      font-size:20px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      z-index:10;
+      transition:.15s ease;
+      line-height:1;
+    }
+    .lightbox-close:hover{
+      background:rgba(255,47,47,.8);
+      border-color:rgba(255,47,47,.5);
+    }
+    .lightbox-nav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.6);
+      color:#fff;
+      font-size:22px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      z-index:10;
+      transition:.15s ease;
+      line-height:1;
+    }
+    .lightbox-nav:hover{
+      background:rgba(255,255,255,.15);
+      border-color:rgba(255,255,255,.4);
+    }
+    .lightbox-nav.lb-prev{ left:-60px; }
+    .lightbox-nav.lb-next{ right:-60px; }
+    .lightbox-dots{
+      display:flex;
+      gap:8px;
+      margin-top:16px;
+      z-index:10;
+    }
+    .lightbox-dot{
+      width:10px;height:10px;
+      border-radius:50%;
+      background:rgba(255,255,255,.35);
+      cursor:pointer;
+      transition:.15s ease;
+      border:none;
+      padding:0;
+    }
+    .lightbox-dot.active{
+      background:#fff;
+      box-shadow:0 0 8px rgba(255,255,255,.5);
+    }
+    .lightbox-title{
+      position:absolute;
+      top:-44px;
+      left:0;
+      font-family:var(--font1);
+      font-weight:800;
+      font-size:16px;
+      color:#fff;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:100%;
+    }
+    .lightbox-nav.lb-hidden,
+    .lightbox-dots.lb-hidden{
+      display:none;
+    }
+
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr}
+      #map{height:360px}
+      .side{height:auto}
+      .timeline{max-height:320px}
+      .topbar{flex-direction:column; align-items:stretch}
+      button{width:100%}
+      .lightbox-container{
+        width:95vw;
+        height:75vh;
+      }
+      .lightbox-nav.lb-prev{ left:8px; }
+      .lightbox-nav.lb-next{ right:8px; }
+      .lightbox-nav{
+        width:40px;
+        height:40px;
+        font-size:18px;
+      }
+      .lightbox-close{
+        top:4px;
+        right:4px;
+      }
+      .lightbox-title{
+        top:-36px;
+        font-size:14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="redBanner">Optional Social Tours</div>
+    <div class="topbar">
+      <div class="title">
+        <h3>Optional Daily Black Sea Tours</h3>
+        <small>Conference Period Program</small>
+      </div>
+      <button id="fitBtn">Fit</button>
+    </div>
+    <div class="tourDesc">
+      During the conference period, participants can further explore the Black Sea region through optional daily tours. Excursions to Trabzon and nearby destinations such as Ayder Highland, Uzungol, and Batumi will be available, allowing participants to experience the outstanding cultural and natural richness of the Eastern Black Sea region during their stay.
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div id="map"></div>
+      </div>
+      <div class="card side">
+        <div class="hintRow">
+          <span class="chip"><span class="dot"></span> Click stop → zoom & popup</span>
+          <span class="chip"><span class="dot"></span> Optional tour highlights</span>
+        </div>
+        <div id="timeline" class="timeline" aria-label="Timeline"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox overlay -->
+  <div class="lightbox-overlay" id="lightbox">
+    <div class="lightbox-container">
+      <div class="lightbox-title" id="lbTitle"></div>
+      <button class="lightbox-close" id="lbClose" aria-label="Close">&#10005;</button>
+      <button class="lightbox-nav lb-prev" id="lbPrev" aria-label="Previous">&#10094;</button>
+      <button class="lightbox-nav lb-next" id="lbNext" aria-label="Next">&#10095;</button>
+      <div class="lightbox-img-wrap">
+        <img class="lightbox-img" id="lbImg" src="" alt="" />
+      </div>
+      <div class="lightbox-dots" id="lbDots"></div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const TOUR = {
+      label: 'Optional Social Tours',
+      stops: [
+        {
+          name: 'Uzungöl',
+          lat: 40.618164,
+          lng: 40.290333,
+          images: [
+            'https://static.wixstatic.com/media/97437f_881c2edc975146299d49e5591e17ef0b~mv2.jpg',
+            'https://static.wixstatic.com/media/ab02c7_8b312f5cde2347aba08a08b39f461ff2~mv2.webp'
+          ],
+          desc: 'A famous lake destination surrounded by mountains and forests.'
+        },
+        {
+          name: 'Ayder Highland',
+          lat: 40.952500,
+          lng: 41.102100,
+          images: [
+            'https://static.wixstatic.com/media/ab02c7_3e0267dc01024ca897d56e5a1f465c49~mv2.jpg',
+            'https://static.wixstatic.com/media/ab02c7_b56635b1366f408f893d2ea967630525~mv2.jpg'
+          ],
+          desc: 'Iconic plateau route known for clean air, greenery, and scenic highland roads.'
+        },
+        {
+          name: 'Batumi City Center',
+          lat: 41.643414,
+          lng: 41.639900,
+          images: [
+            'https://static.wixstatic.com/media/ab02c7_e78461883c334bb2a102f79d568be38e~mv2.jpg',
+            'https://static.wixstatic.com/media/ab02c7_acef6833bf2543f69ed1a69a20d79424~mv2.jpg'
+          ],
+          desc: 'Cross-border cultural city tour with modern boulevards and seaside atmosphere.'
+        }
+      ]
+    };
+
+    // ====== LIGHTBOX ======
+    const lbOverlay = document.getElementById('lightbox');
+    const lbImg     = document.getElementById('lbImg');
+    const lbTitle   = document.getElementById('lbTitle');
+    const lbClose   = document.getElementById('lbClose');
+    const lbPrev    = document.getElementById('lbPrev');
+    const lbNext    = document.getElementById('lbNext');
+    const lbDots    = document.getElementById('lbDots');
+
+    let lbImages = [];
+    let lbIndex  = 0;
+
+    function openLightbox(images, startIndex, title){
+      lbImages = images;
+      lbIndex  = startIndex || 0;
+      lbTitle.textContent = title || '';
+      var single = images.length <= 1;
+      lbPrev.classList.toggle('lb-hidden', single);
+      lbNext.classList.toggle('lb-hidden', single);
+      lbDots.classList.toggle('lb-hidden', single);
+      renderLbDots();
+      showLbSlide(lbIndex);
+      lbOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(){
+      lbOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+      lbImages = [];
+    }
+
+    function showLbSlide(n){
+      lbIndex = ((n % lbImages.length) + lbImages.length) % lbImages.length;
+      lbImg.style.opacity = '0';
+      setTimeout(function(){
+        lbImg.src = lbImages[lbIndex];
+        lbImg.alt = (lbTitle.textContent || 'Photo') + ' ' + (lbIndex + 1);
+        lbImg.style.opacity = '1';
+      }, 120);
+      updateLbDots();
+    }
+
+    function renderLbDots(){
+      lbDots.innerHTML = '';
+      lbImages.forEach(function(_, i){
+        var dot = document.createElement('button');
+        dot.className = 'lightbox-dot' + (i === lbIndex ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to photo ' + (i + 1));
+        dot.addEventListener('click', function(){ showLbSlide(i); });
+        lbDots.appendChild(dot);
+      });
+    }
+
+    function updateLbDots(){
+      var dots = lbDots.querySelectorAll('.lightbox-dot');
+      dots.forEach(function(d, i){
+        d.classList.toggle('active', i === lbIndex);
+      });
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lbPrev.addEventListener('click', function(){ showLbSlide(lbIndex - 1); });
+    lbNext.addEventListener('click', function(){ showLbSlide(lbIndex + 1); });
+
+    lbOverlay.addEventListener('click', function(e){
+      if(e.target === lbOverlay) closeLightbox();
+    });
+
+    document.addEventListener('keydown', function(e){
+      if(!lbOverlay.classList.contains('open')) return;
+      if(e.key === 'Escape') closeLightbox();
+      if(e.key === 'ArrowLeft')  showLbSlide(lbIndex - 1);
+      if(e.key === 'ArrowRight') showLbSlide(lbIndex + 1);
+    });
+
+    // ====== MAP SETUP ======
+    const map = L.map('map', { zoomControl:true, scrollWheelZoom:false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    const markersLayer = L.layerGroup().addTo(map);
+    const fitBtn = document.getElementById('fitBtn');
+    const timelineEl = document.getElementById('timeline');
+
+    function popupHTML(stop){
+      const imgs = stop.images || [];
+      const hasMultiple = imgs.length > 1;
+      const imgsHTML = imgs.map((src, i) => `<img src="${src}" alt="${stop.name}" class="carousel-img${i===0?' active':''}" data-lb-index="${i}" />`).join('');
+      const dotsHTML = hasMultiple ? `<div class="carousel-dots">${imgs.map((_, i) => `<span class="cdot${i===0?' active':''}" data-slide="${i}"></span>`).join('')}</div>` : '';
+      const btnsHTML = hasMultiple ? '<button class="carousel-btn prev">&#10094;</button><button class="carousel-btn next">&#10095;</button>' : '';
+      const carouselHTML = imgs.length ? `<div class="carousel" data-stop-name="${stop.name}">${imgsHTML}${btnsHTML}${dotsHTML}</div>` : '';
+      return `<div class="pop">${carouselHTML}<h4>${stop.name}</h4><p>${stop.desc || ''}</p><div class="meta"><span class="badge">&#128205; ${stop.lat.toFixed(4)}, ${stop.lng.toFixed(4)}</span></div></div>`;
+    }
+
+    map.on('popupopen', function(e){
+      const carousel = e.popup.getElement()?.querySelector('.carousel');
+      if(!carousel) return;
+      const imgs = carousel.querySelectorAll('.carousel-img');
+      const dots = carousel.querySelectorAll('.cdot');
+      const stopName = carousel.getAttribute('data-stop-name') || '';
+      const imageUrls = Array.from(imgs).map(function(img){ return img.src; });
+
+      let current = 0;
+      function showSlide(n){
+        current = ((n % imgs.length) + imgs.length) % imgs.length;
+        imgs.forEach((img, i) => img.classList.toggle('active', i === current));
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === current));
+      }
+
+      // Click on carousel image → open lightbox
+      imgs.forEach(function(img, i){
+        img.addEventListener('click', function(ev){
+          ev.stopPropagation();
+          openLightbox(imageUrls, i, stopName);
+        });
+      });
+
+      carousel.querySelector('.carousel-btn.prev')?.addEventListener('click', ev => { ev.stopPropagation(); showSlide(current - 1); });
+      carousel.querySelector('.carousel-btn.next')?.addEventListener('click', ev => { ev.stopPropagation(); showSlide(current + 1); });
+      dots.forEach(dot => dot.addEventListener('click', ev => { ev.stopPropagation(); showSlide(parseInt(dot.getAttribute('data-slide'))); }));
+    });
+
+    function makePhotoIcon(stop, idx){
+      const div = document.createElement('div');
+      div.className = 'photoPin';
+      div.style.backgroundImage = `url('${(stop.images && stop.images[0]) || ''}')`;
+      div.setAttribute('data-n', String(idx + 1));
+      return L.divIcon({ html: div.outerHTML, className:'', iconSize:[42,42], iconAnchor:[21,42] });
+    }
+    function setActiveTimeline(i){
+      [...timelineEl.querySelectorAll('.tlItem')].forEach((el, idx) => el.classList.toggle('active', idx === i));
+    }
+    function focusStop(i, openPopup){
+      const stop = TOUR.stops[i];
+      map.flyTo([stop.lat, stop.lng], Math.max(map.getZoom(), 9), { duration: 0.8 });
+      const markers = Object.values(markersLayer._layers);
+      if(openPopup && markers[i]) markers[i].openPopup();
+    }
+    function buildTimeline(){
+      timelineEl.innerHTML = '';
+      TOUR.stops.forEach((s, i) => {
+        const item = document.createElement('div');
+        item.className = 'tlItem';
+        item.innerHTML = `<div class="tlText"><div class="name">${i + 1}. ${s.name}</div><div class="desc">${s.desc || ''}</div></div>`;
+        item.addEventListener('click', () => {
+          setActiveTimeline(i);
+          focusStop(i, true);
+        });
+        timelineEl.appendChild(item);
+      });
+      setActiveTimeline(0);
+    }
+    function fitToTour(){
+      map.fitBounds(TOUR.stops.map(s => [s.lat, s.lng]), { padding:[24,24] });
+    }
+    function loadTour(){
+      markersLayer.clearLayers();
+      TOUR.stops.forEach((s, idx) => {
+        const marker = L.marker([s.lat, s.lng], { icon: makePhotoIcon(s, idx) }).bindPopup(popupHTML(s), { maxWidth: 280, closeButton: true });
+        marker.on('click', () => setActiveTimeline(idx));
+        markersLayer.addLayer(marker);
+      });
+      buildTimeline();
+      fitToTour();
+    }
+    fitBtn.addEventListener('click', fitToTour);
+    loadTour();
+  </script>
+</body>
+</html>
