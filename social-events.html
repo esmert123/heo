@@ -1,0 +1,1070 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sumela-Zigana Mountain-Hamsikoy Tour</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+  <style>
+    :root{
+      --navy:#071a4a;
+      --navy2:#061338;
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.78);
+      --stroke:rgba(255,255,255,.14);
+      --glass:rgba(255,255,255,.08);
+      --glass2:rgba(255,255,255,.05);
+      --red:#ff2f2f;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --r1:18px;
+      --r2:14px;
+      --font1:"Work Sans",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      --font2:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;background:transparent}
+    body{font-family:var(--font1); color:var(--text);}
+
+    .wrap{
+      width:100%;
+      min-height:520px;
+      padding:14px;
+      background: radial-gradient(1100px 420px at 20% 0%, rgba(255,47,47,.18), transparent 55%),
+                  radial-gradient(900px 420px at 80% 0%, rgba(104,145,255,.16), transparent 50%),
+                  linear-gradient(180deg, var(--navy) 0%, var(--navy2) 100%);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--r1);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .redBanner{
+      background: linear-gradient(90deg, rgba(255,47,47,.55), rgba(200,30,30,.45));
+      color:#fff;
+      font-weight:700;
+      font-size:14px;
+      text-align:center;
+      padding:9px 14px;
+      letter-spacing:.3px;
+      margin:10px 10px 0;
+      border-radius:12px;
+      border:1px solid rgba(255,47,47,.25);
+      backdrop-filter:blur(8px);
+    }
+
+    .topbar{
+      display:flex; gap:10px; align-items:center; justify-content:space-between;
+      padding:10px 10px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+    }
+    .title{
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .title h3{
+      margin:0;
+      font-size:18px;
+      letter-spacing:.2px;
+      font-weight:800;
+    }
+    .title small{
+      font-family:var(--font2);
+      color:var(--muted);
+    }
+
+    .controls{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+    }
+    button{
+      font-family:var(--font1);
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      padding:10px 12px;
+      outline:none;
+      cursor:pointer;
+      font-weight:700;
+    }
+    button.primary{
+      border-color: rgba(255,47,47,.35);
+      background: linear-gradient(180deg, rgba(255,47,47,.95), rgba(255,47,47,.78));
+    }
+    button.ghost{
+      background: rgba(255,255,255,.06);
+    }
+    button:active{transform:translateY(1px)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.45fr .95fr;
+      gap:12px;
+      padding:12px 10px 10px;
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: var(--r1);
+      overflow:hidden;
+    }
+
+    #map{
+      width:100%;
+      height:440px;
+      border-radius: var(--r1);
+    }
+
+    .side{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding:10px;
+      height:440px;
+    }
+
+    .tourDesc{
+      padding:10px 12px 14px;
+      font-family:var(--font2);
+      color:#ffffff;
+      font-size:14px;
+      line-height:1.55;
+    }
+
+    .timeline{
+      flex:1;
+      overflow:auto;
+      border-radius: var(--r2);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      padding:8px;
+    }
+    .tlItem{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:10px;
+      border-radius: 14px;
+      border:1px solid transparent;
+      cursor:pointer;
+      transition: .15s ease;
+    }
+    .tlItem:hover{
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.10);
+    }
+    .tlItem.active{
+      background: rgba(255,47,47,.12);
+      border-color: rgba(255,47,47,.28);
+    }
+    .tlText{
+      display:flex; flex-direction:column; gap:3px;
+    }
+    .tlText .name{font-weight:800}
+    .tlText .desc{
+      font-family:var(--font2);
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.25;
+    }
+
+    .hintRow{
+      display:flex; gap:8px; flex-wrap:wrap;
+      padding:10px 12px;
+      border-radius: var(--r2);
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.05);
+      font-family:var(--font2);
+      color:rgba(255,255,255,.86);
+      font-size:13px;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      white-space:nowrap;
+    }
+    .dot{
+      width:8px;height:8px;border-radius:50%;
+      background: var(--red);
+      box-shadow:0 0 0 4px rgba(255,47,47,.20);
+    }
+
+    /* Custom marker (photo pin) */
+    .photoPin{
+      width:42px; height:42px;
+      border-radius: 16px;
+      border:2px solid rgba(255,255,255,.85);
+      box-shadow: 0 12px 26px rgba(0,0,0,.35);
+      background-size:cover;
+      background-position:center;
+      position:relative;
+      overflow:hidden;
+    }
+    .photoPin:after{
+      content: attr(data-n);
+      position:absolute;
+      right:-6px; top:-6px;
+      width:22px; height:22px;
+      border-radius:999px;
+      background: var(--red);
+      color:#fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:900;
+      font-size:12px;
+      border:2px solid rgba(255,255,255,.9);
+    }
+
+    /* Moving marker (small) */
+    .moveDot{
+      width:14px;height:14px;border-radius:50%;
+      background: var(--red);
+      box-shadow:0 0 0 6px rgba(255,47,47,.22);
+      border:2px solid rgba(255,255,255,.85);
+    }
+
+    /* Leaflet popup styling */
+    .leaflet-popup-content-wrapper{
+      border-radius: 16px !important;
+      background: rgba(8,14,40,.92) !important;
+      color:#fff !important;
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow: 0 18px 55px rgba(0,0,0,.5);
+    }
+    .leaflet-popup-tip{
+      background: rgba(8,14,40,.92) !important;
+    }
+    .pop{
+      width:240px;
+      font-family:var(--font1);
+    }
+    .pop img{
+      width:100%;
+      height:120px;
+      object-fit:cover;
+      border-radius: 12px;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .pop h4{
+      margin:10px 0 4px;
+      font-size:14px;
+      font-weight:900;
+    }
+    .pop p{
+      margin:0;
+      font-family:var(--font2);
+      color:rgba(255,255,255,.80);
+      font-size:13px;
+      line-height:1.25;
+    }
+    .pop .meta{
+      margin-top:8px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      font-family:var(--font2);
+      color:rgba(255,255,255,.82);
+      font-size:12px;
+    }
+    .pop .badge{
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+    }
+
+    /* Carousel in popup */
+    .carousel{
+      position:relative;
+      width:100%;
+      overflow:hidden;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+    }
+    .carousel .carousel-img{
+      width:100%;
+      height:130px;
+      object-fit:cover;
+      display:none;
+      border-radius:0;
+      border:none;
+      margin:0;
+      cursor:pointer;
+    }
+    .carousel .carousel-img.active{
+      display:block;
+    }
+    .carousel-btn{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:28px;
+      height:28px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.3);
+      background:rgba(0,0,0,.55);
+      color:#fff;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      z-index:10;
+      transition:.15s ease;
+      line-height:1;
+    }
+    .carousel-btn:hover{
+      background:rgba(0,0,0,.8);
+      border-color:rgba(255,255,255,.5);
+    }
+    .carousel-btn.prev{ left:6px; }
+    .carousel-btn.next{ right:6px; }
+    .carousel-dots{
+      position:absolute;
+      bottom:6px;
+      left:50%;
+      transform:translateX(-50%);
+      display:flex;
+      gap:5px;
+      z-index:10;
+    }
+    .cdot{
+      width:7px;height:7px;
+      border-radius:50%;
+      background:rgba(255,255,255,.4);
+      transition:.15s ease;
+      cursor:pointer;
+    }
+    .cdot.active{
+      background:#fff;
+      box-shadow:0 0 4px rgba(255,255,255,.5);
+    }
+
+    /* ====== LIGHTBOX ====== */
+    .lightbox-overlay{
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      background:rgba(0,0,0,.88);
+      backdrop-filter:blur(12px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      visibility:hidden;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .lightbox-overlay.open{
+      opacity:1;
+      visibility:visible;
+    }
+
+    .lightbox-container{
+      position:relative;
+      width:90vw;
+      max-width:900px;
+      height:80vh;
+      max-height:680px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .lightbox-img-wrap{
+      flex:1;
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    .lightbox-img{
+      max-width:100%;
+      max-height:100%;
+      object-fit:contain;
+      border-radius:12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      user-select:none;
+      -webkit-user-drag:none;
+      transition: opacity .2s ease;
+    }
+
+    .lightbox-close{
+      position:absolute;
+      top:-12px;
+      right:-12px;
+      width:40px;
+      height:40px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.7);
+      color:#fff;
+      font-size:20px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      z-index:10;
+      transition:.15s ease;
+      line-height:1;
+    }
+    .lightbox-close:hover{
+      background:rgba(255,47,47,.8);
+      border-color:rgba(255,47,47,.5);
+    }
+
+    .lightbox-nav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.6);
+      color:#fff;
+      font-size:22px;
+      font-weight:700;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0;
+      z-index:10;
+      transition:.15s ease;
+      line-height:1;
+    }
+    .lightbox-nav:hover{
+      background:rgba(255,255,255,.15);
+      border-color:rgba(255,255,255,.4);
+    }
+    .lightbox-nav.lb-prev{ left:-60px; }
+    .lightbox-nav.lb-next{ right:-60px; }
+
+    .lightbox-dots{
+      display:flex;
+      gap:8px;
+      margin-top:16px;
+      z-index:10;
+    }
+    .lightbox-dot{
+      width:10px;height:10px;
+      border-radius:50%;
+      background:rgba(255,255,255,.35);
+      cursor:pointer;
+      transition:.15s ease;
+      border:none;
+      padding:0;
+    }
+    .lightbox-dot.active{
+      background:#fff;
+      box-shadow:0 0 8px rgba(255,255,255,.5);
+    }
+
+    .lightbox-counter{
+      position:absolute;
+      bottom:-36px;
+      left:50%;
+      transform:translateX(-50%);
+      font-family:var(--font2);
+      color:rgba(255,255,255,.6);
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    .lightbox-title{
+      position:absolute;
+      top:-44px;
+      left:0;
+      font-family:var(--font1);
+      font-weight:800;
+      font-size:16px;
+      color:#fff;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width:100%;
+    }
+
+    /* Hide nav buttons when only 1 image */
+    .lightbox-nav.lb-hidden,
+    .lightbox-dots.lb-hidden{
+      display:none;
+    }
+
+    /* Mobile adjustments for lightbox */
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr}
+      #map{height:360px}
+      .side{height:auto}
+      .timeline{max-height:320px}
+      .topbar{flex-direction:column; align-items:stretch}
+      .controls{width:100%}
+      button{flex:1}
+
+      .lightbox-container{
+        width:95vw;
+        height:75vh;
+      }
+      .lightbox-nav.lb-prev{ left:8px; }
+      .lightbox-nav.lb-next{ right:8px; }
+      .lightbox-nav{
+        width:40px;
+        height:40px;
+        font-size:18px;
+      }
+      .lightbox-close{
+        top:4px;
+        right:4px;
+      }
+      .lightbox-title{
+        top:-36px;
+        font-size:14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="redBanner">Social Tours Included in Registration Fee</div>
+
+    <div class="topbar">
+      <div class="title">
+        <h3>Sumela-Zigana Mountain-Hamsikoy Tour</h3>
+        <small>November 7, 2026</small>
+      </div>
+
+      <div class="controls">
+        <button id="playBtn" class="primary">Play Route</button>
+        <button id="fitBtn" class="ghost">Fit</button>
+      </div>
+    </div>
+
+    <div class="tourDesc">
+      As part of the social program, a Conference Tour will be organized with a full-day excursion to the most iconic natural and historical sites of the Eastern Black Sea region. The tour will depart from Osman Turan Kongre Merkezi at 09:30. After an approximately one-hour drive, participants will reach the closest accessible point to Sumela Monastery, from where local shuttle minibuses will be used to access the site, followed by a short walk to the monastery. Following the visit to Sumela Monastery, the tour will continue along the Zigana Mountain route, located at an altitude of approximately 2032 m, offering panoramic views and fresh mountain air. A short stop will be made for sightseeing and photography. The tour will then proceed to Hamsikoy, where participants will enjoy a break and taste the region's famous Hamsikoy Sutlac (rice pudding). At the end of the program, the tour will return to Trabzon.
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div id="map"></div>
+      </div>
+
+      <div class="card side">
+        <div class="hintRow">
+          <span class="chip"><span class="dot"></span> Click stop → zoom & popup</span>
+          <span class="chip"><span class="dot"></span> Click pin → photo details</span>
+        </div>
+
+        <div id="timeline" class="timeline" aria-label="Timeline"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox overlay -->
+  <div class="lightbox-overlay" id="lightbox">
+    <div class="lightbox-container">
+      <div class="lightbox-title" id="lbTitle"></div>
+      <button class="lightbox-close" id="lbClose" aria-label="Close">&#10005;</button>
+      <button class="lightbox-nav lb-prev" id="lbPrev" aria-label="Previous">&#10094;</button>
+      <button class="lightbox-nav lb-next" id="lbNext" aria-label="Next">&#10095;</button>
+      <div class="lightbox-img-wrap">
+        <img class="lightbox-img" id="lbImg" src="" alt="" />
+      </div>
+      <div class="lightbox-dots" id="lbDots"></div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-ant-path@1.3.0/dist/leaflet-ant-path.min.js"></script>
+
+  <script>
+    // ====== TOUR DATA ======
+    const TOUR = {
+      label: "Sumela-Zigana Mountain-Hamsikoy Tour",
+      date: "November 7, 2026",
+      stops: [
+        {
+          name:"Osman Turan Kongre Merkezi (Departure)",
+          lat: 41.0027, lng: 39.7168,
+          images:[
+            "https://static.wixstatic.com/media/97437f_d0289a33295f4b68809de44179210021~mv2.jpg"
+          ],
+          desc:"Meeting point & departure."
+        },
+        {
+          name:"Sumela Monastery",
+          lat: 40.6900, lng: 39.6590,
+          images:[
+            "https://static.wixstatic.com/media/97437f_5cc4659dd2fa4a76b867f4b1bef77c0c~mv2.jpg",
+            "https://static.wixstatic.com/media/97437f_c4fc8ec0879d411b816f08616514abeb~mv2.jpg",
+            "https://static.wixstatic.com/media/97437f_1c36bc158c1941f0be0f0870d9b09279~mv2.jpg"
+          ],
+          desc:"Shuttle access + short walk. Historic cliff monastery."
+        },
+        {
+          name:"Zigana Mountain (Scenic Stop)",
+          lat: 40.6440, lng: 39.4010,
+          images:[
+            "https://static.wixstatic.com/media/97437f_ba82b3862e664b848def9a55f6597505~mv2.jpg",
+            "https://static.wixstatic.com/media/ab02c7_47db7d98e4ff44dcbeb6dc1b5164628b~mv2.jpg",
+            "https://static.wixstatic.com/media/ab02c7_9ac0f798f8394fc0be597fba61d1138a~mv2.webp"
+          ],
+          desc:"Panoramic mountain views, fresh air & photography."
+        },
+        {
+          name:"Hamsikoy (Sutlac Break)",
+          lat: 40.6400, lng: 39.3420,
+          images:[
+            "https://static.wixstatic.com/media/97437f_53b5bd1e9d3b45e79183a873262bad7b~mv2.jpg",
+            "https://static.wixstatic.com/media/97437f_cc44cc90a0214f21ab4a6f3e52206671~mv2.jpg"
+          ],
+          desc:"Taste the famous Hamsikoy Sutlac (rice pudding)."
+        },
+        {
+          name:"Return to Trabzon",
+          lat: 41.0030, lng: 39.7300,
+          images:[
+            "https://images.unsplash.com/photo-1526779259212-756e79e2f6b6?auto=format&fit=crop&w=1200&q=70"
+          ],
+          desc:"Arrival back in the city."
+        }
+      ]
+    };
+
+    // ====== LIGHTBOX ======
+    const lbOverlay = document.getElementById('lightbox');
+    const lbImg     = document.getElementById('lbImg');
+    const lbTitle   = document.getElementById('lbTitle');
+    const lbClose   = document.getElementById('lbClose');
+    const lbPrev    = document.getElementById('lbPrev');
+    const lbNext    = document.getElementById('lbNext');
+    const lbDots    = document.getElementById('lbDots');
+
+    let lbImages = [];
+    let lbIndex  = 0;
+
+    function openLightbox(images, startIndex, title){
+      lbImages = images;
+      lbIndex  = startIndex || 0;
+      lbTitle.textContent = title || '';
+
+      // Show/hide nav if only 1 image
+      const single = images.length <= 1;
+      lbPrev.classList.toggle('lb-hidden', single);
+      lbNext.classList.toggle('lb-hidden', single);
+      lbDots.classList.toggle('lb-hidden', single);
+
+      renderLbDots();
+      showLbSlide(lbIndex);
+      lbOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox(){
+      lbOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+      lbImages = [];
+    }
+
+    function showLbSlide(n){
+      lbIndex = ((n % lbImages.length) + lbImages.length) % lbImages.length;
+      lbImg.style.opacity = '0';
+      setTimeout(function(){
+        lbImg.src = lbImages[lbIndex];
+        lbImg.alt = (lbTitle.textContent || 'Photo') + ' ' + (lbIndex + 1);
+        lbImg.style.opacity = '1';
+      }, 120);
+      updateLbDots();
+    }
+
+    function renderLbDots(){
+      lbDots.innerHTML = '';
+      lbImages.forEach(function(_, i){
+        const dot = document.createElement('button');
+        dot.className = 'lightbox-dot' + (i === lbIndex ? ' active' : '');
+        dot.setAttribute('aria-label', 'Go to photo ' + (i + 1));
+        dot.addEventListener('click', function(){ showLbSlide(i); });
+        lbDots.appendChild(dot);
+      });
+    }
+
+    function updateLbDots(){
+      var dots = lbDots.querySelectorAll('.lightbox-dot');
+      dots.forEach(function(d, i){
+        d.classList.toggle('active', i === lbIndex);
+      });
+    }
+
+    lbClose.addEventListener('click', closeLightbox);
+    lbPrev.addEventListener('click', function(){ showLbSlide(lbIndex - 1); });
+    lbNext.addEventListener('click', function(){ showLbSlide(lbIndex + 1); });
+
+    // Close on overlay background click
+    lbOverlay.addEventListener('click', function(e){
+      if(e.target === lbOverlay) closeLightbox();
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e){
+      if(!lbOverlay.classList.contains('open')) return;
+      if(e.key === 'Escape') closeLightbox();
+      if(e.key === 'ArrowLeft')  showLbSlide(lbIndex - 1);
+      if(e.key === 'ArrowRight') showLbSlide(lbIndex + 1);
+    });
+
+    // ====== MAP SETUP ======
+    const map = L.map('map', { zoomControl:true, scrollWheelZoom:false });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    let markersLayer = L.layerGroup().addTo(map);
+    let routeLayer = null;
+    let antLayer = null;
+    let mover = null;
+    let moverAnim = null;
+    let moverTimeout = null;
+    let moverPlaying = false;
+    let moverPausedAtStop = false;
+    let moverIdx = 0;
+    let currentCoords = [];
+
+    const playBtn = document.getElementById('playBtn');
+    const fitBtn  = document.getElementById('fitBtn');
+    const timelineEl = document.getElementById('timeline');
+
+    function popupHTML(stop){
+      const imgs = stop.images || [];
+      const hasMultiple = imgs.length > 1;
+
+      let carouselHTML = '';
+      if(imgs.length > 0){
+        const imgsHTML = imgs.map((src, i) =>
+          `<img src="${src}" alt="${stop.name}" class="carousel-img${i===0?' active':''}" data-lb-index="${i}" />`
+        ).join('');
+
+        const dotsHTML = hasMultiple
+          ? `<div class="carousel-dots">${imgs.map((_, i) =>
+              `<span class="cdot${i===0?' active':''}" data-slide="${i}"></span>`
+            ).join('')}</div>`
+          : '';
+
+        const btnsHTML = hasMultiple
+          ? `<button class="carousel-btn prev">&#10094;</button><button class="carousel-btn next">&#10095;</button>`
+          : '';
+
+        carouselHTML = `<div class="carousel" data-stop-name="${stop.name}">${imgsHTML}${btnsHTML}${dotsHTML}</div>`;
+      }
+
+      return `
+        <div class="pop">
+          ${carouselHTML}
+          <h4>${stop.name}</h4>
+          <p>${stop.desc || ""}</p>
+          <div class="meta">
+            <span class="badge">&#128205; ${stop.lat.toFixed(4)}, ${stop.lng.toFixed(4)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Carousel logic — bind on popup open
+    map.on('popupopen', function(e){
+      const container = e.popup.getElement();
+      if(!container) return;
+      const carousel = container.querySelector('.carousel');
+      if(!carousel) return;
+
+      const imgs = carousel.querySelectorAll('.carousel-img');
+      const dots = carousel.querySelectorAll('.cdot');
+      const prevBtn = carousel.querySelector('.carousel-btn.prev');
+      const nextBtn = carousel.querySelector('.carousel-btn.next');
+      const stopName = carousel.getAttribute('data-stop-name') || '';
+
+      // Collect image URLs for lightbox
+      const imageUrls = Array.from(imgs).map(function(img){ return img.src; });
+
+      let current = 0;
+      function showSlide(n){
+        current = ((n % imgs.length) + imgs.length) % imgs.length;
+        imgs.forEach((img, i) => {
+          img.classList.toggle('active', i === current);
+        });
+        dots.forEach((dot, i) => {
+          dot.classList.toggle('active', i === current);
+        });
+      }
+
+      // Click on carousel image → open lightbox
+      imgs.forEach(function(img, i){
+        img.addEventListener('click', function(ev){
+          ev.stopPropagation();
+          openLightbox(imageUrls, i, stopName);
+        });
+      });
+
+      if(prevBtn) prevBtn.addEventListener('click', function(ev){
+        ev.stopPropagation();
+        showSlide(current - 1);
+      });
+      if(nextBtn) nextBtn.addEventListener('click', function(ev){
+        ev.stopPropagation();
+        showSlide(current + 1);
+      });
+      dots.forEach(function(dot){
+        dot.addEventListener('click', function(ev){
+          ev.stopPropagation();
+          showSlide(parseInt(dot.getAttribute('data-slide')));
+        });
+      });
+    });
+
+    function makePhotoIcon(stop, idx){
+      const imgUrl = (stop.images && stop.images[0]) || '';
+      const div = document.createElement('div');
+      div.className = 'photoPin';
+      div.style.backgroundImage = `url('${imgUrl}')`;
+      div.setAttribute('data-n', String(idx+1));
+      return L.divIcon({ html: div.outerHTML, className:'', iconSize:[42,42], iconAnchor:[21,42] });
+    }
+
+    function setActiveTimeline(i){
+      [...timelineEl.querySelectorAll('.tlItem')].forEach((el,idx)=>{
+        el.classList.toggle('active', idx===i);
+      });
+    }
+
+    function buildTimeline(tour){
+      timelineEl.innerHTML = "";
+      tour.stops.forEach((s, i) => {
+        const item = document.createElement('div');
+        item.className = 'tlItem';
+        item.innerHTML = `
+          <div class="tlText">
+            <div class="name">${i+1}. ${s.name}</div>
+            <div class="desc">${s.desc || ""}</div>
+          </div>
+        `;
+        item.addEventListener('click', () => {
+          setActiveTimeline(i);
+          focusStop(i, true);
+        });
+        timelineEl.appendChild(item);
+      });
+      setActiveTimeline(0);
+    }
+
+    function focusStop(i, openPopup){
+      const stop = TOUR.stops[i];
+      map.flyTo([stop.lat, stop.lng], Math.max(map.getZoom(), 11), { duration: 0.8 });
+      const markers = Object.values(markersLayer._layers);
+      if(openPopup && markers[i]) markers[i].openPopup();
+    }
+
+    function fitToTour(tour){
+      const latlngs = tour.stops.map(s => [s.lat, s.lng]);
+      map.fitBounds(latlngs, { padding:[24,24] });
+    }
+
+    function clearRoute(){
+      if(routeLayer){ map.removeLayer(routeLayer); routeLayer=null; }
+      if(antLayer){ map.removeLayer(antLayer); antLayer=null; }
+      stopMover();
+      currentCoords = [];
+    }
+
+    function stopMover(){
+      moverPlaying = false;
+      moverPausedAtStop = false;
+      moverIdx = 0;
+      playBtn.textContent = "Play Route";
+      if(moverAnim){ cancelAnimationFrame(moverAnim); moverAnim=null; }
+      if(moverTimeout){ clearTimeout(moverTimeout); moverTimeout=null; }
+      if(mover){ map.removeLayer(mover); mover=null; }
+    }
+
+    function downsample(coords, maxPts=450){
+      if(coords.length <= maxPts) return coords;
+      const step = Math.ceil(coords.length / maxPts);
+      const out = [];
+      for(let i=0;i<coords.length;i+=step) out.push(coords[i]);
+      if(out[out.length-1] !== coords[coords.length-1]) out.push(coords[coords.length-1]);
+      return out;
+    }
+
+    async function fetchRouteOSRM(stops){
+      const pts = stops.map(s => `${s.lng},${s.lat}`).join(';');
+      const url = `https://router.project-osrm.org/route/v1/driving/${pts}?overview=full&geometries=geojson`;
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("OSRM route failed");
+      const data = await res.json();
+      const coords = data.routes?.[0]?.geometry?.coordinates || [];
+      return coords.map(c => [c[1], c[0]]);
+    }
+
+    function drawAnimatedRoute(latlngs){
+      routeLayer = L.polyline(latlngs, { weight:5, opacity:0.18 }).addTo(map);
+      antLayer = L.polyline.antPath(latlngs, {
+        delay: 650,
+        dashArray: [14, 20],
+        weight: 5,
+        color: '#ff2f2f',
+        pulseColor: 'rgba(255,255,255,.75)',
+        opacity: 0.95
+      }).addTo(map);
+    }
+
+    // Find nearest route coordinate index for a given lat/lng
+    function findNearestIndex(latlngs, lat, lng){
+      let minDist = Infinity, minIdx = 0;
+      for(let i = 0; i < latlngs.length; i++){
+        const d = (latlngs[i][0] - lat) ** 2 + (latlngs[i][1] - lng) ** 2;
+        if(d < minDist){ minDist = d; minIdx = i; }
+      }
+      return minIdx;
+    }
+
+    // Build a Map of route-index -> stop-index for pause points
+    function buildPauseMap(tour, latlngs){
+      const pauseMap = new Map();
+      // Skip first (departure) and last (return) stops
+      for(let si = 1; si < tour.stops.length - 1; si++){
+        const s = tour.stops[si];
+        const ri = findNearestIndex(latlngs, s.lat, s.lng);
+        pauseMap.set(ri, si);
+      }
+      return pauseMap;
+    }
+
+    function startMover(latlngs, resumeFrom){
+      const pauseMap = buildPauseMap(TOUR, latlngs);
+
+      if(!resumeFrom && resumeFrom !== 0){
+        // Fresh start
+        if(mover){ map.removeLayer(mover); mover=null; }
+        const icon = L.divIcon({ html:`<div class="moveDot"></div>`, className:'', iconSize:[14,14], iconAnchor:[7,7] });
+        mover = L.marker(latlngs[0], { icon }).addTo(map);
+        moverIdx = 0;
+      }
+
+      moverPlaying = true;
+      moverPausedAtStop = false;
+      playBtn.textContent = "Pause";
+
+      const step = () => {
+        if(!moverPlaying) return;
+
+        moverIdx++;
+        if(moverIdx >= latlngs.length){
+          // Loop: restart from beginning
+          moverIdx = 0;
+        }
+
+        mover.setLatLng(latlngs[moverIdx]);
+
+        // Check if we hit a stop
+        if(pauseMap.has(moverIdx)){
+          const stopIdx = pauseMap.get(moverIdx);
+          moverPausedAtStop = true;
+          setActiveTimeline(stopIdx);
+
+          // Open popup on the marker
+          const markers = Object.values(markersLayer._layers);
+          if(markers[stopIdx]) markers[stopIdx].openPopup();
+
+          // Pause for 2 seconds then continue
+          moverTimeout = setTimeout(() => {
+            moverTimeout = null;
+            moverPausedAtStop = false;
+            if(moverPlaying){
+              map.closePopup();
+              moverAnim = requestAnimationFrame(step);
+            }
+          }, 2000);
+          return;
+        }
+
+        moverAnim = requestAnimationFrame(step);
+      };
+
+      moverAnim = requestAnimationFrame(step);
+    }
+
+    async function loadTour(){
+      markersLayer.clearLayers();
+      TOUR.stops.forEach((s, idx) => {
+        const mk = L.marker([s.lat, s.lng], { icon: makePhotoIcon(s, idx) })
+          .bindPopup(popupHTML(s), { maxWidth:280, closeButton:true });
+        mk.on('click', () => setActiveTimeline(idx));
+        markersLayer.addLayer(mk);
+      });
+
+      buildTimeline(TOUR);
+      clearRoute();
+      fitToTour(TOUR);
+
+      try{
+        const route = await fetchRouteOSRM(TOUR.stops);
+        currentCoords = downsample(route, 500);
+      }catch(e){
+        currentCoords = TOUR.stops.map(s => [s.lat, s.lng]);
+      }
+
+      drawAnimatedRoute(currentCoords);
+
+      // Auto-play after a short delay so map fully renders
+      setTimeout(() => {
+        if(currentCoords.length >= 2 && !moverPlaying){
+          startMover(currentCoords);
+        }
+      }, 800);
+    }
+
+    // UI events
+    playBtn.addEventListener('click', ()=>{
+      if(!currentCoords || currentCoords.length < 2) return;
+
+      if(moverPlaying){
+        // Pause
+        moverPlaying = false;
+        moverPausedAtStop = false;
+        if(moverAnim){ cancelAnimationFrame(moverAnim); moverAnim=null; }
+        if(moverTimeout){ clearTimeout(moverTimeout); moverTimeout=null; }
+        playBtn.textContent = "Play Route";
+      } else if(mover){
+        // Resume from current position
+        startMover(currentCoords, moverIdx);
+      } else {
+        // Start fresh
+        startMover(currentCoords);
+      }
+    });
+
+    fitBtn.addEventListener('click', ()=>{
+      fitToTour(TOUR);
+    });
+
+    // Init
+    loadTour();
+  </script>
+</body>
+</html>
