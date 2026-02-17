@@ -351,6 +351,9 @@
     @media(min-width:720px){
       .twoCols{grid-template-columns:1fr 1fr}
     }
+    .eqHeight{align-items:stretch}
+    .eqHeight>.stackCol{display:flex;flex-direction:column}
+    .flexGrow{flex:1}
 
     /* Check list */
     .checkList{list-style:none;padding-left:0}
@@ -720,10 +723,10 @@
           <!-- Submission Details heading -->
           <h3 class="sectionHead">Submission Details</h3>
 
-          <div class="twoCols">
-            <!-- Left stack: Details + Prizes -->
+          <div class="twoCols eqHeight">
+            <!-- Left: Details only (stretches full height) -->
             <div class="stackCol">
-              <div class="panel" id="m_details">
+              <div class="panel flexGrow" id="m_details">
                 <h3 class="secTitle">Submission Details</h3>
                 <ul>
                   <li>Original micrographs only (not published earlier, not AI-generated)</li>
@@ -737,19 +740,9 @@
                   <li>Awarded images may be used on the cover page of the TriboSurf'26 Conference proceedings</li>
                 </ul>
               </div>
-
-              <div class="panel" id="m_prizes">
-                <h3 class="secTitle">Prizes</h3>
-                <div class="awardsRow">
-                  <span class="awardPill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18" stroke="#ffd700" stroke-width="2"/><path d="M4 22h16M10 14.66V18c0 .55-.47.98-.97 1.21C7.85 19.75 6 20.67 6 22h12c0-1.33-1.85-2.25-3.03-2.79A1.07 1.07 0 0 1 14 18v-3.34" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" stroke="#ffd700" stroke-width="2"/></svg> 1st</span>
-                  <span class="awardPill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18" stroke="#c0c0c0" stroke-width="2"/><path d="M4 22h16M10 14.66V18c0 .55-.47.98-.97 1.21C7.85 19.75 6 20.67 6 22h12c0-1.33-1.85-2.25-3.03-2.79A1.07 1.07 0 0 1 14 18v-3.34" stroke="#c0c0c0" stroke-width="2" stroke-linecap="round"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" stroke="#c0c0c0" stroke-width="2"/></svg> 2nd</span>
-                  <span class="awardPill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18" stroke="#cd7f32" stroke-width="2"/><path d="M4 22h16M10 14.66V18c0 .55-.47.98-.97 1.21C7.85 19.75 6 20.67 6 22h12c0-1.33-1.85-2.25-3.03-2.79A1.07 1.07 0 0 1 14 18v-3.34" stroke="#cd7f32" stroke-width="2" stroke-linecap="round"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" stroke="#cd7f32" stroke-width="2"/></svg> 3rd</span>
-                </div>
-                <p class="note">Prizes will be provided to first, second, and third places as well as all finalists by our sponsors.</p>
-              </div>
             </div>
 
-            <!-- Right stack: Jury + Important Dates -->
+            <!-- Right stack: Jury + Important Dates + Prizes -->
             <div class="stackCol">
               <div class="panel" id="m_jury">
                 <h3 class="secTitle">Jury</h3>
@@ -772,6 +765,16 @@
                     <div class="tDate">TRiboSurf'26 Gala Dinner (or special session during the conference)</div>
                   </div>
                 </div>
+              </div>
+
+              <div class="panel" id="m_prizes">
+                <h3 class="secTitle">Prizes</h3>
+                <div class="awardsRow">
+                  <span class="awardPill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18" stroke="#ffd700" stroke-width="2"/><path d="M4 22h16M10 14.66V18c0 .55-.47.98-.97 1.21C7.85 19.75 6 20.67 6 22h12c0-1.33-1.85-2.25-3.03-2.79A1.07 1.07 0 0 1 14 18v-3.34" stroke="#ffd700" stroke-width="2" stroke-linecap="round"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" stroke="#ffd700" stroke-width="2"/></svg> 1st</span>
+                  <span class="awardPill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18" stroke="#c0c0c0" stroke-width="2"/><path d="M4 22h16M10 14.66V18c0 .55-.47.98-.97 1.21C7.85 19.75 6 20.67 6 22h12c0-1.33-1.85-2.25-3.03-2.79A1.07 1.07 0 0 1 14 18v-3.34" stroke="#c0c0c0" stroke-width="2" stroke-linecap="round"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" stroke="#c0c0c0" stroke-width="2"/></svg> 2nd</span>
+                  <span class="awardPill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18" stroke="#cd7f32" stroke-width="2"/><path d="M4 22h16M10 14.66V18c0 .55-.47.98-.97 1.21C7.85 19.75 6 20.67 6 22h12c0-1.33-1.85-2.25-3.03-2.79A1.07 1.07 0 0 1 14 18v-3.34" stroke="#cd7f32" stroke-width="2" stroke-linecap="round"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" stroke="#cd7f32" stroke-width="2"/></svg> 3rd</span>
+                </div>
+                <p class="note">Prizes will be provided to first, second, and third places as well as all finalists by our sponsors.</p>
               </div>
             </div>
           </div>
