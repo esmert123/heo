@@ -477,8 +477,151 @@
       .templateHead{font-size:14px}
     }
 
+    /* ── SUBMIT BUTTON (accent) ── */
+    .btnSubmit{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 18px;
+      border-radius:14px;
+      border:1px solid rgba(255,59,59,.45);
+      background:linear-gradient(135deg,rgba(255,59,59,.28),rgba(255,59,59,.14));
+      color:#fff;
+      font-weight:800;
+      font-size:13.5px;
+      cursor:pointer;
+      white-space:nowrap;
+      box-shadow:0 8px 24px rgba(255,59,59,.18);
+      transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease;
+    }
+    .btnSubmit:hover{
+      transform:translateY(-1px);
+      box-shadow:0 12px 32px rgba(255,59,59,.28);
+      border-color:rgba(255,59,59,.65);
+    }
+
+    /* ── MODAL ── */
+    .modal{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+    .modal.open{display:flex}
+    .modalBackdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,.72);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+    }
+    .modalContent{
+      position:relative;
+      width:100%;
+      max-width:480px;
+      max-height:90vh;
+      overflow-y:auto;
+      border-radius:var(--r1);
+      border:1px solid var(--stroke2);
+      background:
+        radial-gradient(600px 200px at 20% 0%,rgba(255,59,59,.16),transparent 60%),
+        radial-gradient(600px 200px at 80% 0%,rgba(90,120,255,.16),transparent 60%),
+        linear-gradient(180deg,rgba(14,18,50,.97),rgba(8,12,38,.98));
+      box-shadow:0 24px 80px rgba(0,0,0,.6);
+      padding:clamp(16px,3vw,24px);
+    }
+    .modalHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+    }
+    .modalTitle{
+      font-size:18px;
+      font-weight:900;
+      color:#fff;
+      margin:0;
+    }
+    .modalClose{
+      appearance:none;
+      border:1px solid var(--chipStroke);
+      background:var(--chip);
+      color:#fff;
+      width:32px;height:32px;
+      border-radius:10px;
+      display:grid;place-items:center;
+      cursor:pointer;
+      transition:border-color .15s ease;
+    }
+    .modalClose:hover{border-color:rgba(255,59,59,.5)}
+    .formGroup{margin-bottom:14px}
+    .formLabel{
+      display:block;
+      font-weight:700;
+      font-size:13px;
+      color:rgba(255,255,255,.85);
+      margin-bottom:6px;
+    }
+    .formInput,.formSelect,.formTextarea{
+      width:100%;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--chipStroke);
+      background:rgba(255,255,255,.06);
+      color:#fff;
+      font-family:inherit;
+      font-size:13.5px;
+      outline:none;
+      transition:border-color .15s ease;
+    }
+    .formInput:focus,.formSelect:focus,.formTextarea:focus{
+      border-color:rgba(255,59,59,.5);
+    }
+    .formInput::placeholder,.formTextarea::placeholder{color:rgba(255,255,255,.35)}
+    .formSelect option{background:#1a1e3a;color:#fff}
+    .formTextarea{resize:vertical;min-height:80px}
+    .formHint{
+      font-size:11.5px;
+      color:rgba(255,255,255,.5);
+      margin-top:4px;
+    }
+    .formFile{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px dashed var(--chipStroke);
+      background:rgba(255,255,255,.04);
+      color:rgba(255,255,255,.7);
+      cursor:pointer;
+      text-align:center;
+      font-size:13px;
+      transition:border-color .15s ease;
+    }
+    .formFile:hover{border-color:rgba(255,59,59,.4)}
+    .formFile input[type="file"]{display:none}
+    .btnFormSubmit{
+      width:100%;
+      padding:12px;
+      border-radius:14px;
+      border:none;
+      background:linear-gradient(135deg,#ff3b3b,#cc2a2a);
+      color:#fff;
+      font-weight:900;
+      font-size:14px;
+      cursor:pointer;
+      box-shadow:0 8px 24px rgba(255,59,59,.25);
+      transition:transform .15s ease,box-shadow .15s ease;
+      margin-top:6px;
+    }
+    .btnFormSubmit:hover{
+      transform:translateY(-1px);
+      box-shadow:0 12px 32px rgba(255,59,59,.35);
+    }
+
     @media(prefers-reduced-motion:reduce){
-      .card,.btn,.jump button{transition:none}
+      .card,.btn,.btnSubmit,.jump button,.modalClose,.btnFormSubmit{transition:none}
     }
   </style>
 </head>
@@ -671,6 +814,10 @@
                 </div>
                 <h2 class="h1">Art of the Micrograph</h2>
               </div>
+              <button class="btnSubmit" id="openModal" type="button">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>
+                Submit
+              </button>
             </div>
 
             <!-- Overview -->
@@ -785,6 +932,69 @@
     </div>
   </div>
 
+  <!-- ═══════════ MODAL : MICROGRAPH SUBMISSION ═══════════ -->
+  <div class="modal" id="submitModal" role="dialog" aria-labelledby="modalTitle" aria-modal="true">
+    <div class="modalBackdrop" id="modalBackdrop"></div>
+    <div class="modalContent">
+      <div class="modalHead">
+        <h2 class="modalTitle" id="modalTitle">Submit Your Micrograph</h2>
+        <button class="modalClose" id="closeModal" type="button" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M18 6 6 18M6 6l12 12" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <form id="microForm" autocomplete="off">
+        <div class="formGroup">
+          <label class="formLabel" for="mf_name">Full Name *</label>
+          <input class="formInput" id="mf_name" type="text" placeholder="Your full name" required />
+        </div>
+
+        <div class="formGroup">
+          <label class="formLabel" for="mf_email">E-mail *</label>
+          <input class="formInput" id="mf_email" type="email" placeholder="you@university.edu" required />
+        </div>
+
+        <div class="formGroup">
+          <label class="formLabel" for="mf_affiliation">Affiliation *</label>
+          <input class="formInput" id="mf_affiliation" type="text" placeholder="University / Institute" required />
+        </div>
+
+        <div class="formGroup">
+          <label class="formLabel" for="mf_category">Category *</label>
+          <select class="formSelect" id="mf_category" required>
+            <option value="" disabled selected>Select a category</option>
+            <option>Most Aesthetic Microstructure</option>
+            <option>Most Innovative Imaging Technique</option>
+            <option>Best Storytelling (Image + Description)</option>
+          </select>
+        </div>
+
+        <div class="formGroup">
+          <label class="formLabel">Micrograph Image(s) *</label>
+          <label class="formFile">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="vertical-align:middle;margin-right:6px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round"/><path d="M17 8l-5-5-5 5M12 3v12" stroke="rgba(255,255,255,.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span id="fileLabel">Click to upload (JPG, PNG, TIFF)</span>
+            <input type="file" id="mf_file" accept=".jpg,.jpeg,.png,.tiff,.tif" multiple required />
+          </label>
+          <div class="formHint">Up to 2 images, minimum 300 dpi</div>
+        </div>
+
+        <div class="formGroup">
+          <label class="formLabel" for="mf_technique">Imaging Technique *</label>
+          <input class="formInput" id="mf_technique" type="text" placeholder="e.g. SEM, AFM, TEM, optical microscopy" required />
+        </div>
+
+        <div class="formGroup">
+          <label class="formLabel" for="mf_caption">Technical Caption *</label>
+          <textarea class="formTextarea" id="mf_caption" placeholder="Technique, material/sample, magnification, key feature..." maxlength="250" required></textarea>
+          <div class="formHint"><span id="charCount">0</span> / 250 characters</div>
+        </div>
+
+        <button class="btnFormSubmit" type="submit">Submit Micrograph</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Jump chips behavior -->
   <script>
     document.addEventListener("click", (e) => {
@@ -806,6 +1016,46 @@
     toggle.addEventListener("click", () => {
       const open = extra.classList.toggle("open");
       toggle.textContent = open ? "− Show less" : "+ Show more";
+    });
+  })();
+  </script>
+
+  <!-- Modal behavior -->
+  <script>
+  (() => {
+    const modal    = document.getElementById("submitModal");
+    const openBtn  = document.getElementById("openModal");
+    const closeBtn = document.getElementById("closeModal");
+    const backdrop = document.getElementById("modalBackdrop");
+    const caption  = document.getElementById("mf_caption");
+    const charCount= document.getElementById("charCount");
+    const fileInput= document.getElementById("mf_file");
+    const fileLabel= document.getElementById("fileLabel");
+
+    const open  = () => { modal.classList.add("open"); document.body.style.overflow = "hidden"; };
+    const close = () => { modal.classList.remove("open"); document.body.style.overflow = ""; };
+
+    openBtn.addEventListener("click", open);
+    closeBtn.addEventListener("click", close);
+    backdrop.addEventListener("click", close);
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+
+    caption.addEventListener("input", () => {
+      charCount.textContent = caption.value.length;
+    });
+
+    fileInput.addEventListener("change", () => {
+      const n = fileInput.files.length;
+      fileLabel.textContent = n > 0 ? n + " file(s) selected" : "Click to upload (JPG, PNG, TIFF)";
+    });
+
+    document.getElementById("microForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      alert("Thank you! Your micrograph has been submitted successfully.");
+      close();
+      e.target.reset();
+      charCount.textContent = "0";
+      fileLabel.textContent = "Click to upload (JPG, PNG, TIFF)";
     });
   })();
   </script>
