@@ -64,8 +64,8 @@ function bindSlider(comp, getCache) {
 $w.onReady(async function () {
   bindHtml($w("#htmlRefsAll"),     () => cacheRefs);     // Referanslarımız = hizmet hariç
   bindHtml($w("#htmlRefsService"), () => cacheService);  // Hizmet Referanslarımız = sadece hizmet
-  bindSlider($w("#htmlSlider"),    () => cacheSlider);   // Anasayfa slider = logosu olan tümü
-  // NOT: Wix editörde slider HTML bileşeninin ID'sini "htmlSlider" olarak ayarlayın.
+  bindSlider($w("#ReferencesSlider"), () => cacheSlider);   // Anasayfa slider = logosu olan tümü
+  // NOT: Wix editörde slider HTML bileşeninin ID'sini "ReferencesSlider" olarak ayarlayın.
 
   const res = await wixData.query("Import4").limit(1000).find();
 
@@ -96,5 +96,5 @@ $w.onReady(async function () {
 
   $w("#htmlRefsAll").postMessage({ type: "refsData", items: cacheRefs });
   $w("#htmlRefsService").postMessage({ type: "refsData", items: cacheService });
-  $w("#htmlSlider").postMessage({ type: "sliderData", items: cacheSlider });
+  $w("#ReferencesSlider").postMessage({ type: "sliderData", items: cacheSlider });
 });
