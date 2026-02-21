@@ -113,7 +113,7 @@
       border-color: var(--bordo);
     }
     .logo{
-      height: 90px;
+      height: 130px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -123,8 +123,8 @@
       padding: 10px;
     }
     .logo img{
-      height: 70px;
-      max-width: 200px;
+      height: 108px;
+      max-width: 220px;
       width:100%;
       object-fit: contain;
       filter: drop-shadow(0 4px 8px rgba(10,20,45,.10));
@@ -143,19 +143,44 @@
     .meta{
       display:flex;
       align-items:center;
-      gap: 5px;
+      justify-content: space-between;
+      gap: 6px;
       font-family: var(--subFont);
       font-weight: 300;
       color: var(--muted);
       font-size: 12.5px;
       line-height: 1.35;
       margin: 0 6px 4px;
-      text-align:left;
-      min-height: 18px;
+      min-height: 22px;
     }
-    .meta svg{
+    .meta-loc{
+      display:inline-flex;
+      align-items:center;
+      gap: 4px;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .meta-loc svg{
       flex-shrink: 0;
       opacity: .7;
+    }
+    .meta-loc span{
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .type-badge{
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 10.5px;
+      font-weight: 500;
+      padding: 3px 8px 3px 5px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      font-family: var(--subFont);
+      letter-spacing: .2px;
     }
     .section-divider{
       border: none;
@@ -214,7 +239,7 @@
       return href;
     }
 
-    /* Debounced: iki bölüm arka arkaya güncellendiğinde flood önler */
+    /* Debounced height notification */
     let _heightTimer = null;
     function notifyHeight(){
       clearTimeout(_heightTimer);
@@ -228,6 +253,45 @@
       <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z" stroke="rgba(143,29,61,.65)" stroke-width="2" fill="rgba(143,29,61,.10)"/>
       <circle cx="12" cy="9" r="2.5" fill="rgba(143,29,61,.65)"/>
     </svg>`;
+
+    /* ─────────────────────────────────────────────────────────────────
+       Kurum Tipi tanımları
+       CMS'de "kurumTipi" alanına girilecek değer → ikon + renk + etiket
+       Geçerli değerler: universite | sanayi | arge
+    ──────────────────────────────────────────────────────────────────── */
+    const KURUMTIPI = {
+      universite: {
+        label: "Üniversite",
+        color: "#1d4ed8",
+        bg: "rgba(29,78,216,.10)",
+        icon: `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838l-2.727 1.17 1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0z"/>
+        </svg>`
+      },
+      sanayi: {
+        label: "Sanayi",
+        color: "#b45309",
+        bg: "rgba(180,83,9,.10)",
+        icon: `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"/>
+        </svg>`
+      },
+      arge: {
+        label: "ARGE",
+        color: "#047857",
+        bg: "rgba(4,120,87,.10)",
+        icon: `<svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7 2a1 1 0 00-.707 1.707L7 4.414v3.758a1 1 0 01-.293.707l-4 4C1.293 14.293 2.18 17 4.343 17H15.657c2.162 0 3.05-2.707 1.636-4.121l-4-4A1 1 0 0113 8.172V4.414l.707-.707A1 1 0 0013 2H7zm2 6.172V4h2v4.172a3 3 0 00.879 2.12l1.027 1.028a4 4 0 00-2.171.102l-.47.156a4 4 0 01-2.53 0l-.563-.187a1.993 1.993 0 00-.114-.035l1.063-1.063A3 3 0 009 8.172z" clip-rule="evenodd"/>
+        </svg>`
+      }
+    };
+
+    function renderTypeBadge(kurumTipi) {
+      const key = safeText(kurumTipi).toLowerCase();
+      const info = KURUMTIPI[key];
+      if (!info) return "";
+      return `<span class="type-badge" style="color:${info.color};background:${info.bg}" title="${info.label}">${info.icon}<span>${info.label}</span></span>`;
+    }
 
     /* ── Bölüm fabrikası ───────────────────────────────────────────── */
     function createSection({ searchId, countId, gridId }) {
@@ -246,11 +310,15 @@
           const logo  = safeText(item.logo);
           const href  = toHref(item.website);
           const loc   = [city, country].filter(Boolean).join(" / ");
+          const typeBadge = renderTypeBadge(item.kurumTipi);
           return `
             <div class="card" tabindex="0" role="link" data-href="${href}">
               <div class="logo">${logo ? `<img src="${logo}" alt="${title} logo" loading="lazy">` : ""}</div>
               <div class="name">${title}</div>
-              <div class="meta">${loc ? `${locationIcon}<span>${loc}</span>` : "&nbsp;"}</div>
+              <div class="meta">
+                <span class="meta-loc">${loc ? `${locationIcon}<span>${loc}</span>` : "&nbsp;"}</span>
+                ${typeBadge}
+              </div>
             </div>
           `;
         }).join("");
@@ -275,7 +343,10 @@
         if(!q){ render(allItems); return; }
         const filtered = allItems.filter(it => {
           const tagsText = Array.isArray(it.tags) ? it.tags.join(" ") : "";
-          const hay = normalize([it.title, it.city, it.country, tagsText].join(" "));
+          // kurumTipi key ve label'ı da aramaya dahil et
+          const tipiKey   = safeText(it.kurumTipi).toLowerCase();
+          const tipiLabel = KURUMTIPI[tipiKey]?.label || "";
+          const hay = normalize([it.title, it.city, it.country, tagsText, tipiKey, tipiLabel].join(" "));
           return hay.includes(q);
         });
         render(filtered);
