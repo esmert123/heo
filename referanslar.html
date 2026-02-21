@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spinnaker&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bordo:#8F1D3D;
+      --card:#ffffff;
+      --stroke: rgba(20,32,60,.10);
+      --text: rgba(10,16,28,.92);
+      --muted: rgba(10,16,28,.72);
+      --radius:18px;
+      --shadow: 0 10px 26px rgba(10,20,45,.10);
+      --shadowHover: 0 24px 56px rgba(10,20,45,.22), 0 0 0 2px var(--bordo);
+      --titleFont: "Spinnaker", Arial, sans-serif;
+      --subFont: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0; padding:0; width:100%; background:transparent}
+    .wrap{
+      max-width: 1400px;
+      margin:0 auto;
+      padding: 14px 14px 10px;
+      font-family: var(--subFont);
+    }
+    .titleBar{
+      display:flex;
+      justify-content:flex-start;
+      padding: 2px 0 12px;
+    }
+    .titleBar h2{
+      margin:0;
+      font-family: var(--titleFont);
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--bordo);
+      letter-spacing: .2px;
+    }
+    .toolbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin: 0 0 14px;
+      flex-wrap:wrap;
+    }
+    .search{
+      flex:1 1 520px;
+      min-width: 260px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 14px;
+      border:1px solid var(--stroke);
+      border-radius: 14px;
+      background: rgba(255,255,255,.86);
+      box-shadow: 0 6px 18px rgba(10,20,45,.06);
+    }
+    .search input{
+      border:0; outline:0; background:transparent;
+      width:100%;
+      font-size:14px;
+      color: var(--text);
+      font-family: var(--subFont);
+      font-weight: 300;
+    }
+    .count{
+      font-size:13px;
+      color: var(--muted);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border:1px dashed rgba(20,32,60,.16);
+      background: rgba(255,255,255,.65);
+      white-space:nowrap;
+      font-family: var(--subFont);
+      font-weight: 300;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(260px, 1fr));
+      gap: 18px;
+    }
+    @media (max-width: 1200px){
+      .grid{ grid-template-columns: repeat(3, minmax(240px, 1fr)); }
+    }
+    @media (max-width: 860px){
+      .grid{ grid-template-columns: repeat(2, minmax(240px, 1fr)); }
+    }
+    @media (max-width: 520px){
+      .wrap{ padding: 12px 10px 8px; }
+      .titleBar h2{ font-size: 24px; }
+      .grid{ grid-template-columns: 1fr; gap: 14px; }
+    }
+    .card{
+      position:relative;
+      background: var(--card);
+      border:1px solid var(--stroke);
+      border-left: 3px solid transparent;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px 16px 16px;
+      overflow:hidden;
+      cursor:pointer;
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+    .card:hover{
+      transform: translateY(-8px) scale(1.015);
+      box-shadow: var(--shadowHover);
+      border-color: var(--bordo);
+    }
+    .logo{
+      height: 90px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin: 4px 0 14px;
+      background: rgba(143,29,61,.04);
+      border-radius: 12px;
+      padding: 10px;
+    }
+    .logo img{
+      height: 70px;
+      max-width: 200px;
+      width:100%;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 8px rgba(10,20,45,.10));
+    }
+    .name{
+      font-family: var(--titleFont);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: .8px;
+      color: var(--text);
+      line-height: 1.25;
+      margin: 6px 6px 8px;
+      text-transform: uppercase;
+      text-align:left;
+    }
+    .meta{
+      display:flex;
+      align-items:center;
+      gap: 5px;
+      font-family: var(--subFont);
+      font-weight: 300;
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.35;
+      margin: 0 6px 4px;
+      text-align:left;
+      min-height: 18px;
+    }
+    .meta svg{
+      flex-shrink: 0;
+      opacity: .7;
+    }
+    .section-divider{
+      border: none;
+      border-top: 2px solid rgba(143,29,61,.15);
+      margin: 48px 14px 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== BÖLÜM 1: Referanslarımız ===== -->
+  <div class="wrap">
+    <div class="titleBar"><h2>Referanslarımız</h2></div>
+    <div class="toolbar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M10.5 19a8.5 8.5 0 1 1 0-17 8.5 8.5 0 0 1 0 17Z" stroke="rgba(10,16,28,.55)" stroke-width="2"/>
+          <path d="M16.8 16.8 22 22" stroke="rgba(10,16,28,.55)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="refs-q" placeholder="Referans ara (kurum / şehir / ülke)..." />
+      </div>
+      <div class="count" id="refs-count">0 kayıt</div>
+    </div>
+    <div class="grid" id="refs-grid"></div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ===== BÖLÜM 2: Hizmet Referanslarımız ===== -->
+  <div class="wrap">
+    <div class="titleBar"><h2>Hizmet Referanslarımız</h2></div>
+    <div class="toolbar">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path d="M10.5 19a8.5 8.5 0 1 1 0-17 8.5 8.5 0 0 1 0 17Z" stroke="rgba(10,16,28,.55)" stroke-width="2"/>
+          <path d="M16.8 16.8 22 22" stroke="rgba(10,16,28,.55)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input id="hizmet-q" placeholder="Hizmet referansı ara (kurum / şehir / ülke)..." />
+      </div>
+      <div class="count" id="hizmet-count">0 kayıt</div>
+    </div>
+    <div class="grid" id="hizmet-grid"></div>
+  </div>
+
+  <script>
+    /* ── Ortak yardımcılar ─────────────────────────────────────────── */
+    const safeText = v => (v ?? "").toString().trim();
+    const normalize = v => safeText(v).toLowerCase().replace(/\s+/g,' ');
+
+    function toHref(raw){
+      const w = safeText(raw);
+      if(!w) return "";
+      const href = w.startsWith("http") ? w : `https://${w}`;
+      const label = href.replace(/^https?:\/\//,'');
+      if(!label.includes(".")) return "";
+      return href;
+    }
+
+    /* Debounced: iki bölüm arka arkaya güncellendiğinde flood önler */
+    let _heightTimer = null;
+    function notifyHeight(){
+      clearTimeout(_heightTimer);
+      _heightTimer = setTimeout(() => {
+        const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        window.parent?.postMessage({ type:"refsSetHeight", height: h }, "*");
+      }, 50);
+    }
+
+    const locationIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7Z" stroke="rgba(143,29,61,.65)" stroke-width="2" fill="rgba(143,29,61,.10)"/>
+      <circle cx="12" cy="9" r="2.5" fill="rgba(143,29,61,.65)"/>
+    </svg>`;
+
+    /* ── Bölüm fabrikası ───────────────────────────────────────────── */
+    function createSection({ searchId, countId, gridId }) {
+      let allItems = [];
+
+      const inputEl = document.getElementById(searchId);
+      const countEl = document.getElementById(countId);
+      const gridEl  = document.getElementById(gridId);
+
+      function render(items){
+        countEl.textContent = `${items.length} kayıt`;
+        gridEl.innerHTML = items.map(item => {
+          const title = safeText(item.title);
+          const city  = safeText(item.city);
+          const country = safeText(item.country);
+          const logo  = safeText(item.logo);
+          const href  = toHref(item.website);
+          const loc   = [city, country].filter(Boolean).join(" / ");
+          return `
+            <div class="card" tabindex="0" role="link" data-href="${href}">
+              <div class="logo">${logo ? `<img src="${logo}" alt="${title} logo" loading="lazy">` : ""}</div>
+              <div class="name">${title}</div>
+              <div class="meta">${loc ? `${locationIcon}<span>${loc}</span>` : "&nbsp;"}</div>
+            </div>
+          `;
+        }).join("");
+
+        gridEl.querySelectorAll(".card").forEach(card => {
+          const href = card.getAttribute("data-href");
+          const go = () => { if(href) window.open(href, "_blank", "noopener"); };
+          card.addEventListener("click", go);
+          card.addEventListener("keydown", (e) => {
+            if(e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); }
+          });
+        });
+
+        gridEl.querySelectorAll("img").forEach(img =>
+          img.addEventListener("load", () => setTimeout(notifyHeight, 40))
+        );
+        notifyHeight();
+      }
+
+      function applySearch(){
+        const q = normalize(inputEl.value);
+        if(!q){ render(allItems); return; }
+        const filtered = allItems.filter(it => {
+          const tagsText = Array.isArray(it.tags) ? it.tags.join(" ") : "";
+          const hay = normalize([it.title, it.city, it.country, tagsText].join(" "));
+          return hay.includes(q);
+        });
+        render(filtered);
+      }
+
+      inputEl.addEventListener("input", applySearch);
+      window.addEventListener("resize", () => setTimeout(notifyHeight, 140));
+
+      return {
+        load(items){
+          allItems = Array.isArray(items) ? items : [];
+          applySearch();
+        }
+      };
+    }
+
+    /* ── Bölümleri başlat ─────────────────────────────────────────── */
+    const refsSection   = createSection({ searchId:"refs-q",   countId:"refs-count",   gridId:"refs-grid" });
+    const hizmetSection = createSection({ searchId:"hizmet-q", countId:"hizmet-count", gridId:"hizmet-grid" });
+
+    /* ── Mesaj yönlendirici ───────────────────────────────────────── */
+    window.onmessage = (event) => {
+      const msg = event.data || {};
+      if(msg.type === "refsData"   && Array.isArray(msg.items)) refsSection.load(msg.items);
+      if(msg.type === "hizmetData" && Array.isArray(msg.items)) hizmetSection.load(msg.items);
+    };
+
+    /* Sayfa hazır sinyali (tek sefer) */
+    window.parent?.postMessage({ type: "refsReady" }, "*");
+  </script>
+</body>
+</html>
