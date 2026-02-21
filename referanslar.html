@@ -20,7 +20,7 @@
       --subFont: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,sans-serif;
     }
     *{box-sizing:border-box}
-    html,body{margin:0; padding:0; width:100%; background:transparent}
+    html,body{margin:0; padding:0; width:100%; background:transparent; overflow-x:hidden}
     .wrap{
       max-width: 1400px;
       margin:0 auto;
@@ -81,19 +81,13 @@
     }
     .grid{
       display:grid;
-      grid-template-columns: repeat(4, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
       gap: 18px;
-    }
-    @media (max-width: 1200px){
-      .grid{ grid-template-columns: repeat(3, minmax(240px, 1fr)); }
-    }
-    @media (max-width: 860px){
-      .grid{ grid-template-columns: repeat(2, minmax(240px, 1fr)); }
     }
     @media (max-width: 520px){
       .wrap{ padding: 12px 10px 8px; }
       .titleBar h2{ font-size: 24px; }
-      .grid{ grid-template-columns: 1fr; gap: 14px; }
+      .grid{ gap: 14px; }
     }
     .card{
       position:relative;
