@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+    --bg: #f4f7fb;
+    --bg-rgb: 244,247,251;
+    --logoH: clamp(90px, 12.5vw, 150px);
+    --tileW: clamp(220px, 25vw, 360px);
+    --gap: clamp(6px, 0.8vw, 14px);
+    --speed: 75s;
+  }
+  html,body{ margin:0; padding:0; background:var(--bg); font-family:Arial,sans-serif; }
+
+  .refs-wrap{
+    width: 100%;
+    background: var(--bg);
+    padding: 28px 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .marquee{
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    padding: 20px 0;
+  }
+
+  /* Hover'da çıkan sade başlık */
+  .hover-title{
+    position: absolute;
+    left: 14px;
+    top: 10px;
+    z-index: 5;
+    pointer-events: none;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: .2px;
+    color: rgba(12,32,64,.92);
+    background: rgba(255,255,255,.78);
+    border: 1px solid rgba(11,94,215,.18);
+    border-radius: 999px;
+    padding: 6px 10px;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity .18s ease, transform .18s ease;
+    backdrop-filter: blur(8px);
+  }
+  .marquee:hover .hover-title{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Kenarlarda yumuşak fade */
+  .marquee::before,
+  .marquee::after{
+    content: "";
+    position: absolute; top: 0; bottom: 0;
+    width: 80px;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .marquee::before{
+    left: 0;
+    background: linear-gradient(90deg, rgba(var(--bg-rgb),1), rgba(var(--bg-rgb),0));
+  }
+  .marquee::after{
+    right: 0;
+    background: linear-gradient(270deg, rgba(var(--bg-rgb),1), rgba(var(--bg-rgb),0));
+  }
+
+  .track{
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    width: max-content;
+    will-change: transform;
+    animation: scroll var(--speed) linear infinite;
+    transform: translate3d(0,0,0);
+  }
+
+  /* Hover'da akış dursun */
+  .marquee:hover .track{ animation-play-state: paused; }
+
+  .item{
+    width: var(--tileW);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 10px;
+    border-radius: 14px;
+    flex-shrink: 0;
+  }
+
+  /* Link varsa tüm item tıklanabilir görünsün */
+  .item a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .item img{
+    max-height: var(--logoH);
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: transform .18s ease;
+  }
+  .item:hover img{
+    transform: translateY(-1px);
+  }
+
+  @keyframes scroll{
+    from{ transform: translate3d(0,0,0); }
+    to{   transform: translate3d(-50%,0,0); }
+  }
+
+  @media (max-width: 520px){
+    .refs-wrap{ padding: 16px 0; }
+    .marquee{ padding: 14px 0; }
+    .marquee::before,.marquee::after{ width: 40px; }
+    .hover-title{ left: 10px; top: 8px; font-size: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .track{ animation: none; }
+    .marquee::before,.marquee::after{ display: none; }
+  }
+
+  /* Yükleme öncesi boş alan titremesini önle */
+  .track:empty::after{
+    content: "";
+    display: block;
+    width: 1px;
+    height: clamp(90px,12.5vw,150px);
+  }
+</style>
+</head>
+<body>
+
+<section class="refs-wrap">
+  <div class="marquee" aria-label="Referanslar logo slider">
+    <div class="hover-title">Referanslarımız</div>
+    <div class="track" id="track">
+      <!-- CMS'den dinamik olarak doldurulur -->
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+
+    const track = document.getElementById("track");
+    let rendered = false;
+
+    /* Sonsuz akış için track içeriğini çoğalt */
+    function duplicate() {
+      if (!track.children.length) return;
+      // Önce sıfırla: önceden eklenmiş kopyaları temizle
+      const originals = Array.from(track.querySelectorAll(".item:not(.clone)"));
+      track.innerHTML = "";
+      originals.forEach(el => track.appendChild(el));
+
+      // 2x çoğalt
+      originals.forEach(el => {
+        const clone = el.cloneNode(true);
+        clone.classList.add("clone");
+        track.appendChild(clone);
+      });
+
+      // İçerik çok kısaysa bir kez daha çoğalt
+      requestAnimationFrame(() => {
+        const marquee = track.closest(".marquee");
+        if (marquee && track.scrollWidth < marquee.clientWidth * 2) {
+          originals.forEach(el => {
+            const c = el.cloneNode(true);
+            c.classList.add("clone");
+            track.appendChild(c);
+          });
+        }
+      });
+    }
+
+    /* CMS'den gelen item listesini işle */
+    function buildItems(items) {
+      // Logosu olan kayıtları filtrele
+      const withLogo = items.filter(i => i.logo && i.logo.trim());
+      if (!withLogo.length) return;
+
+      track.innerHTML = withLogo.map(item => {
+        const title   = (item.title   ?? "").toString().trim();
+        const logo    = item.logo.trim();
+        const website = (item.website ?? "").toString().trim();
+
+        const img = `<img loading="lazy" src="${logo}" alt="${title || "ref"} logo">`;
+
+        // website alanı doluysa ikonu tıklanabilir link yap
+        const inner = website
+          ? `<a href="${website}" target="_blank" rel="noopener noreferrer" aria-label="${title || "Referans"} web sitesi">${img}</a>`
+          : img;
+
+        return `<div class="item">${inner}</div>`;
+      }).join("");
+
+      duplicate();
+      rendered = true;
+    }
+
+    /* Velo'dan mesaj bekle */
+    window.onmessage = function (event) {
+      const msg = event.data || {};
+      if (msg.type === "sliderData" && Array.isArray(msg.items)) {
+        buildItems(msg.items);
+      }
+    };
+
+    /* Hazır olduğumuzu Velo'ya bildir */
+    window.parent?.postMessage({ type: "sliderReady" }, "*");
+
+  })();
+</script>
+
+</body>
+</html>
