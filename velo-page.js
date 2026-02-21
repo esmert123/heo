@@ -35,8 +35,9 @@ function isHizmet(tags) {
   return norm.some(t => t === "hizmet");
 }
 
-let cacheRefs = null;     // Hizmet HARİÇ
+let cacheRefs    = null;  // Hizmet HARİÇ
 let cacheService = null;  // Sadece Hizmet
+let cacheSlider  = null;  // Tümü (logosu olan) → anasayfa slider
 
 function bindHtml(comp, getCache) {
   comp.onMessage((event) => {
@@ -50,9 +51,21 @@ function bindHtml(comp, getCache) {
   });
 }
 
+// Anasayfa slider bileşeni için ayrı bağlayıcı (farklı mesaj tipi kullanır)
+function bindSlider(comp, getCache) {
+  comp.onMessage((event) => {
+    if (event.data?.type === "sliderReady") {
+      const c = getCache();
+      if (c) comp.postMessage({ type: "sliderData", items: c });
+    }
+  });
+}
+
 $w.onReady(async function () {
-  bindHtml($w("#htmlRefsAll"), () => cacheRefs);        // Referanslarımız = hizmet hariç
-  bindHtml($w("#htmlRefsService"), () => cacheService); // Hizmet Referanslarımız = sadece hizmet
+  bindHtml($w("#htmlRefsAll"),     () => cacheRefs);     // Referanslarımız = hizmet hariç
+  bindHtml($w("#htmlRefsService"), () => cacheService);  // Hizmet Referanslarımız = sadece hizmet
+  bindSlider($w("#htmlSlider"),    () => cacheSlider);   // Anasayfa slider = logosu olan tümü
+  // NOT: Wix editörde slider HTML bileşeninin ID'sini "htmlSlider" olarak ayarlayın.
 
   const res = await wixData.query("Import4").limit(1000).find();
 
@@ -76,10 +89,12 @@ $w.onReady(async function () {
 
   // Ayrıştır
   cacheService = mapped.filter(i => i.isService);
-  cacheRefs = mapped.filter(i => !i.isService);
+  cacheRefs    = mapped.filter(i => !i.isService);
+  cacheSlider  = mapped.filter(i => i.logo);  // logosu olan hepsi (slider için)
 
-  console.log("TOTAL:", mapped.length, "REFS:", cacheRefs.length, "HIZMET:", cacheService.length);
+  console.log("TOTAL:", mapped.length, "REFS:", cacheRefs.length, "HIZMET:", cacheService.length, "SLIDER:", cacheSlider.length);
 
   $w("#htmlRefsAll").postMessage({ type: "refsData", items: cacheRefs });
   $w("#htmlRefsService").postMessage({ type: "refsData", items: cacheService });
+  $w("#htmlSlider").postMessage({ type: "sliderData", items: cacheSlider });
 });
