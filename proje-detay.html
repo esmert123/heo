@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Proje Detay</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spinnaker&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --blue: #1A2B6D;
+      --blue-light: #2a3f8f;
+      --red: #8F1D3D;
+      --teal: #0C7FAE;
+
+      --bg: #f2f4f8;
+      --card: #ffffff;
+      --ink: #0f1e3a;
+      --muted: #6c7a92;
+
+      --r: 16px;
+      --r-lg: 20px;
+      --shadowSoft: 0 4px 20px rgba(10, 24, 60, .06), 0 1px 4px rgba(10, 24, 60, .04);
+      --shadowHover: 0 16px 48px rgba(10, 24, 60, .12), 0 4px 12px rgba(10, 24, 60, .06);
+
+      --max: 1200px;
+      --pad: clamp(16px, 2.2vw, 28px);
+      --h1: clamp(26px, 3.2vw, 48px);
+
+      --fontHead: "Spinnaker", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      --fontBody: -apple-system, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+      --ease: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body { width: 100%; height: 100%; background: transparent }
+    body {
+      font-family: var(--fontBody);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page {
+      background:
+        radial-gradient(ellipse 1100px 500px at 85% 10%, rgba(26, 43, 109, .10), transparent 60%),
+        radial-gradient(ellipse 800px 450px at 10% 50%, rgba(143, 29, 61, .07), transparent 55%),
+        linear-gradient(to bottom, #f6f7fb, var(--bg));
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 14px var(--pad) 0 }
+
+    /* ─── BREADCRUMBS ─── */
+    .crumbs {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .crumbs a {
+      color: var(--muted);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color .2s var(--ease), border-color .2s var(--ease);
+    }
+    .crumbs a:hover { color: var(--ink); border-color: rgba(15, 30, 58, .2) }
+    .crumbs .sep { opacity: .4 }
+    .crumbs .current { color: var(--ink); font-weight: 600 }
+
+    /* ─── HERO CARD ─── */
+    .heroCard {
+      background: var(--card);
+      border-radius: calc(var(--r-lg) + 4px);
+      border: 1px solid rgba(15, 30, 58, .06);
+      box-shadow: var(--shadowSoft);
+      overflow: hidden;
+      transition: box-shadow .25s var(--ease);
+    }
+    .heroCard:hover { box-shadow: var(--shadowHover) }
+
+    .heroInner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .heroImgWrap {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(26, 43, 109, .10), transparent 60%),
+        radial-gradient(ellipse at 70% 60%, rgba(143, 29, 61, .06), transparent 60%),
+        linear-gradient(135deg, #e8ebf2, #f2f0f4);
+      min-height: 340px;
+    }
+    .heroImg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s var(--ease);
+    }
+    .heroCard:hover .heroImg { transform: scale(1.03) }
+    .heroImgWrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, rgba(255, 255, 255, .02), rgba(0, 0, 0, .06));
+      pointer-events: none;
+    }
+    .heroImgHidden { display: none }
+
+    .statusPill {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 999px;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .statusPill.green { background: rgba(20, 140, 90, .88); color: #fff }
+    .statusPill.amber { background: rgba(210, 140, 20, .88); color: #fff }
+    .statusPill.red   { background: rgba(143, 29, 61, .88); color: #fff }
+
+    .heroBody {
+      padding: clamp(24px, 3vw, 40px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px }
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      letter-spacing: .02em;
+    }
+    .badge.red   { background: rgba(143, 29, 61, .08); border: 1px solid rgba(143, 29, 61, .14); color: var(--red) }
+    .badge.green { background: rgba(20, 140, 90, .08); border: 1px solid rgba(20, 140, 90, .16); color: #148C5A }
+
+    h1 {
+      font-family: var(--fontHead);
+      font-weight: 400;
+      font-size: var(--h1);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .headerLine {
+      height: 3px;
+      width: clamp(80px, 14vw, 160px);
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--red), transparent);
+      margin-bottom: 14px;
+    }
+    .subtitle {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--muted);
+      white-space: pre-line;
+      max-width: 54ch;
+    }
+
+    .tagRow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px }
+    .tag {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      background: rgba(26, 43, 109, .04);
+      border: 1px solid rgba(26, 43, 109, .10);
+      color: rgba(15, 30, 58, .65);
+      transition: all .2s var(--ease);
+    }
+    .tag:hover { background: rgba(26, 43, 109, .08); border-color: rgba(26, 43, 109, .20) }
+
+    /* ─── SECTIONS ─── */
+    .section {
+      margin-top: 20px;
+      background: var(--card);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadowSoft);
+      padding: var(--pad);
+      border: 1px solid rgba(15, 30, 58, .06);
+      transition: box-shadow .25s var(--ease);
+    }
+    .section:hover { box-shadow: var(--shadowHover) }
+
+    .sectionHeader {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .sectionIcon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .sectionIcon.blue { background: rgba(26, 43, 109, .06); color: var(--blue) }
+    .sectionIcon.red  { background: rgba(143, 29, 61, .06); color: var(--red) }
+
+    .section h2 {
+      font-family: var(--fontHead);
+      font-weight: 400;
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+
+    /* ─── RICH TEXT ─── */
+    .text {
+      color: #1b2b4a;
+      line-height: 1.75;
+      font-size: 15.5px;
+      max-width: 860px;
+    }
+    .text p { margin: 0 0 12px }
+    .text h3 {
+      margin: 20px 0 8px;
+      font-size: 17px;
+      letter-spacing: -.01em;
+      color: var(--ink);
+      font-family: var(--fontHead);
+      font-weight: 400;
+    }
+    .text ul, .text ol { margin: 8px 0 14px 20px; padding: 0 }
+    .text li { margin: 5px 0 }
+    .text a { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(26, 43, 109, .22) }
+    .text a:hover { border-bottom-color: rgba(26, 43, 109, .5) }
+    .text blockquote {
+      margin: 16px 0;
+      padding: 14px 16px;
+      border-left: 4px solid rgba(26, 43, 109, .3);
+      background: rgba(26, 43, 109, .03);
+      border-radius: 0 12px 12px 0;
+      color: #213255;
+    }
+    /* Sanitize: block dangerous elements injected via rich text */
+    .text script, .text style, .text iframe, .text object, .text embed { display: none !important }
+
+    /* ─── GALLERY GRID ─── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .g {
+      border-radius: var(--r);
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(15, 30, 58, .06);
+      box-shadow: var(--shadowSoft);
+      transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+      position: relative;
+    }
+    .g:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadowHover);
+    }
+    .g img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform .3s var(--ease);
+      background: linear-gradient(135deg, #e8ebf2, #f2f0f4);
+    }
+    .g:hover img { transform: scale(1.04) }
+    .g::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, .18), transparent 50%);
+      opacity: 0;
+      transition: opacity .25s var(--ease);
+      pointer-events: none;
+    }
+    .g:hover::after { opacity: 1 }
+
+    .galleryActions { display: flex; justify-content: center; margin-top: 14px }
+    .ghostBtn {
+      padding: 9px 20px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(15, 30, 58, .10);
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all .2s var(--ease);
+    }
+    .ghostBtn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: rgba(26, 43, 109, .04);
+    }
+
+    /* ─── CTA ─── */
+    .cta {
+      margin-top: 20px;
+      background: var(--card);
+      border-radius: var(--r-lg);
+      box-shadow: var(--shadowSoft);
+      padding: calc(var(--pad) + 8px);
+      text-align: center;
+      border: 1px solid rgba(15, 30, 58, .06);
+      transition: box-shadow .25s var(--ease);
+    }
+    .cta:hover { box-shadow: var(--shadowHover) }
+
+    .ctaTitle {
+      margin: 0 0 16px;
+      font-size: 18px;
+      font-family: var(--fontHead);
+      font-weight: 400;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 26px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: 0 8px 28px rgba(26, 43, 109, .22);
+      transition: all .2s var(--ease);
+      text-decoration: none;
+    }
+    .btn:hover {
+      background: var(--blue-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(26, 43, 109, .30);
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lb {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 99999;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+    .lb.open { display: flex }
+
+    .lbInner {
+      max-width: min(1040px, 96vw);
+      width: 100%;
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      background: #111;
+      box-shadow: 0 30px 100px rgba(0, 0, 0, .5);
+      position: relative;
+    }
+    .lbImg {
+      width: 100%;
+      height: min(76vh, 760px);
+      object-fit: contain;
+      display: block;
+      background: #0a0a0a;
+    }
+    .lbClose {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, .16);
+      background: rgba(255, 255, 255, .08);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all .2s var(--ease);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lbClose:hover { background: rgba(255, 255, 255, .16); transform: scale(1.05) }
+
+    .lbNav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, .16);
+      background: rgba(255, 255, 255, .08);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all .2s var(--ease);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lbNav:hover { background: rgba(255, 255, 255, .16) }
+    .lbNav.prev { left: 12px }
+    .lbNav.next { right: 12px }
+
+    .lbCounter {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      color: rgba(255, 255, 255, .7);
+      background: rgba(0, 0, 0, .4);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      padding: 5px 12px;
+      border-radius: 999px;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 980px) {
+      .heroInner { grid-template-columns: 1fr }
+      .heroImgWrap { min-height: 280px }
+    }
+    @media (max-width: 560px) {
+      .heroBody { padding: 20px }
+      .subtitle { font-size: 14px }
+      .grid { grid-template-columns: 1fr 1fr }
+      .g img { height: 160px }
+    }
+    @media (max-width: 380px) {
+      .grid { grid-template-columns: 1fr }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="wrap">
+
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Anasayfa</a>
+        <span class="sep" aria-hidden="true">›</span>
+        <a href="/projeler">Projeler</a>
+        <span class="sep" aria-hidden="true">›</span>
+        <span class="current" id="crumbCurrent"></span>
+      </nav>
+
+      <section class="heroCard">
+        <div class="heroInner">
+          <div class="heroImgWrap" id="heroImgWrap">
+            <img class="heroImg" id="heroImg" alt="" />
+            <span class="statusPill" id="statusPill" style="display:none"></span>
+          </div>
+          <div class="heroBody">
+            <div class="badges" id="badges"></div>
+            <h1 id="title"></h1>
+            <div class="headerLine"></div>
+            <p class="subtitle" id="subtitle"></p>
+            <div class="tagRow" id="tagRow"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="sectionHeader">
+          <div class="sectionIcon blue" aria-hidden="true">📋</div>
+          <h2>Proje Özeti</h2>
+        </div>
+        <div class="text" id="fulltext"></div>
+      </section>
+
+      <section class="section" id="gallerySection" style="display:none">
+        <div class="sectionHeader">
+          <div class="sectionIcon red" aria-hidden="true">🖼</div>
+          <h2>Galeri</h2>
+        </div>
+        <div class="grid" id="gallery"></div>
+        <div class="galleryActions" id="galleryActions" style="display:none">
+          <button class="ghostBtn" id="toggleGalleryBtn" type="button">Tümünü Gör</button>
+        </div>
+      </section>
+
+      <section class="cta">
+        <p class="ctaTitle" id="ctaTitle">Bu proje hakkında daha fazla bilgi almak ister misiniz?</p>
+        <a class="btn" id="ctaBtn" href="/iletisim">
+          <span id="ctaBtnText">İletişime Geç</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Galeri görüntüleyici">
+    <div class="lbInner">
+      <button class="lbClose" id="lbClose" type="button" aria-label="Kapat">✕</button>
+      <button class="lbNav prev" id="lbPrev" type="button" aria-label="Önceki">‹</button>
+      <button class="lbNav next" id="lbNext" type="button" aria-label="Sonraki">›</button>
+      <img class="lbImg" id="lbImg" alt="" />
+      <span class="lbCounter" id="lbCounter"></span>
+    </div>
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════
+       UTILS
+       ══════════════════════════════════════════ */
+    try { window.parent.postMessage({ type: "ready" }, "*"); } catch (e) { /* iframe iletişim hatası */ }
+
+    function el(id) { return document.getElementById(id); }
+    function safe(v) { return (v == null) ? "" : String(v); }
+
+    function esc(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function requestNavigate(path) {
+      window.parent.postMessage({ type: "navigate", path: path }, "*");
+    }
+
+    /* ══════════════════════════════════════════
+       INTERNAL LINK DELEGATION
+       ══════════════════════════════════════════ */
+    document.addEventListener("click", function(e) {
+      var a = e.target.closest ? e.target.closest("a") : null;
+      if (!a) return;
+      var href = a.getAttribute("href");
+      if (!href) return;
+      if (href.indexOf("http") === 0 || href.indexOf("mailto:") === 0 || href.indexOf("tel:") === 0 || href.indexOf("#") === 0) return;
+      if (href.indexOf("/") === 0) {
+        e.preventDefault();
+        requestNavigate(href);
+      }
+    });
+
+    /* ══════════════════════════════════════════
+       HELPERS
+       ══════════════════════════════════════════ */
+    function normalizeGallery(g) {
+      if (!Array.isArray(g)) return [];
+      var result = [];
+      for (var i = 0; i < g.length; i++) {
+        var x = g[i];
+        var url = "";
+        if (typeof x === "string") url = x;
+        else if (x && typeof x === "object") url = x.src || x.url || x.fileUrl || "";
+        if (url) result.push(url);
+      }
+      return result;
+    }
+
+    function statusClass(s) {
+      if (!s) return "";
+      var l = s.toLowerCase();
+      if (l.indexOf("tamamlan") !== -1) return "green";
+      if (l.indexOf("devam") !== -1) return "amber";
+      return "red";
+    }
+
+    /* ══════════════════════════════════════════
+       RENDER: BADGES & STATUS
+       ══════════════════════════════════════════ */
+    function renderBadges(item) {
+      var box = el("badges");
+      box.innerHTML = "";
+      if (item.fundingBadge) {
+        var s = document.createElement("span");
+        s.className = "badge red";
+        s.textContent = item.fundingBadge;
+        box.appendChild(s);
+      }
+      var pill = el("statusPill");
+      if (item.status) {
+        pill.textContent = item.status;
+        pill.className = "statusPill " + statusClass(item.status);
+        pill.style.display = "";
+      } else {
+        pill.style.display = "none";
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       RENDER: TAGS
+       ══════════════════════════════════════════ */
+    function renderTags(tags) {
+      var row = el("tagRow");
+      row.innerHTML = "";
+      if (!Array.isArray(tags) || !tags.length) return;
+      var list = tags.slice(0, 12);
+      for (var i = 0; i < list.length; i++) {
+        var s = document.createElement("span");
+        s.className = "tag";
+        s.textContent = String(list[i]);
+        row.appendChild(s);
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       RENDER: RICH TEXT (sanitized)
+       ══════════════════════════════════════════ */
+    function renderText(html) {
+      var container = el("fulltext");
+      container.innerHTML = html || "";
+      // Remove dangerous elements that might be injected via rich text
+      var dangerous = container.querySelectorAll("script, style, iframe, object, embed, form");
+      for (var i = 0; i < dangerous.length; i++) {
+        dangerous[i].parentNode.removeChild(dangerous[i]);
+      }
+      // Remove dangerous attributes
+      var allEls = container.querySelectorAll("*");
+      for (var j = 0; j < allEls.length; j++) {
+        var attrs = allEls[j].attributes;
+        for (var k = attrs.length - 1; k >= 0; k--) {
+          var name = attrs[k].name.toLowerCase();
+          if (name.indexOf("on") === 0) {
+            allEls[j].removeAttribute(attrs[k].name);
+          }
+        }
+        // Remove javascript: hrefs
+        if (allEls[j].hasAttribute("href")) {
+          var hrefVal = (allEls[j].getAttribute("href") || "").trim().toLowerCase();
+          if (hrefVal.indexOf("javascript:") === 0) {
+            allEls[j].removeAttribute("href");
+          }
+        }
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       GALLERY + LIGHTBOX
+       ══════════════════════════════════════════ */
+    var galleryUrls = [];
+    var showAll = false;
+    var INIT_COUNT = 6;
+    var lbIndex = 0;
+
+    function paintGallery() {
+      var sec = el("gallerySection");
+      var grid = el("gallery");
+      var actions = el("galleryActions");
+      var btn = el("toggleGalleryBtn");
+
+      if (!galleryUrls.length) { sec.style.display = "none"; return; }
+      sec.style.display = "";
+
+      var list = showAll ? galleryUrls : galleryUrls.slice(0, INIT_COUNT);
+      var html = "";
+      for (var i = 0; i < list.length; i++) {
+        html += '<div class="g" data-idx="' + i + '" tabindex="0" role="button" aria-label="Galeri resmi ' + (i + 1) + '">'
+          + '<img src="' + esc(list[i]) + '" alt="Galeri ' + (i + 1) + '" loading="lazy" onerror="this.style.opacity=\'0.3\'">'
+          + '</div>';
+      }
+      grid.innerHTML = html;
+
+      if (galleryUrls.length > INIT_COUNT) {
+        actions.style.display = "flex";
+        btn.textContent = showAll ? "Daha Az Göster" : "Tümünü Gör (" + galleryUrls.length + ")";
+      } else {
+        actions.style.display = "none";
+      }
+
+      var items = grid.querySelectorAll(".g");
+      for (var j = 0; j < items.length; j++) {
+        (function(card) {
+          function openLb() {
+            lbIndex = parseInt(card.getAttribute("data-idx"), 10);
+            showLightbox();
+          }
+          card.addEventListener("click", openLb);
+          card.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLb(); }
+          });
+        })(items[j]);
+      }
+    }
+
+    function showLightbox() {
+      if (lbIndex < 0) lbIndex = galleryUrls.length - 1;
+      if (lbIndex >= galleryUrls.length) lbIndex = 0;
+      el("lbImg").src = galleryUrls[lbIndex];
+      el("lbImg").alt = "Galeri resmi " + (lbIndex + 1);
+      el("lbCounter").textContent = (lbIndex + 1) + " / " + galleryUrls.length;
+      el("lb").classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      el("lb").classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    function renderGallery(gallery) {
+      galleryUrls = normalizeGallery(gallery);
+      showAll = false;
+      paintGallery();
+    }
+
+    el("toggleGalleryBtn").addEventListener("click", function() {
+      showAll = !showAll;
+      paintGallery();
+    });
+
+    el("lbClose").addEventListener("click", closeLightbox);
+    el("lbPrev").addEventListener("click", function() { lbIndex--; showLightbox(); });
+    el("lbNext").addEventListener("click", function() { lbIndex++; showLightbox(); });
+    el("lb").addEventListener("click", function(e) { if (e.target === el("lb")) closeLightbox(); });
+
+    document.addEventListener("keydown", function(e) {
+      if (!el("lb").classList.contains("open")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") { lbIndex--; showLightbox(); }
+      if (e.key === "ArrowRight") { lbIndex++; showLightbox(); }
+    });
+
+    /* ══════════════════════════════════════════
+       RENDER: CTA
+       ══════════════════════════════════════════ */
+    function renderCTA(item) {
+      el("ctaBtnText").textContent = item.ctaButtonText || "İletişime Geç";
+      var link = item.ctaLink || "/iletisim";
+      // Only allow safe URLs
+      if (link.indexOf("javascript:") === 0) link = "/iletisim";
+      el("ctaBtn").setAttribute("href", link);
+    }
+
+    /* ══════════════════════════════════════════
+       RENDER ALL
+       ══════════════════════════════════════════ */
+    function renderAll(item) {
+      // Title
+      var title = safe(item.title);
+      el("title").textContent = title;
+      document.title = title ? title + " — Proje Detay" : "Proje Detay";
+      el("crumbCurrent").textContent = title || "Detay";
+
+      // Subtitle
+      el("subtitle").textContent = safe(item.subtitle);
+
+      // Hero image
+      var img = el("heroImg");
+      if (item.coverImage) {
+        img.src = item.coverImage;
+        img.alt = title;
+        img.classList.remove("heroImgHidden");
+        img.onerror = function() {
+          img.classList.add("heroImgHidden");
+        };
+      } else {
+        img.classList.add("heroImgHidden");
+      }
+
+      renderBadges(item);
+      renderTags(item.tags);
+      renderText(item.fulltext);
+      renderGallery(item.gallery);
+      renderCTA(item);
+    }
+
+    /* ══════════════════════════════════════════
+       MESSAGE LISTENER
+       ══════════════════════════════════════════ */
+    window.addEventListener("message", function(event) {
+      var msg = event.data;
+      if (msg && msg.type === "render" && msg.item) {
+        renderAll(msg.item);
+      }
+    });
+  </script>
+</body>
+</html>
