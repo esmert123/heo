@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yayinlar</title>
+<link href="https://fonts.googleapis.com/css2?family=Spinnaker&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--burgundy:#922040;--navy:#1c2b5e;--teal:#0079a1;--white:#fff;--ink:#1a1a2e;--muted:#6b7280;--border:#dde1ea;--cream:#f7f8fc}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--cream);color:var(--ink);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3{font-family:'Spinnaker',sans-serif;font-weight:400}
+header{background:var(--navy);padding:0 64px;height:68px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(28,43,94,.3)}
+.logo{font-family:'Spinnaker',sans-serif;color:var(--white);font-size:1.1rem;letter-spacing:.06em;display:flex;align-items:center;gap:10px}
+.logo-mark{width:32px;height:32px;background:var(--burgundy);display:flex;align-items:center;justify-content:center;font-size:.9rem;color:#fff;border-radius:2px}
+.share-cta{display:flex;align-items:center;gap:10px;background:var(--burgundy);color:var(--white);border:none;padding:0 28px;height:44px;font-family:'Spinnaker',sans-serif;font-size:.82rem;letter-spacing:.06em;cursor:pointer;border-radius:2px;transition:background .2s}
+.share-cta:hover{background:#a8223e}
+.hero{background:linear-gradient(135deg,var(--navy) 0%,#243472 60%,#1a3a5c 100%);padding:72px 64px 60px;animation:fadeUp .45s ease}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.hero-eyebrow .line{width:32px;height:2px;background:var(--teal)}
+.hero-eyebrow span{font-size:.72rem;font-weight:300;letter-spacing:.22em;text-transform:uppercase;color:var(--teal)}
+.hero h1{font-size:3.8rem;color:var(--white);line-height:1.1}
+.hero h1 .accent{color:var(--teal)}
+.hero-sub{margin-top:14px;font-size:.95rem;font-weight:300;color:rgba(255,255,255,.5);max-width:500px;line-height:1.6}
+.hero-stats{display:flex;gap:48px;margin-top:40px;padding-top:40px;border-top:1px solid rgba(255,255,255,.1)}
+.stat{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:'Spinnaker',sans-serif;font-size:2rem;color:var(--white);line-height:1}
+.stat-num span{color:var(--teal)}
+.stat-label{font-size:.7rem;font-weight:300;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.4)}
+.filter-bar{background:var(--white);border-bottom:1px solid var(--border);padding:0 64px;display:flex;align-items:stretch;overflow-x:auto}
+.filter-tab{padding:0 22px;height:52px;display:flex;align-items:center;font-size:.78rem;font-weight:300;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+.filter-tab:hover{color:var(--navy)}
+.filter-tab.active{color:var(--navy);border-bottom-color:var(--burgundy);font-weight:400}
+.filter-search{margin-left:auto;display:flex;align-items:center;padding:10px 0}
+.search-wrap{position:relative}
+.search-wrap input{border:1px solid var(--border);background:var(--cream);padding:8px 14px 8px 36px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:300;font-size:.82rem;width:230px;outline:none;border-radius:2px;transition:all .2s;color:var(--ink)}
+.search-wrap input:focus{border-color:var(--teal);background:var(--white)}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none}
+.main{padding:48px 64px;max-width:1440px;margin:0 auto}
+.section-label{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.section-label .dot{width:8px;height:8px;border-radius:50%}
+.section-label span{font-size:.7rem;font-weight:400;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.featured{display:grid;grid-template-columns:180px 1fr;margin-bottom:48px;border:1px solid var(--border);background:#fff;overflow:hidden;box-shadow:0 4px 24px rgba(28,43,94,.07);animation:fadeUp .55s ease both;border-radius:3px;transition:box-shadow .3s,transform .3s;cursor:pointer}
+.featured:hover{box-shadow:0 12px 48px rgba(28,43,94,.13);transform:translateY(-2px)}
+.feat-cover-wrap{background:#e8eaf0;padding:28px 20px 28px 24px;display:flex;align-items:center}
+.feat-content{padding:36px 40px;display:flex;flex-direction:column;justify-content:space-between}
+.feat-meta-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.pub-badge{font-size:.68rem;font-weight:300;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);background:rgba(0,121,161,.08);padding:4px 10px;border-radius:1px}
+.vol-text{font-size:.68rem;font-weight:300;color:var(--muted);letter-spacing:.05em}
+.feat-content h2{font-size:1.55rem;line-height:1.35;color:var(--ink);margin-bottom:12px}
+.feat-authors{font-size:.82rem;font-weight:300;color:var(--muted);font-style:italic}
+.feat-abstract{font-size:.86rem;line-height:1.8;color:#555;font-weight:300;margin-top:16px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.feat-actions{display:flex;align-items:center;justify-content:space-between;margin-top:28px;padding-top:20px;border-top:1px solid var(--border)}
+.feat-date{font-size:.7rem;font-weight:300;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.open-hint{display:flex;align-items:center;gap:6px;font-size:.78rem;font-weight:300;color:var(--teal);letter-spacing:.05em}
+.card{background:var(--white);border:1px solid var(--border);display:flex;flex-direction:column;border-radius:3px;cursor:pointer;transition:box-shadow .25s,transform .25s;animation:fadeUp .55s ease both;position:relative;overflow:hidden}
+.card:hover{box-shadow:0 8px 32px rgba(28,43,94,.1);transform:translateY(-3px)}
+.card-header{display:flex;background:#f0f1f6;border-bottom:1px solid var(--border)}
+.card-cover-thumb{width:72px;padding:12px 0 12px 12px;flex-shrink:0}
+.card-journal-meta{padding:12px 14px;display:flex;flex-direction:column;justify-content:center;gap:3px}
+.card-journal-name{font-family:'Spinnaker',sans-serif;font-size:.78rem;color:var(--ink);line-height:1.25}
+.card-journal-vol{font-size:.68rem;font-weight:300;color:var(--muted);line-height:1.4}
+.card-body{padding:20px 22px 22px;flex:1;display:flex;flex-direction:column}
+.card h3{font-size:.95rem;line-height:1.45;color:var(--ink);margin-bottom:12px;flex-grow:1}
+.card p{font-size:.8rem;line-height:1.7;color:#666;font-weight:300;margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border);margin-top:auto}
+.card-vol{font-size:.66rem;font-weight:300;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.card-link{font-size:.74rem;font-weight:300;color:var(--burgundy);text-decoration:none;letter-spacing:.06em;display:flex;align-items:center;gap:5px;transition:gap .2s}
+.card-link:hover{gap:9px}
+.state-box{text-align:center;padding:64px 32px;border:1px dashed var(--border);border-radius:4px;background:var(--white);margin-bottom:48px;color:var(--muted);font-size:.9rem;line-height:1.7;grid-column:1/-1}
+.state-box.error{border-color:#fca5a5;background:#fff5f5;color:#b91c1c}
+.state-box strong{display:block;font-family:'Spinnaker',sans-serif;font-size:1rem;margin-bottom:8px}
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:16px 0 64px}
+.page-btn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--white);font-size:.78rem;font-weight:300;color:var(--muted);cursor:pointer;border-radius:2px;transition:all .2s;user-select:none}
+.page-btn:hover{border-color:var(--navy);color:var(--navy)}
+.page-btn.active{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.drawer-overlay{position:fixed;inset:0;background:rgba(10,14,40,.45);z-index:300;opacity:0;pointer-events:none;transition:opacity .35s ease;backdrop-filter:blur(3px)}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:580px;max-width:95vw;background:var(--white);z-index:301;transform:translateX(100%);transition:transform .4s cubic-bezier(.16,1,.3,1);display:flex;flex-direction:column;overflow:hidden;box-shadow:-8px 0 48px rgba(10,14,40,.18)}
+.drawer.open{transform:translateX(0)}
+.drawer-hero{padding:28px 28px 24px;position:relative;overflow:hidden;flex-shrink:0}
+.drawer-top-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;position:relative;z-index:1}
+.drawer-cover-wrap{flex-shrink:0}
+.drawer-close{background:rgba(255,255,255,.15);border:none;color:rgba(255,255,255,.8);width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:2px;cursor:pointer;font-size:1.1rem;transition:all .2s;flex-shrink:0}
+.drawer-close:hover{background:rgba(255,255,255,.25);color:#fff}
+.drawer-article-type{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:rgba(255,255,255,.85);padding:4px 10px;font-size:.65rem;font-weight:300;letter-spacing:.15em;text-transform:uppercase;border-radius:1px;margin-bottom:12px;position:relative;z-index:1;width:fit-content}
+.drawer-title{font-family:'EB Garamond',serif;font-size:1.35rem;font-weight:600;color:#fff;line-height:1.3;position:relative;z-index:1;margin-top:10px}
+.drawer-body{flex:1;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:24px}
+.drawer-authors{display:flex;flex-wrap:wrap;font-size:.88rem;font-weight:300;color:var(--teal);line-height:1.8;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.drawer-author{color:var(--teal);cursor:default}
+.drawer-author-sep{color:var(--muted);margin:0 4px}
+.drawer-metrics{display:flex;align-items:center;gap:24px;padding:0 0 20px;border-bottom:1px solid var(--border)}
+.d-metric{display:flex;align-items:center;gap:8px;font-size:.82rem;font-weight:300;color:var(--muted)}
+.d-metric svg{width:18px;height:18px;flex-shrink:0}
+.d-metric-num{font-family:'Spinnaker',sans-serif;font-size:.95rem;color:var(--ink)}
+.drawer-section-title{font-family:'EB Garamond',serif;font-size:1.3rem;font-weight:700;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+.drawer-abstract{font-family:'EB Garamond',serif;font-size:1.05rem;line-height:1.85;color:#2c2c3a;font-weight:400}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);border-radius:3px;overflow:hidden}
+.info-cell{padding:14px 16px;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.info-cell:nth-child(even){border-right:none}
+.info-cell:nth-last-child(-n+2){border-bottom:none}
+.info-cell-label{font-size:.62rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.info-cell-value{font-size:.82rem;font-weight:300;color:var(--ink);line-height:1.35}
+.info-cell-value a{color:var(--teal);text-decoration:none;font-size:.75rem;word-break:break-all}
+.info-cell-value a:hover{text-decoration:underline}
+.drawer-footer{padding:16px 28px;border-top:1px solid var(--border);background:var(--cream);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.drawer-btn-primary{display:inline-flex;align-items:center;gap:7px;background:var(--navy);color:#fff;padding:11px 22px;font-family:'Spinnaker',sans-serif;font-size:.8rem;letter-spacing:.06em;border:none;border-radius:2px;cursor:pointer;text-decoration:none;transition:background .2s;flex:1;justify-content:center}
+.drawer-btn-primary:hover{background:var(--teal)}
+.doi-pill{display:flex;align-items:center;gap:5px;background:var(--white);border:1px solid var(--border);padding:8px 12px;border-radius:2px;font-family:'DM Mono',monospace;font-size:.65rem;color:var(--muted);cursor:pointer;transition:all .2s;white-space:nowrap;text-decoration:none}
+.doi-pill:hover{border-color:var(--teal);color:var(--teal)}
+.modal-overlay{position:fixed;inset:0;background:rgba(10,14,40,.7);z-index:400;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(6px)}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--white);width:600px;max-width:95vw;max-height:92vh;overflow-y:auto;transform:translateY(24px);transition:transform .3s;border-radius:3px;box-shadow:0 32px 80px rgba(10,14,40,.35)}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-header{background:var(--burgundy);padding:28px 36px;display:flex;align-items:flex-start;justify-content:space-between}
+.modal-header-left{display:flex;flex-direction:column;gap:5px}
+.modal-eyebrow{font-size:.68rem;font-weight:300;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.modal-header h2{font-family:'Spinnaker',sans-serif;color:var(--white);font-size:1.3rem}
+.modal-header p{font-size:.78rem;font-weight:300;color:rgba(255,255,255,.45);margin-top:4px}
+.close-btn{background:rgba(255,255,255,.1);border:none;color:rgba(255,255,255,.7);cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:2px;font-size:1rem;transition:all .2s;flex-shrink:0}
+.close-btn:hover{background:rgba(255,255,255,.2);color:#fff}
+.modal-body{padding:32px 36px;display:flex;flex-direction:column;gap:16px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:.68rem;font-weight:400;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.field input,.field textarea{border:1px solid var(--border);background:var(--cream);padding:11px 14px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:.86rem;font-weight:300;outline:none;transition:border-color .2s,background .2s;color:var(--ink);resize:none;border-radius:2px}
+.field input:focus,.field textarea:focus{border-color:var(--burgundy);background:var(--white)}
+.file-drop{border:1.5px dashed var(--border);background:var(--cream);padding:28px 20px;text-align:center;cursor:pointer;border-radius:2px;transition:all .2s}
+.file-drop:hover{border-color:var(--burgundy);background:rgba(146,32,64,.03)}
+.file-drop-icon{width:36px;height:36px;margin:0 auto 10px;color:var(--burgundy)}
+.file-drop p{font-size:.82rem;font-weight:300;color:var(--muted);line-height:1.5}
+.file-drop span{color:var(--burgundy);font-weight:400}
+.file-drop small{font-size:.72rem;color:#bbb;display:block;margin-top:4px}
+.modal-footer{padding:0 36px 32px;display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.cancel-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:11px 22px;font-size:.8rem;font-weight:300;letter-spacing:.08em;cursor:pointer;border-radius:2px;transition:all .2s}
+.cancel-btn:hover{border-color:var(--navy);color:var(--navy)}
+.submit-btn{background:var(--burgundy);color:var(--white);border:none;padding:11px 28px;font-family:'Spinnaker',sans-serif;font-size:.82rem;letter-spacing:.08em;cursor:pointer;border-radius:2px;transition:background .2s;display:flex;align-items:center;gap:8px}
+.submit-btn:hover{background:#a8223e}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<header><div class="logo"><div class="logo-mark">Y</div>Yayinlar</div><button class="share-cta" onclick="toggleModal()"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" d="M12 4v16M4 12h16"/></svg>Makalenizi Bizimle Paylasin</button></header>
+<div class="hero"><div class="hero-eyebrow"><div class="line"></div><span>Arastirma &amp; Yayin Arsivi</span></div><h1><span class="accent">Yayinlar</span></h1><p class="hero-sub">Cihazlarimizin kullanimina dair literatur ornekleri.</p><div class="hero-stats"><div class="stat"><div class="stat-num" id="statTotal"><span>-</span></div><div class="stat-label">Toplam Yayin</div></div><div class="stat"><div class="stat-num" id="statJournals"><span>-</span></div><div class="stat-label">Farkli Dergi</div></div><div class="stat"><div class="stat-num" id="statYear"><span>-</span></div><div class="stat-label">Son Yayin Yili</div></div></div></div>
+<div class="filter-bar"><div class="filter-tab active" data-filter="all">Tumu</div><div class="filter-tab" data-filter="Wear">Wear</div><div class="filter-tab" data-filter="Surface">Surface &amp; Coatings</div><div class="filter-tab" data-filter="Ceramics">Ceramics Int.</div><div class="filter-tab" data-filter="Tribology International">Tribology Int.</div><div class="filter-tab" data-filter="Tribology Letters">Tribology Letters</div><div class="filter-tab" data-year-start="2024" data-year-end="2026">2024-2026</div><div class="filter-tab" data-year-start="2020" data-year-end="2023">2020-2023</div><div class="filter-search"><div class="search-wrap"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/></svg><input type="text" id="searchInput" placeholder="Yayin ara..."></div></div></div>
+<div class="main"><div class="section-label"><div class="dot" style="background:var(--burgundy)"></div><span>One Cikan Yayin</span></div><div id="featuredContainer"></div><div class="section-label" style="margin-bottom:20px"><div class="dot" style="background:var(--teal)"></div><span>Tum Yayinlar</span></div><div id="cardsGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:48px"></div><div id="loadingState" style="text-align:center;padding:60px 0;color:var(--muted);font-size:.9rem;letter-spacing:.1em">Yayinlar yukleniyor...</div><div class="pagination" id="pagination" style="display:none"><div class="page-btn">&#8249;</div><div class="page-btn active">1</div><div class="page-btn">2</div><div class="page-btn">3</div><div class="page-btn" style="border:none;background:none;cursor:default">...</div><div class="page-btn">8</div><div class="page-btn">&#8250;</div></div></div>
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer"><div class="drawer-hero" id="drawerHero"><div class="drawer-top-row"><div class="drawer-cover-wrap"><div id="drawerCover" style="width:110px"></div></div><button class="drawer-close" onclick="closeDrawer()">&#10005;</button></div><div class="drawer-article-type">Ozgun Makale - Original Paper</div><div class="drawer-title" id="drawerTitle"></div></div><div class="drawer-body"><div class="drawer-authors" id="drawerAuthors"></div><div class="drawer-metrics" id="drawerMetrics"></div><div><div class="drawer-section-title">Abstract</div><div class="drawer-abstract" id="drawerAbstract"></div></div><div><div class="drawer-section-title" style="font-size:1.1rem">Makale Bilgileri</div><div class="info-grid" id="drawerInfo"></div></div></div><div class="drawer-footer"><a href="#" class="drawer-btn-primary" id="drawerDoiBtn" target="_blank"><svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>Yayin Sayfasina Git</a><a href="#" class="doi-pill" id="drawerDoiChip"><svg width="10" height="10" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg><span id="drawerDoiText"></span></a></div></div>
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlay(event)"><div class="modal"><div class="modal-header"><div class="modal-header-left"><span class="modal-eyebrow">Yayin Sistemi</span><h2>Makalenizi Bizimle Paylasin</h2><p>Kisisel bilgileriniz KVKK kapsaminda korunmaktadir.</p></div><button class="close-btn" onclick="toggleModal()">&#10005;</button></div><div class="modal-body"><div class="form-row"><div class="field"><label>Isim</label><input type="text" placeholder="Adiniz"></div><div class="field"><label>Soyisim</label><input type="text" placeholder="Soyadiniz"></div></div><div class="field"><label>E-Posta Adresi</label><input type="email" placeholder="ornek@kurum.edu.tr"></div><div class="field"><label>Makale Basligi</label><input type="text" placeholder="Tam basligi giriniz"></div><div class="form-row"><div class="field"><label>Dergi / Kaynak</label><input type="text" placeholder="Wear, Tribology Letters..."></div><div class="field"><label>Yayin Yili</label><input type="text" placeholder="2024"></div></div><div class="field"><label>DOI veya Kaynak Linki</label><input type="url" placeholder="https://doi.org/10.xxxx/..."></div><div class="field"><label>Makale Ozeti</label><textarea rows="4" placeholder="Kisa bir ozet yaziniz..."></textarea></div><div class="field"><label>PDF Dosyasi</label><div class="file-drop"><svg class="file-drop-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg><p><span>Dosya secin</span> veya buraya surukleyip birakin</p><small>PDF - Maksimum 20 MB</small></div></div></div><div class="modal-footer"><button class="cancel-btn" onclick="toggleModal()">Iptal</button><button class="submit-btn">Yayinla <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" d="M5 12h14M12 5l7 7-7 7"/></svg></button></div></div></div>
+<script>
+var allArticles=[];
+var currentFilter={journal:'all',yearStart:null,yearEnd:null,search:''};
+window.addEventListener('message',function(event){
+  var msg=event.data;
+  if(typeof msg==='string'){try{msg=JSON.parse(msg)}catch(e){return}}
+  if(!msg||!msg.type)return;
+  if(msg.type==='CMS_DATA'){
+    document.getElementById('loadingState').style.display='none';
+    if(!msg.items||msg.items.length===0){document.getElementById('cardsGrid').innerHTML='<div class="state-box"><strong>Yayin bulunamadi</strong>CMS bos veya filtre uyusmuyor.</div>';return}
+    allArticles=msg.items.map(cmsToArticle);
+    updateStats(allArticles);
+    renderAll(allArticles);
+    document.getElementById('pagination').style.display='flex';
+  }else if(msg.type==='CMS_ERROR'){
+    document.getElementById('loadingState').style.display='none';
+    document.getElementById('cardsGrid').innerHTML='<div class="state-box error"><strong>Veri yuklenemedi</strong>'+escHtml(msg.message||'Bilinmeyen hata')+'</div>';
+  }
+});
+window.addEventListener('load',function(){
+  var r=JSON.stringify({type:'IFRAME_READY'});
+  try{if(window.parent&&window.parent!==window)window.parent.postMessage(r,'*')}catch(e){}
+  window.postMessage(r,'*');
+});
+function cmsToArticle(item){
+  return{
+    _id:item._id||'',
+    journal:item.journalName||'',
+    publisher:item.journalPublisher||'Elsevier',
+    heroColor:item.journalColor||'#1c2b5e',
+    coverImage:item.journalCover||'',
+    issn:item.journalIssn||'',
+    website:item.journalSite||item.doi||'#',
+    vol:item.volume||'',
+    title:item.title||'',
+    authors:(item.authors||'').split('\u00b7').map(function(a){return a.trim()}).filter(Boolean),
+    abstract:item.abstract||'',
+    articleNo:item.articleNo||'',
+    doi:item.doi||'#',
+    doiShort:(item.doi||'').replace('https://doi.org/','').replace('http://dx.doi.org/',''),
+    accesses:item.accesses?Number(item.accesses).toLocaleString('tr-TR'):'\u2014',
+    citations:item.citations?String(item.citations):'\u2014',
+    publishDate:item.publishDate?new Date(item.publishDate).toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'}):'',
+    publishYear:item.publishDate?new Date(item.publishDate).getFullYear():0,
+    isFeatured:!!item.isFeatured
+  }
+}
+function updateStats(items){
+  document.getElementById('statTotal').innerHTML='<span>'+items.length+'</span>';
+  var j={};items.forEach(function(i){if(i.journal)j[i.journal]=1});
+  document.getElementById('statJournals').innerHTML='<span>'+Object.keys(j).length+'</span>';
+  var y=items.map(function(i){return i.publishYear}).filter(Boolean);
+  document.getElementById('statYear').innerHTML='<span>'+(y.length?Math.max.apply(null,y):'\u2014')+'</span>';
+}
+function renderAll(items){
+  var f=null;for(var i=0;i<items.length;i++){if(items[i].isFeatured){f=items[i];break}}
+  if(!f)f=items[0];
+  var others=items.filter(function(i){return i._id!==(f?f._id:null)});
+  document.getElementById('featuredContainer').innerHTML='';
+  if(f)renderFeatured(f);
+  renderGrid(others);
+}
+function mkCover(url,color,name,w,fs){
+  if(url){
+    return '<img src="'+escAttr(url)+'" style="width:'+w+'px;aspect-ratio:3/4;object-fit:cover;border-radius:2px;box-shadow:3px 4px 16px rgba(0,0,0,.28)" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><div style="display:none;width:'+w+'px;aspect-ratio:3/4;background:'+escAttr(color)+';border-radius:2px;box-shadow:3px 4px 16px rgba(0,0,0,.28);align-items:flex-end;padding:8px"><span style="font-family:EB Garamond,serif;color:#fff;font-size:'+fs+';font-weight:700;line-height:1.2">'+escHtml(name)+'</span></div>';
+  }
+  return '<div style="width:'+w+'px;aspect-ratio:3/4;background:'+escAttr(color)+';border-radius:2px;box-shadow:3px 4px 16px rgba(0,0,0,.28);display:flex;align-items:flex-end;padding:8px"><span style="font-family:EB Garamond,serif;color:#fff;font-size:'+fs+';font-weight:700;line-height:1.2">'+escHtml(name)+'</span></div>';
+}
+function renderFeatured(a){
+  var el=document.createElement('div');el.className='featured';
+  el.innerHTML='<div class="feat-cover-wrap">'+mkCover(a.coverImage,a.heroColor,a.journal,132,'.9rem')+'</div><div class="feat-content"><div><div class="feat-meta-top"><span class="pub-badge">'+escHtml(a.journal)+'</span><span class="vol-text">'+escHtml(a.vol)+'</span></div><h2>'+escHtml(a.title)+'</h2><div class="feat-authors">'+escHtml(a.authors.join(' \u00b7 '))+'</div><p class="feat-abstract">'+escHtml(truncate(a.abstract,300))+'</p></div><div class="feat-actions"><span class="feat-date">'+escHtml(a.publishDate)+'</span><span class="open-hint">Detaylari Gor <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg></span></div></div>';
+  el.addEventListener('click',function(){openDrawer(a._id)});
+  document.getElementById('featuredContainer').appendChild(el);
+}
+function renderGrid(items){var g=document.getElementById('cardsGrid');g.innerHTML='';items.forEach(function(a){g.appendChild(buildCard(a))})}
+function buildCard(a){
+  var d=document.createElement('div');d.className='card';
+  var tc=mkCover(a.coverImage,a.heroColor,a.journal,72,'.55rem');
+  d.innerHTML='<div class="card-header"><div class="card-cover-thumb">'+tc+'</div><div class="card-journal-meta"><div class="card-journal-name">'+escHtml(a.journal)+'</div><div class="card-journal-vol">'+escHtml(a.vol)+'</div></div></div><div class="card-body" style="border-top:3px solid '+escAttr(a.heroColor)+'"><h3>'+escHtml(a.title)+'</h3><p>'+escHtml(truncate(a.abstract,180))+'</p><div class="card-footer"><span class="card-vol">'+escHtml(a.articleNo||a.vol)+'</span><span class="card-link">Detay <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" d="M9 5l7 7-7 7"/></svg></span></div></div>';
+  d.addEventListener('click',function(){openDrawer(a._id)});return d;
+}
+function applyFilters(){
+  var items=allArticles.slice();
+  if(currentFilter.journal&&currentFilter.journal!=='all'){var j=currentFilter.journal.toLowerCase();items=items.filter(function(i){return i.journal.toLowerCase().indexOf(j)!==-1})}
+  if(currentFilter.yearStart){items=items.filter(function(i){return i.publishYear>=currentFilter.yearStart&&i.publishYear<=currentFilter.yearEnd})}
+  if(currentFilter.search){var t=currentFilter.search.toLowerCase();items=items.filter(function(i){return(i.title||'').toLowerCase().indexOf(t)!==-1||i.authors.join(' ').toLowerCase().indexOf(t)!==-1||(i.abstract||'').toLowerCase().indexOf(t)!==-1})}
+  if(items.length===0){document.getElementById('featuredContainer').innerHTML='';document.getElementById('cardsGrid').innerHTML='<div class="state-box"><strong>Sonuc bulunamadi</strong>Farkli arama kriterleri deneyin.</div>'}else{renderAll(items)}
+}
+document.querySelectorAll('.filter-tab').forEach(function(tab){tab.addEventListener('click',function(){document.querySelectorAll('.filter-tab').forEach(function(t){t.classList.remove('active')});tab.classList.add('active');var f=tab.dataset.filter,ys=tab.dataset.yearStart;if(f!==undefined){currentFilter.journal=f;currentFilter.yearStart=null;currentFilter.yearEnd=null}else if(ys!==undefined){currentFilter.journal='all';currentFilter.yearStart=parseInt(ys,10);currentFilter.yearEnd=parseInt(tab.dataset.yearEnd||ys,10)}if(allArticles.length>0)applyFilters()})});
+var searchTimer;document.getElementById('searchInput').addEventListener('input',function(){clearTimeout(searchTimer);var v=this.value;searchTimer=setTimeout(function(){currentFilter.search=v.trim();if(allArticles.length>0)applyFilters()},300)});
+function openDrawer(id){
+  var a=null;for(var i=0;i<allArticles.length;i++){if(allArticles[i]._id===id){a=allArticles[i];break}}if(!a)return;
+  document.getElementById('drawerHero').style.background='linear-gradient(135deg,'+a.heroColor+' 0%,'+darken(a.heroColor)+' 100%)';
+  document.getElementById('drawerCover').innerHTML=mkCover(a.coverImage,a.heroColor,a.journal,110,'.8rem');
+  document.getElementById('drawerTitle').textContent=a.title;
+  document.getElementById('drawerAuthors').innerHTML=a.authors.map(function(au,i){return '<span class="drawer-author">'+escHtml(au)+'</span>'+(i<a.authors.length-1?'<span class="drawer-author-sep">,</span> ':'')}).join('');
+  document.getElementById('drawerMetrics').innerHTML='<div class="d-metric"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg><span><span class="d-metric-num">'+a.accesses+'</span> Erisim</span></div><div class="d-metric"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg><span><span class="d-metric-num">'+a.citations+'</span> Atif</span></div>';
+  document.getElementById('drawerAbstract').innerHTML=a.abstract.split('\n\n').map(function(p){return '<p>'+escHtml(p)+'</p>'}).join('<br>');
+  var rows=[['Yayin Tarihi',a.publishDate,false],['Dergi',a.journal,false],['Yayinci',a.publisher,false],['Cilt / Makale No',a.vol+(a.articleNo?' \u00b7 '+a.articleNo:''),false],['DOI',a.doiShort,true],['ISSN',a.issn,false]];
+  document.getElementById('drawerInfo').innerHTML=rows.map(function(r){var v=r[2]?'<a href="'+escAttr(a.doi)+'" target="_blank">'+escHtml(r[1]||'\u2014')+'</a>':escHtml(r[1]||'\u2014');return '<div class="info-cell"><div class="info-cell-label">'+r[0]+'</div><div class="info-cell-value">'+v+'</div></div>'}).join('');
+  document.getElementById('drawerDoiBtn').href=a.website||a.doi;
+  document.getElementById('drawerDoiChip').href=a.doi;
+  document.getElementById('drawerDoiText').textContent='DOI: '+a.doiShort;
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeDrawer(){document.getElementById('drawerOverlay').classList.remove('open');document.getElementById('drawer').classList.remove('open');document.body.style.overflow=''}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDrawer()});
+function truncate(t,m){if(!t)return'';return t.length>m?t.slice(0,m)+'\u2026':t}
+function escHtml(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function escAttr(s){if(s==null)return'';return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+function darken(h){var c=(h||'#1c2b5e').replace('#','');if(c.length===3)c=c.split('').map(function(x){return x+x}).join('');var r=Math.max(0,parseInt(c.slice(0,2),16)-40),g=Math.max(0,parseInt(c.slice(2,4),16)-40),b=Math.max(0,parseInt(c.slice(4,6),16)-40);return'#'+[r,g,b].map(function(x){return x.toString(16).padStart(2,'0')}).join('')}
+function toggleModal(){document.getElementById('modalOverlay').classList.toggle('open')}
+function handleOverlay(e){if(e.target===document.getElementById('modalOverlay'))toggleModal()}
+document.querySelectorAll('.page-btn').forEach(function(b){b.addEventListener('click',function(){if(['\u2039','\u203a','...'].indexOf(b.textContent)!==-1)return;document.querySelectorAll('.page-btn').forEach(function(x){x.classList.remove('active')});b.classList.add('active')})});
+</script>
+</body>
+</html>
