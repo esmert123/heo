@@ -538,9 +538,17 @@ window.addEventListener('load', function() {
    CMS item → uygulama objesi
    ========================================================== */
 function cmsToArticle(item) {
-  // item.journal: Wix .include() ile birleştirilmişse obje,
-  // birleştirme çalışmadıysa string ID veya undefined olabilir.
-  var j = (item.journal && typeof item.journal === 'object') ? item.journal : {};
+  // item.journal: Wix .include() sonrası üç farklı formatta gelebilir:
+  //   - Tek referans (single)   → obje   { _id, name, heroColor, ... }
+  //   - Çoklu referans (multi)  → dizi   [{ _id, name, ... }, ...]
+  //   - include() çalışmadıysa → string (ID) veya undefined
+  var jRaw = item.journal;
+  var j = {};
+  if (Array.isArray(jRaw)) {
+    j = jRaw[0] || {};            // çoklu referans: ilk dergiyi al
+  } else if (jRaw && typeof jRaw === 'object') {
+    j = jRaw;                     // tek referans: doğrudan kullan
+  }
 
   // Wix Image field: URL veya { url: '...' } formatında gelebilir
   var coverImg = '';
