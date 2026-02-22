@@ -522,8 +522,8 @@
         ? '<span class="fundingBadge">' + esc(item.fundingBadge) + '</span>'
         : '';
 
-      var catBlock = item.category
-        ? '<span class="category">' + esc(item.category) + '</span>'
+      var catBlock = item.category1
+        ? '<span class="category">' + esc(item.category1) + '</span>'
         : '<span></span>';
 
       var tagsBlock = '';
@@ -536,7 +536,7 @@
         + '<div class="cardBody">'
           + fundBlock
           + '<h3 class="cardTitle">' + esc(item.title) + '</h3>'
-          + '<p class="cardExcerpt">' + esc(item.summary || "") + '</p>'
+          + '<p class="cardExcerpt">' + esc(item.excerpt || "") + '</p>'
           + '<div class="tagRow">' + tagsBlock + '</div>'
           + '<div class="cardFooter">'
             + catBlock
@@ -569,7 +569,7 @@
 
       // Dropdown filters
       if (cat) {
-        out = out.filter(function(x) { return (x.category || "") === cat; });
+        out = out.filter(function(x) { return (x.category1 || "") === cat; });
       }
       if (st) {
         out = out.filter(function(x) { return (x.status || "") === st; });
@@ -582,7 +582,7 @@
       if (q) {
         out = out.filter(function(x) {
           var tg = normTags(x.tags).join(" ");
-          return looseMatch(x.title, q) || looseMatch(x.summary, q) || looseMatch(x.category, q) || looseMatch(x.status, q) || looseMatch(tg, q);
+          return looseMatch(x.title, q) || looseMatch(x.excerpt, q) || looseMatch(x.summary, q) || looseMatch(x.category1, q) || looseMatch(x.status, q) || looseMatch(tg, q);
         });
       }
 
@@ -627,7 +627,7 @@
        FILTER SETUP
        ══════════════════════════════════════════ */
     function buildFilterOptions(items) {
-      var cats = uniq(items.map(function(i) { return i.category; }));
+      var cats = uniq(items.map(function(i) { return i.category1; }));
       var sts = uniq(items.map(function(i) { return i.status; }));
       var yrs = uniq(items.map(function(i) { return i.year; })).sort(function(a, b) { return (b || 0) - (a || 0); });
 

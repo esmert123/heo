@@ -1,10 +1,11 @@
 /**
  * Projeler Liste Sayfası - Velo Kodu
- * Wix Editor'da ilgili sayfanın koduna yapıştırın.
  *
- * CMS Alan Eşleştirmesi (Projeler koleksiyonu):
- *   title, slug, summary, coverImage, category, status,
- *   tags, fundingBadge, gallery, featured, endDate
+ * FIX: Race condition düzeltmesi
+ * Eski kod: wixData.query bitince direkt postMessage gönderiyordu.
+ * Sorun: HTML embed henüz yüklenmemişse mesaj boşa gidiyordu.
+ * Çözüm: Item sayfasındaki gibi ready/pending pattern eklendi.
+ *         HTML "ready" sinyali gönderene kadar veri bekletiliyor.
  */
 import wixData from "wix-data";
 import wixLocation from "wix-location";
@@ -23,33 +24,28 @@ function toPublicImageUrl(img) {
   return raw;
 }
 
-/** endDate alanından yıl çıkar (Date objesi veya string olabilir) */
-function extractYear(val) {
-  if (!val) return "";
-  if (val instanceof Date) return String(val.getFullYear());
-  const str = String(val);
-  // "2024-05-15" veya "2024" gibi formatları yakala
-  const match = str.match(/(\d{4})/);
-  return match ? match[1] : "";
-}
-
-/** HTML/RichText'ten düz metin çıkar (kart özeti için) */
-function stripHtml(html) {
-  if (!html || typeof html !== "string") return "";
-  return html
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/p>/gi, "\n")
-    .replace(/<[^>]*>/g, "")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
-
 $w.onReady(async () => {
   const html = $w("#htmlProjectList");
+  let htmlReady = false;
+  let pending = null;
 
+  // HTML embed'den gelen mesajları dinle
   html.onMessage((event) => {
     const data = event.data;
-    if (data?.type === "open" && data?.url) {
+    if (!data) return;
+
+    // HTML embed hazır sinyali
+    if (data.type === "ready") {
+      htmlReady = true;
+      if (pending) {
+        html.postMessage(pending);
+        pending = null;
+      }
+      return;
+    }
+
+    // Kart tıklaması -> sayfaya yönlendir
+    if (data.type === "open" && data.url) {
       wixLocation.to(data.url);
     }
   });
@@ -63,22 +59,37 @@ $w.onReady(async () => {
     const items = (res.items || [])
       .filter((x) => (x.slug || "").trim().length > 0)
       .map((x) => ({
-        coverImage:  toPublicImageUrl(x.coverImage),
-        title:       x.title || "",
-        slug:        x.slug || "",
-        summary:     stripHtml(x.summary) || "",   // excerpt yerine summary kullan
-        category:    x.category || "",              // category1 değil, category!
-        status:      x.status || "",
-        year:        extractYear(x.endDate),        // year yok, endDate'ten çıkar
-        tags:        x.tags || [],
+        coverImage: toPublicImageUrl(x.coverImage),
+        title: x.title || "",
+        slug: x.slug || "",
+        excerpt: x.excerpt || "",
+        summary: x.summary || "",
+        fulltext: x.fulltext || "",
+        category1: x.category1 || "",
+        status: x.status || "",
+        year: x.year || "",
+        tags: x.tags || [],
         fundingBadge: x.fundingBadge || "",
-        gallery:     x.gallery || [],
-        featured:    !!x.featured,
+        gallery: x.gallery || [],
+        featured: !!x.featured,
+        startDateEndDate: x.startDateEndDate || ""
       }));
 
-    html.postMessage({ type: "renderList", items });
+    const payload = { type: "renderList", items };
+
+    // FIX: HTML hazırsa gönder, değilse beklet
+    if (htmlReady) {
+      html.postMessage(payload);
+    } else {
+      pending = payload;
+    }
   } catch (err) {
     console.error("Projeler List wixData error:", err);
-    html.postMessage({ type: "renderList", items: [] });
+    const errorPayload = { type: "renderList", items: [] };
+    if (htmlReady) {
+      html.postMessage(errorPayload);
+    } else {
+      pending = errorPayload;
+    }
   }
 });

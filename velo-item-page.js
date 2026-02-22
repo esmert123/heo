@@ -1,13 +1,6 @@
 /**
  * Proje Detay Sayfası - Velo Kodu
- * Wix Editor'da ilgili dinamik sayfanın koduna yapıştırın.
- *
- * CMS Alan Eşleştirmesi (Projeler koleksiyonu):
- *   title, slug, summary, coverImage, category, status,
- *   tags, fundingBadge, gallery, featured, endDate
- *
- * NOT: CMS'de "fulltext", "excerpt", "ctaButtonText", "ctaLink" alanları yok.
- *      summary alanı hem özet hem detay metni olarak kullanılıyor.
+ * (Orijinal kod zaten doğruydu - ready/pending pattern mevcut)
  */
 import wixLocation from 'wix-location';
 
@@ -26,7 +19,7 @@ function wixMediaToStatic(url) {
   return url;
 }
 
-/** HTML/RichText'ten düz metin çıkar (subtitle için) */
+/** HTML/RichText içinden düz metin çıkar */
 function stripHtml(html) {
   if (!html || typeof html !== "string") return "";
   return html
@@ -54,6 +47,7 @@ $w.onReady(function () {
   let htmlReady = false;
   let pending = null;
 
+  // HTML -> Velo mesajları (ready + navigate)
   $w(HTML_ID).onMessage((event) => {
     const msg = event.data;
     if (!msg) return;
@@ -78,23 +72,23 @@ $w.onReady(function () {
     }
   });
 
+  // Dataset hazır olunca item'i HTML'e bas
   $w(DATASET_ID).onReady(() => {
     const item = $w(DATASET_ID).getCurrentItem();
 
     const payload = {
       type: "render",
       item: {
-        title:       item.title || "",
-        subtitle:    stripHtml(item.summary),           // summary'den düz metin
-        coverImage:  wixMediaToStatic(item.coverImage),
-        fundingBadge: item.fundingBadge || "",
-        status:      item.status || "",
-        tags:        item.tags || [],
-        fulltext:    item.summary || "",                 // fulltext yok -> summary'yi HTML olarak gönder
-        summary:     item.summary || "",                 // fallback olarak da gönder
-        gallery:     normalizeGallery(item.gallery),
-        ctaButtonText: "İletişime Geç",                 // CMS'de yok, sabit değer
-        ctaLink:     "/iletisim",                        // CMS'de yok, sabit değer
+        title: item.title,
+        subtitle: stripHtml(item.summary),
+        coverImage: wixMediaToStatic(item.coverImage),
+        fundingBadge: item.fundingBadge,
+        status: item.status,
+        tags: item.tags || [],
+        fulltext: item.fulltext || "",
+        gallery: normalizeGallery(item.gallery),
+        ctaButtonText: item.ctaButtonText || "İletişime Geç",
+        ctaLink: item.ctaLink || "/iletisim",
       }
     };
 
