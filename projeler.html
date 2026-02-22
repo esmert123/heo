@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Projelerimiz</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Spinnaker&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --blue: #1A2B6D;
+      --blue-light: #2a3f8f;
+      --red: #8F1D3D;
+      --red-light: #a52850;
+
+      --bg: #f2f4f8;
+      --card: #ffffff;
+      --ink: #0f1e3a;
+      --muted: #6c7a92;
+
+      --r: 16px;
+      --r-lg: 20px;
+      --shadowSoft: 0 4px 20px rgba(10, 24, 60, .06), 0 1px 4px rgba(10, 24, 60, .04);
+      --shadowHover: 0 16px 48px rgba(10, 24, 60, .12), 0 4px 12px rgba(10, 24, 60, .06);
+
+      --max: 1200px;
+      --pad: clamp(16px, 2.2vw, 28px);
+      --h1: clamp(28px, 3.4vw, 48px);
+
+      --fontHead: "Spinnaker", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      --fontBody: -apple-system, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+      --ease: cubic-bezier(.4, 0, .2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body { width: 100%; height: 100%; background: transparent }
+    body {
+      font-family: var(--fontBody);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page {
+      background:
+        radial-gradient(ellipse 1100px 500px at 85% 10%, rgba(26, 43, 109, .10), transparent 60%),
+        radial-gradient(ellipse 800px 450px at 10% 50%, rgba(143, 29, 61, .07), transparent 55%),
+        linear-gradient(to bottom, #f6f7fb, var(--bg));
+      min-height: 100vh;
+      padding-bottom: 60px;
+    }
+
+    .wrap { max-width: var(--max); margin: 0 auto; padding: 24px var(--pad) 0 }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .heroTitle {
+      font-family: var(--fontHead);
+      font-weight: 400;
+      font-size: var(--h1);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      color: var(--red);
+    }
+    .headerLine {
+      height: 3px;
+      width: clamp(80px, 14vw, 160px);
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--red), transparent);
+      margin-top: 10px;
+    }
+    .countBadge {
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(26, 43, 109, .06);
+      border: 1px solid rgba(26, 43, 109, .10);
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all .2s var(--ease);
+    }
+
+    /* FILTERS */
+    .filterBar {
+      margin-top: 16px;
+      background: rgba(255, 255, 255, .8);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(15, 30, 58, .07);
+      border-radius: var(--r-lg);
+      padding: 16px;
+      box-shadow: var(--shadowSoft);
+    }
+    .filterGrid {
+      display: grid;
+      grid-template-columns: 1.4fr .7fr .7fr .5fr;
+      gap: 10px;
+    }
+    .input, .select {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid rgba(15, 30, 58, .10);
+      background: rgba(255, 255, 255, .95);
+      padding: 11px 14px;
+      font-family: var(--fontBody);
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+    }
+    .input::placeholder { color: rgba(15, 30, 58, .38) }
+    .input:focus, .select:focus {
+      border-color: rgba(26, 43, 109, .30);
+      box-shadow: 0 0 0 3px rgba(26, 43, 109, .08);
+    }
+
+    .chips {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(15, 30, 58, .06);
+    }
+    .chip {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1.5px solid rgba(15, 30, 58, .10);
+      background: transparent;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(15, 30, 58, .65);
+      transition: all .2s var(--ease);
+      user-select: none;
+    }
+    .chip:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: rgba(26, 43, 109, .04);
+    }
+    .chip.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(26, 43, 109, .25);
+    }
+
+    /* GRID */
+    .list {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 22px;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--card);
+      border-radius: var(--r-lg);
+      border: 1px solid rgba(15, 30, 58, .06);
+      box-shadow: var(--shadowSoft);
+      overflow: hidden;
+      cursor: pointer;
+      outline: none;
+      transition: transform .25s var(--ease), box-shadow .25s var(--ease), border-color .25s var(--ease);
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadowHover);
+      border-color: rgba(143, 29, 61, .14);
+    }
+    .card:focus-visible {
+      box-shadow: 0 0 0 3px rgba(26, 43, 109, .25), var(--shadowHover);
+    }
+
+    .cardImgWrap {
+      position: relative;
+      height: 210px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(26, 43, 109, .06), rgba(143, 29, 61, .04));
+    }
+    .cardImg {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s var(--ease);
+    }
+    .card:hover .cardImg { transform: scale(1.04) }
+    .cardImgWrap::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 45%;
+      background: linear-gradient(to top, rgba(15, 30, 58, .25), transparent);
+      pointer-events: none;
+    }
+
+    .statusPill {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 999px;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+    }
+    .statusPill.green { background: rgba(20, 140, 90, .88); color: #fff }
+    .statusPill.amber { background: rgba(210, 140, 20, .88); color: #fff }
+    .statusPill.red   { background: rgba(143, 29, 61, .88); color: #fff }
+
+    .yearPill {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 2;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .42);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      color: rgba(255, 255, 255, .92);
+    }
+
+    .cardImgFallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse at 30% 40%, rgba(26, 43, 109, .12), transparent 60%),
+        radial-gradient(ellipse at 70% 60%, rgba(143, 29, 61, .08), transparent 60%),
+        linear-gradient(135deg, #e8ebf2, #f2f0f4);
+    }
+    .cardImgFallback::after {
+      content: "\1F4C1";
+      font-size: 36px;
+      opacity: .3;
+    }
+
+    .cardBody {
+      padding: 18px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .fundingBadge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(143, 29, 61, .08);
+      border: 1px solid rgba(143, 29, 61, .14);
+      color: var(--red);
+      margin-bottom: 10px;
+      align-self: flex-start;
+    }
+    .cardTitle {
+      font-family: var(--fontHead);
+      font-weight: 400;
+      font-size: 19px;
+      letter-spacing: -.02em;
+      line-height: 1.25;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .cardExcerpt {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 14px;
+      flex: 1;
+    }
+    .tagRow { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px }
+    .tag {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(26, 43, 109, .04);
+      border: 1px solid rgba(26, 43, 109, .10);
+      color: rgba(15, 30, 58, .65);
+      transition: all .15s var(--ease);
+    }
+    .card:hover .tag {
+      border-color: rgba(26, 43, 109, .18);
+    }
+
+    .cardFooter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid rgba(15, 30, 58, .05);
+    }
+    .category { font-size: 12px; color: var(--muted); font-weight: 600 }
+    .moreBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 12px;
+      border: none;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .2s var(--ease);
+      white-space: nowrap;
+    }
+    .moreBtn:hover {
+      background: var(--blue-light);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(26, 43, 109, .28);
+    }
+    .moreBtn .arr {
+      transition: transform .2s var(--ease);
+      font-size: 15px;
+    }
+    .moreBtn:hover .arr { transform: translateX(3px) }
+
+    .emptyState {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+      grid-column: 1 / -1;
+      font-size: 15px;
+    }
+
+    /* LOADING SKELETON */
+    @keyframes shimmer {
+      0% { background-position: -400px 0 }
+      100% { background-position: 400px 0 }
+    }
+    .skeleton-card {
+      background: var(--card);
+      border-radius: var(--r-lg);
+      border: 1px solid rgba(15, 30, 58, .06);
+      overflow: hidden;
+    }
+    .skeleton-img {
+      height: 210px;
+      background: linear-gradient(90deg, #eef1f5 25%, #e2e6ed 50%, #eef1f5 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.5s infinite linear;
+    }
+    .skeleton-body { padding: 18px 20px }
+    .skeleton-line {
+      height: 14px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, #eef1f5 25%, #e2e6ed 50%, #eef1f5 75%);
+      background-size: 800px 100%;
+      animation: shimmer 1.5s infinite linear;
+      margin-bottom: 10px;
+    }
+    .skeleton-line.w60 { width: 60% }
+    .skeleton-line.w80 { width: 80% }
+    .skeleton-line.w40 { width: 40% }
+
+    /* RESPONSIVE */
+    @media (max-width: 980px) {
+      .filterGrid { grid-template-columns: 1fr 1fr }
+    }
+    @media (max-width: 560px) {
+      .filterGrid { grid-template-columns: 1fr }
+      .header { flex-direction: column; align-items: flex-start }
+      .list { grid-template-columns: 1fr }
+      .cardImgWrap { height: 180px }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <div class="wrap">
+
+      <div class="header">
+        <div>
+          <h1 class="heroTitle">Projelerimiz</h1>
+          <div class="headerLine"></div>
+        </div>
+        <span class="countBadge" id="count">Yükleniyor...</span>
+      </div>
+
+      <section class="filterBar">
+        <div class="filterGrid">
+          <input class="input" id="q" type="search" placeholder="Proje ara (başlık, etiket, özet)..." />
+          <select class="select" id="cat"><option value="">Kategori: Tümü</option></select>
+          <select class="select" id="st"><option value="">Durum: Tümü</option></select>
+          <select class="select" id="yr"><option value="">Yıl: Tümü</option></select>
+        </div>
+        <div class="chips" id="chips">
+          <button class="chip active" data-chip="all" type="button">Tümü</button>
+          <button class="chip" data-chip="featured" type="button">Öne Çıkan</button>
+          <button class="chip" data-chip="Tamamlandı" type="button">Tamamlandı</button>
+          <button class="chip" data-chip="Devam Ediyor" type="button">Devam Ediyor</button>
+        </div>
+      </section>
+
+      <section class="list" id="list">
+        <!-- Loading skeleton -->
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+        <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line w80"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div></div></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    /* ══════════════════════════════════════════
+       STATE
+       ══════════════════════════════════════════ */
+    var ALL = [];
+    var currentChip = "all";
+    var filtersInitialized = false;
+
+    try { window.parent.postMessage({ type: "ready" }, "*"); } catch (e) { /* iframe iletişim hatası */ }
+
+    /* ══════════════════════════════════════════
+       UTILS
+       ══════════════════════════════════════════ */
+    function $(id) { return document.getElementById(id); }
+
+    function uniq(arr) {
+      var seen = {}, out = [];
+      for (var i = 0; i < arr.length; i++) {
+        var v = arr[i];
+        if (v && !seen[v]) { seen[v] = true; out.push(v); }
+      }
+      return out;
+    }
+
+    function looseMatch(hay, needle) {
+      return (hay || "").toString().toLowerCase().indexOf((needle || "").toString().toLowerCase()) !== -1;
+    }
+
+    function normTags(t) { return Array.isArray(t) ? t : (t ? [String(t)] : []); }
+
+    function esc(s) {
+      return String(s || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function normalizeWixImage(img) {
+      var raw = (typeof img === "string") ? img : ((img && (img.src || img.url)) || "");
+      if (!raw) return "";
+      if (raw.indexOf("http") === 0) return raw;
+      if (raw.indexOf("wix:image://v1/") === 0) {
+        var mediaId = raw.replace("wix:image://v1/", "").split("/")[0];
+        return "https://static.wixstatic.com/media/" + mediaId;
+      }
+      return raw;
+    }
+
+    function toItemUrl(slug) { return "/projeler/" + slug; }
+    function requestOpen(url) { window.parent.postMessage({ type: "open", url: url }, "*"); }
+
+    function statusClass(s) {
+      if (!s) return "";
+      var l = s.toLowerCase();
+      if (l.indexOf("tamamlan") !== -1) return "green";
+      if (l.indexOf("devam") !== -1) return "amber";
+      return "red";
+    }
+
+    /* ══════════════════════════════════════════
+       CARD HTML
+       ══════════════════════════════════════════ */
+    function cardHTML(item) {
+      var tags = normTags(item.tags).slice(0, 4);
+      var url = toItemUrl(item.slug);
+      var imgUrl = normalizeWixImage(item.coverImage);
+
+      var imgBlock = imgUrl
+        ? '<img class="cardImg" src="' + esc(imgUrl) + '" alt="' + esc(item.title) + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<div class=cardImgFallback></div>\'">'
+        : '<div class="cardImgFallback"></div>';
+
+      var statusBlock = item.status
+        ? '<span class="statusPill ' + statusClass(item.status) + '">' + esc(item.status) + '</span>'
+        : '';
+
+      var yearBlock = item.year
+        ? '<span class="yearPill">' + esc(item.year) + '</span>'
+        : '';
+
+      var fundBlock = item.fundingBadge
+        ? '<span class="fundingBadge">' + esc(item.fundingBadge) + '</span>'
+        : '';
+
+      var catBlock = item.category1
+        ? '<span class="category">' + esc(item.category1) + '</span>'
+        : '<span></span>';
+
+      var tagsBlock = '';
+      for (var i = 0; i < tags.length; i++) {
+        tagsBlock += '<span class="tag">' + esc(tags[i]) + '</span>';
+      }
+
+      return '<article class="card" tabindex="0" data-url="' + esc(url) + '">'
+        + '<div class="cardImgWrap">' + imgBlock + statusBlock + yearBlock + '</div>'
+        + '<div class="cardBody">'
+          + fundBlock
+          + '<h3 class="cardTitle">' + esc(item.title) + '</h3>'
+          + '<p class="cardExcerpt">' + esc(item.excerpt || "") + '</p>'
+          + '<div class="tagRow">' + tagsBlock + '</div>'
+          + '<div class="cardFooter">'
+            + catBlock
+            + '<button class="moreBtn" type="button">Detay <span class="arr">\u2192</span></button>'
+          + '</div>'
+        + '</div>'
+      + '</article>';
+    }
+
+    /* ══════════════════════════════════════════
+       FILTER + RENDER
+       ══════════════════════════════════════════ */
+    function getFiltered() {
+      var q = $("q").value.trim().toLowerCase();
+      var cat = $("cat").value;
+      var st = $("st").value;
+      var yr = $("yr").value;
+
+      var out = [];
+      for (var i = 0; i < ALL.length; i++) {
+        out.push(ALL[i]);
+      }
+
+      // Chip filter
+      if (currentChip === "featured") {
+        out = out.filter(function(x) { return !!x.featured; });
+      } else if (currentChip !== "all") {
+        out = out.filter(function(x) { return (x.status || "") === currentChip; });
+      }
+
+      // Dropdown filters
+      if (cat) {
+        out = out.filter(function(x) { return (x.category1 || "") === cat; });
+      }
+      if (st) {
+        out = out.filter(function(x) { return (x.status || "") === st; });
+      }
+      if (yr) {
+        out = out.filter(function(x) { return String(x.year || "") === String(yr); });
+      }
+
+      // Search
+      if (q) {
+        out = out.filter(function(x) {
+          var tg = normTags(x.tags).join(" ");
+          return looseMatch(x.title, q) || looseMatch(x.excerpt, q) || looseMatch(x.summary, q) || looseMatch(x.category1, q) || looseMatch(x.status, q) || looseMatch(tg, q);
+        });
+      }
+
+      return out;
+    }
+
+    function bindCards(container) {
+      var cards = container.querySelectorAll(".card[data-url]");
+      for (var j = 0; j < cards.length; j++) {
+        (function(card) {
+          card.addEventListener("click", function() {
+            requestOpen(card.getAttribute("data-url"));
+          });
+          card.addEventListener("keydown", function(e) {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              requestOpen(card.getAttribute("data-url"));
+            }
+          });
+        })(cards[j]);
+      }
+    }
+
+    function render() {
+      var items = getFiltered();
+      $("count").textContent = items.length + " Proje";
+
+      if (!items.length) {
+        $("list").innerHTML = '<div class="emptyState">Arama kriterlerine uygun proje bulunamadı.</div>';
+        return;
+      }
+
+      var html = '';
+      for (var i = 0; i < items.length; i++) {
+        html += cardHTML(items[i]);
+      }
+      $("list").innerHTML = html;
+      bindCards($("list"));
+    }
+
+    /* ══════════════════════════════════════════
+       FILTER SETUP
+       ══════════════════════════════════════════ */
+    function buildFilterOptions(items) {
+      var cats = uniq(items.map(function(i) { return i.category1; }));
+      var sts = uniq(items.map(function(i) { return i.status; }));
+      var yrs = uniq(items.map(function(i) { return i.year; })).sort(function(a, b) { return (b || 0) - (a || 0); });
+
+      $("cat").innerHTML = '<option value="">Kategori: Tümü</option>' + cats.map(function(c) { return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join("");
+      $("st").innerHTML  = '<option value="">Durum: Tümü</option>'    + sts.map(function(s) { return '<option value="' + esc(s) + '">' + esc(s) + '</option>'; }).join("");
+      $("yr").innerHTML  = '<option value="">Yıl: Tümü</option>'     + yrs.map(function(y) { return '<option value="' + esc(y) + '">' + esc(y) + '</option>'; }).join("");
+
+      $("cat").selectedIndex = 0;
+      $("st").selectedIndex = 0;
+      $("yr").selectedIndex = 0;
+      $("q").value = "";
+    }
+
+    function initFilters() {
+      if (filtersInitialized) return;
+      filtersInitialized = true;
+
+      $("q").addEventListener("input", render);
+      $("cat").addEventListener("change", render);
+      $("st").addEventListener("change", render);
+      $("yr").addEventListener("change", render);
+
+      var chipEls = $("chips").querySelectorAll(".chip");
+      for (var j = 0; j < chipEls.length; j++) {
+        (function(c) {
+          c.addEventListener("click", function() {
+            var all = $("chips").querySelectorAll(".chip");
+            for (var k = 0; k < all.length; k++) all[k].classList.remove("active");
+            c.classList.add("active");
+            currentChip = c.getAttribute("data-chip");
+            render();
+          });
+        })(chipEls[j]);
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       MESSAGE LISTENER
+       ══════════════════════════════════════════ */
+    window.addEventListener("message", function(event) {
+      var msg = event.data;
+      if (!msg || typeof msg !== "object") return;
+      if (msg.type !== "renderList") return;
+      if (!Array.isArray(msg.items)) return;
+
+      ALL = msg.items;
+      buildFilterOptions(ALL);
+      initFilters();
+      render();
+    });
+  </script>
+</body>
+</html>
