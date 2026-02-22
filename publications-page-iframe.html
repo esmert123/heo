@@ -200,7 +200,6 @@
   </div>
   <div class="drawer-body">
     <div class="drawer-authors" id="drawerAuthors"></div>
-    <div class="drawer-metrics" id="drawerMetrics"></div>
     <div><div class="drawer-section-title">Abstract</div><div class="drawer-abstract" id="drawerAbstract"></div></div>
     <div><div class="drawer-section-title" style="font-size:1.1rem;">Makale Bilgileri</div><div class="info-grid" id="drawerInfo"></div></div>
   </div>
@@ -442,9 +441,6 @@ function openDrawer(id) {
   document.getElementById('drawerAuthors').innerHTML = a.authors.map(function(au, i){
     return '<span class="drawer-author">' + escHtml(au) + '</span>' + (i < a.authors.length-1 ? '<span class="drawer-author-sep">,</span> ' : '');
   }).join('');
-  document.getElementById('drawerMetrics').innerHTML =
-    '<div class="d-metric"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg><span><span class="d-metric-num">' + a.accesses + '</span> Erişim</span></div>' +
-    '<div class="d-metric"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg><span><span class="d-metric-num">' + a.citations + '</span> Atıf</span></div>';
   document.getElementById('drawerAbstract').innerHTML = a.abstract.split('\n\n').map(function(p){ return '<p>' + escHtml(p) + '</p>'; }).join('<br>');
   var rows = [['Yayın Tarihi',a.publishDate,false],['Dergi',a.journal,false],['Yayıncı',a.publisher,false],['Cilt / Makale No',a.vol+(a.articleNo?' · '+a.articleNo:''),false],['DOI',a.doiShort,true],['ISSN',a.issn,false]];
   document.getElementById('drawerInfo').innerHTML = rows.map(function(r){
