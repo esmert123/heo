@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root{
+      --stroke: rgba(255,255,255,.14);
+      --shadow: 0 10px 24px rgba(0,0,0,.18);
+      --radius: 16px;
+      --gap: 12px;
+      --cardH: 92px;
+      --logoH: 54px;
+      --card: rgba(255,255,255,.92);
+    }
+    *{ box-sizing: border-box; }
+    body{ margin:0; background:transparent; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; }
+    .wrap{ padding:10px; }
+
+    /* Debug bar — yayına alırken display:none yapabilirsiniz */
+    .debug{
+      position: sticky; top:0;
+      font-size:12px; color:#fff;
+      background: rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.18);
+      border-radius: 12px;
+      padding:6px 10px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      margin-bottom:10px;
+      backdrop-filter: blur(6px);
+      z-index: 10;
+    }
+    .dot{ width:8px; height:8px; border-radius:99px; background:#fbbf24; display:inline-block; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: var(--gap);
+    }
+    @media (max-width: 860px){ .grid{ grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 520px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      height: var(--cardH);
+      border:1px solid var(--stroke);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      display:flex; align-items:center; justify-content:center;
+      padding:14px;
+      text-decoration:none;
+      overflow:hidden;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .card:hover{
+      transform: translateY(-2px);
+      box-shadow: 0 14px 32px rgba(0,0,0,.22);
+    }
+    .logo{
+      max-width:100%;
+      max-height: var(--logoH);
+      object-fit: contain;
+      transform: scale(var(--s,1));
+      transform-origin:center;
+    }
+    .logo.error{
+      opacity: 0.3;
+      filter: grayscale(1);
+    }
+    .muted{
+      color: rgba(255,255,255,.85);
+      padding: 10px 6px;
+      font-size: 14px;
+      display:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Debug bar: yayına alırken style="display:none" ekleyebilirsiniz -->
+    <div class="debug" id="debugBar">
+      <span class="dot" id="dot"></span>
+      <span id="status">Yükleniyor... (HTML hazır)</span>
+      <span id="count" style="opacity:.85"></span>
+    </div>
+
+    <div id="root" class="grid"></div>
+    <div id="empty" class="muted">Sponsor yok / CMS'ten veri gelmedi.</div>
+  </div>
+
+  <script>
+    const root = document.getElementById('root');
+    const empty = document.getElementById('empty');
+    const statusEl = document.getElementById('status');
+    const countEl = document.getElementById('count');
+    const dot = document.getElementById('dot');
+
+    let gotInit = false;
+
+    function setState(text, color) {
+      statusEl.textContent = text;
+      dot.style.background = color;
+    }
+
+    function postHeight() {
+      requestAnimationFrame(() => {
+        const h = document.documentElement.scrollHeight;
+        window.parent.postMessage({ type: 'SPONSORS_HEIGHT', height: h }, '*');
+      });
+    }
+
+    // Wix static URL'leri için resim boyutlandırma
+    // static.wixstatic.com URL'lerine /v1/fill/ parametresi ekleyerek
+    // sunucu tarafında resize yapabilirsiniz (opsiyonel, performans için)
+    function optimizeImageUrl(url, width) {
+      if (!url) return '';
+      // Zaten optimize edilmişse dokunma
+      if (url.includes('/v1/fill/') || url.includes('/v1/fit/')) return url;
+      // static.wixstatic.com URL'si ise optimize et
+      if (url.includes('static.wixstatic.com/media/')) {
+        // Orijinal boyutta bırak — isteğe bağlı optimize:
+        // return url + `/v1/fit/w_${width},h_${width}/`;
+        return url;
+      }
+      return url;
+    }
+
+    function render(sponsors) {
+      gotInit = true;
+      root.innerHTML = '';
+
+      const arr = Array.isArray(sponsors) ? sponsors : [];
+      countEl.textContent = '| ' + arr.length + ' sponsor';
+
+      if (arr.length === 0) {
+        empty.style.display = 'block';
+        setState('INIT geldi ama liste bos (CMS izinleri/alan isimleri?)', '#f97316');
+        postHeight();
+        return;
+      }
+
+      empty.style.display = 'none';
+
+      let loadedCount = 0;
+      let errorCount = 0;
+
+      arr.forEach(function(sp) {
+        const a = document.createElement('a');
+        a.className = 'card';
+        a.href = sp.website || '#';
+        a.target = sp.website ? '_blank' : '_self';
+        a.rel = sp.website ? 'noopener noreferrer' : '';
+        a.title = sp.title || '';
+        a.setAttribute('aria-label', sp.title || 'Sponsor');
+
+        const img = document.createElement('img');
+        img.className = 'logo';
+        img.loading = 'lazy';
+        img.alt = sp.title || 'Sponsor';
+        img.src = sp.logoUrl || '';
+        img.style.setProperty('--s', String(sp.scale || 1));
+
+        // Resim yükleme durumunu takip et
+        img.onload = function() {
+          loadedCount++;
+          setState(loadedCount + '/' + arr.length + ' logo yuklendi', '#22c55e');
+        };
+        img.onerror = function() {
+          errorCount++;
+          img.classList.add('error');
+          img.alt = (sp.title || 'Sponsor') + ' (yuklenemedi)';
+          setState(loadedCount + ' yuklendi, ' + errorCount + ' hata', errorCount > 0 ? '#f97316' : '#22c55e');
+          // Debug: konsola hatalı URL'yi yaz
+          console.warn('Logo yuklenemedi:', sp.title, sp.logoUrl);
+        };
+
+        a.appendChild(img);
+        root.appendChild(a);
+      });
+
+      setState('Veri geldi, logolar yukleniyor...', '#22c55e');
+      postHeight();
+
+      // Logolar yüklendikten sonra yüksekliği güncelle
+      setTimeout(postHeight, 1000);
+      setTimeout(postHeight, 3000);
+    }
+
+    // Mesaj dinle
+    window.addEventListener('message', function(event) {
+      var d = event.data || {};
+
+      if (d.type === 'SPONSORS_INIT') {
+        render(d.sponsors || []);
+      }
+
+      if (d.type === 'SPONSORS_ERROR') {
+        gotInit = true;
+        setState('Velo HATA: ' + (d.message || 'bilinmeyen'), '#ef4444');
+        empty.style.display = 'block';
+        empty.textContent = 'Hata: ' + (d.message || 'CMS verisi alinamadi');
+        postHeight();
+      }
+    });
+
+    // READY sinyali gönder — Velo bu sinyali alınca tekrar postMessage yapar
+    window.parent.postMessage({ type: 'SPONSORS_READY' }, '*');
+
+    // 6 saniye timeout (Velo bazen yavaş olabiliyor)
+    setTimeout(function() {
+      if (!gotInit) {
+        setState('Velo\'dan INIT gelmedi (DevMode/ID/postMessage kontrol edin)', '#ef4444');
+        empty.style.display = 'block';
+        postHeight();
+      }
+    }, 6000);
+  </script>
+</body>
+</html>
