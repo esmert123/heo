@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    *{ margin:0; padding:0; box-sizing:border-box; }
+
+    body{
+      background: transparent;
+      overflow: hidden;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+
+    .marquee{
+      height: 145px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Sol ve sağ fade efekti */
+    .marquee::before,
+    .marquee::after{
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 60px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .marquee::before{
+      left: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+    }
+    .marquee::after{
+      right: 0;
+      background: linear-gradient(to left, rgba(0,0,0,0.15), transparent);
+    }
+
+    .track{
+      display: flex;
+      gap: 60px;
+      align-items: center;
+      width: max-content;
+      animation: scroll var(--duration, 25s) linear infinite;
+      padding: 0 30px;
+    }
+
+    .track:hover{
+      animation-play-state: paused;
+    }
+
+    .sponsor-item{
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 110px;
+      min-width: 120px;
+      text-decoration: none;
+    }
+
+    .sponsor-item img{
+      max-height: 90px;
+      max-width: 200px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transform: scale(var(--s, 1));
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+      transition: filter 0.3s ease, transform 0.3s ease;
+    }
+
+    .sponsor-item:hover img{
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,0.45));
+      transform: scale(calc(var(--s, 1) * 1.05));
+    }
+
+    @keyframes scroll{
+      from{ transform: translateX(0); }
+      to{ transform: translateX(-50%); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .track{
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="marquee">
+    <div id="track" class="track"></div>
+  </div>
+
+  <script>
+    const trackEl = document.getElementById('track');
+    let rendered = false;
+
+    function postHeight(){
+      requestAnimationFrame(() => {
+        const h = document.documentElement.scrollHeight;
+        parent.postMessage({ type: 'SPONSORS_HEIGHT', height: h }, '*');
+      });
+    }
+
+    function render(sponsors){
+      if (rendered) return; // Çift render engelle
+      rendered = true;
+      trackEl.innerHTML = '';
+
+      const arr = Array.isArray(sponsors) ? sponsors : [];
+      if (arr.length === 0) return;
+
+      // Animasyon hızını sponsor sayısına göre ayarla
+      // Az sponsor = yavaş, çok sponsor = biraz daha hızlı
+      const baseDuration = Math.max(15, arr.length * 4);
+      trackEl.style.setProperty('--duration', baseDuration + 's');
+
+      function createItem(sp){
+        const a = document.createElement('a');
+        a.className = 'sponsor-item';
+        a.href = sp.website || '#';
+        a.target = sp.website ? '_blank' : '_self';
+        a.rel = sp.website ? 'noopener noreferrer' : '';
+        a.title = sp.title || '';
+
+        const img = document.createElement('img');
+        img.alt = sp.title || 'Sponsor';
+        img.src = sp.logoUrl || '';
+        if (sp.scale && sp.scale !== 1) {
+          img.style.setProperty('--s', sp.scale);
+        }
+        img.onload = postHeight;
+        img.onerror = function(){ this.parentElement.style.display = 'none'; postHeight(); };
+
+        a.appendChild(img);
+        return a;
+      }
+
+      // İlk set
+      arr.forEach(sp => {
+        trackEl.appendChild(createItem(sp));
+      });
+
+      // Sonsuz döngü için klon set (translateX(-50%) ile çalışır)
+      arr.forEach(sp => {
+        trackEl.appendChild(createItem(sp));
+      });
+
+      postHeight();
+    }
+
+    window.addEventListener('message', (event) => {
+      const d = event.data || {};
+      if (d.type === 'SPONSORS_INIT') {
+        render(d.sponsors || []);
+      }
+    });
+
+    // Velo'ya hazır olduğumuzu bildir
+    parent.postMessage({ type: 'SPONSORS_READY' }, '*');
+  </script>
+</body>
+</html>
